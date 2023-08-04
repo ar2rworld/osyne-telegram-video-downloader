@@ -3,6 +3,7 @@ name: Build and publish a Docker image
 on:
   push:
     branches:
+    - master
     - releases/**
 
 env:
@@ -18,6 +19,10 @@ jobs:
       packages: write
 
     steps:
+      - name: What is the actor?
+        run: |
+          echo ${{ github.actor }}
+          echo ${{ env.ghcr_user }}
       - name: Checkout repository
         uses: actions/checkout@v3
 
