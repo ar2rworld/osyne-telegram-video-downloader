@@ -14,7 +14,7 @@
 
 1. Go programming language installed on your system.
 2. A Telegram Bot API token. You can obtain it by creating a new bot on Telegram via the BotFather.
-3. A file containing Instagram cookies (required if you want to download videos from Instagram). Learn how to obtain these cookies in the section below.
+3. A file containing Instagram **Netscape formatted** cookies (required if you want to download videos from Instagram). Learn how to obtain these cookies in the section below.
 
 ### Installation
 
@@ -31,12 +31,15 @@ cd telegram-video-downloader-bot
 go get github.com/go-telegram-bot-api/telegram-bot-api/v5
 ```
 
+3. Complete installation process for [yt-dlp](https://github.com/yt-dlp/yt-dlp)
+
 ### Usage
 
 1. Set the required environment variables:
 
     - `TELEGRAM_APITOKEN`: Your Telegram Bot API token.
     - `INSTAGRAM_COOKIES_FILE`: Path to the file containing Instagram cookies (optional, only if you want to download videos from Instagram).
+      - How to get a file? Login to instagram -> download cookies file with [Export Cookies](https://github.com/rotemdan/ExportCookies) browser extention -> paste it to the project folder
     - `ADMIN_ID`: ID of the bot admin (the bot will send a "Hello, boss" message to this ID when it starts).
     - `YT_DLP_PATH` is a configuration variable that points to the location of YouTube-DL-Python (YT-DLP), a powerful tool for downloading videos from various websites. Set the YT_DLP_PATH environment variable to specify the path to the YT-DLP binary and enable the Telegram Video Downloader Bot to use YT-DLP for video downloads from supported sources like TikTok, Twitter, and Instagram with authentication.
 
