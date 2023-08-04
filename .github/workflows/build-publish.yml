@@ -9,7 +9,6 @@ env:
   REGISTRY: ghcr.io
   ghcr_user: ${{ github.actor }}
   IMAGE_NAME: ${{ github.repository }}
-  CR_PAT: ${{ secrets.ACTION_SECRET }}
 
 jobs:
   build-and-push-image:
@@ -22,9 +21,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Log in to the Container registry
-        run: echo "$CR_PAT" | docker login ghcr.io -u "$ghcr_user" --password-stdin
-
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
