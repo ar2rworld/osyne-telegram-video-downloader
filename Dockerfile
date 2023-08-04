@@ -11,6 +11,6 @@ COPY ./cmd ./cmd
 COPY ./downloader ./downloader
 COPY ./httpclient ./httpclient
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o /osynetelegramvideodownloader
+RUN CGO_ENABLED=0 GOOS=linux go build -o osynetelegramvideodownloader ./cmd
 
-CMD ["/osynetelegramvideodownloader"]
+CMD ["./osynetelegramvideodownloader"]
