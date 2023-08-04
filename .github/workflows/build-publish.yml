@@ -19,10 +19,6 @@ jobs:
       packages: write
 
     steps:
-      - name: What is the actor?
-        run: |
-          echo ${{ github.actor }}
-          echo ${{ env.ghcr_user }}
       - name: Checkout repository
         uses: actions/checkout@v3
 
