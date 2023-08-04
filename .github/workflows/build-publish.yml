@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  ghcr_user: ${{ github.actor }}
+  ghcr_user: ${{ github.triggering_actor }}
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
