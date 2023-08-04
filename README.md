@@ -37,7 +37,7 @@ go get github.com/go-telegram-bot-api/telegram-bot-api/v5
 
 1. Set the required environment variables:
 
-    - `TELEGRAM_APITOKEN`: Your Telegram Bot API token.
+    - `BOT_TOKEN`: Your Telegram Bot API token.
     - `INSTAGRAM_COOKIES_FILE`: Path to the file containing Instagram cookies (optional, only if you want to download videos from Instagram).
       - How to get a file? Login to instagram -> download cookies file with [Export Cookies](https://github.com/rotemdan/ExportCookies) browser extention -> paste it to the project folder
     - `ADMIN_ID`: ID of the bot admin (the bot will send a "Hello, boss" message to this ID when it starts).

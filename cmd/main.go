@@ -3,24 +3,16 @@ package main
 import (
 	"log"
 	"os"
-    "net/http"
 	"strconv"
 	"strings"
 
-    "ar2rworld/golang-telegram-video-downloader/downloader"
-    "ar2rworld/golang-telegram-video-downloader/httpclient"
+	"ar2rworld/golang-telegram-video-downloader/downloader"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func main() {
-    client := &http.Client{}
-    instagramAuthClient, err := httpclient.NewHttpClient(os.Getenv("INSTAGRAM_COOKIES_FILE"))
-    if err != nil {
-        panic(err)
-    }
-
-    bot, err := tgbotapi.NewBotAPI(os.Getenv("TELEGRAM_APITOKEN"))
+    bot, err := tgbotapi.NewBotAPI(os.Getenv("BOT_TOKEN"))
     if err != nil {
         panic(err)
     }
@@ -51,12 +43,7 @@ func main() {
         strings.Contains(update.Message.Text, "twitter.com") ||
         strings.Contains(update.Message.Text, "instagram.com") {
             log.Println("*** Got request to download video")
-            var err error
-            if strings.Contains(update.Message.Text, "instagram.com") {
-                err = downloader.DownloadVideo(update.Message.Text, instagramAuthClient)
-            } else {
-                err = downloader.DownloadVideo(update.Message.Text, client)
-            }
+            err := downloader.DownloadVideo(update.Message.Text)
             if err != nil {
                 log.Println(err)
                 log.Println(update.Message)
