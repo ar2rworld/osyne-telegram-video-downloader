@@ -59,4 +59,12 @@ go build
 
 This project is licensed under the [MIT License](LICENSE).
 
+## TODO:
+- CICD
+  - push to the docker hub
+- Feature: Delete text of the requesting user and leave only video
+- Youtube:
+  - limit with 1 minute
+  - Video part specified
+
 *Thanks to ChatGPT3.5*
