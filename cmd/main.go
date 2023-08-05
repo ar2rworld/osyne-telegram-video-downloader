@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"ar2rworld/golang-telegram-video-downloader/downloader"
+    "ar2rworld/golang-telegram-video-downloader/cleaner"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -39,11 +40,17 @@ func main() {
             continue
         }
 
-        if strings.Contains(update.Message.Text, "tiktok.com") ||
-        strings.Contains(update.Message.Text, "twitter.com") ||
-        strings.Contains(update.Message.Text, "instagram.com") {
+        messageText := update.Message.Text
+
+        if strings.Contains(messageText, "tiktok.com") ||
+        strings.Contains(messageText, "twitter.com") ||
+        strings.Contains(messageText, "instagram.com") ||
+        strings.Contains(messageText, "youtube.com/shorts") {
             log.Println("*** Got request to download video")
-            err := downloader.DownloadVideo(update.Message.Text)
+
+            messageText = cleaner.CleanUrl(messageText)
+
+            err := downloader.DownloadVideo(messageText)
             if err != nil {
                 log.Println(err)
                 log.Println(update.Message)

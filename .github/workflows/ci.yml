@@ -1,0 +1,22 @@
+name: ci
+
+on:
+  push:
+    branches: ['master']
+
+run-name: ${{ github.actor }} pushed something to master
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version: '1.19' # The Go version to download (if necessary) and use.
+      - name: Install dependencies
+        run: go get .
+      - name: Build
+        run: go build .
+      - name: Test
+        run: go test ./tests
