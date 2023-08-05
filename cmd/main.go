@@ -67,6 +67,9 @@ func main() {
                 bot.Send(tgbotapi.NewMessage(videoMessage.ChatID, "Had problems sending video"))
         	}
             log.Println("*** Finished sending video")
+        } else if messageText == "osyndasyn ba?" {
+            message := tgbotapi.NewMessage(update.Message.Chat.ID, "osyndaymyn")
+            bot.Send(message)
         }
     }    
 }
