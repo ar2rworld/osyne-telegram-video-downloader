@@ -8,8 +8,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY ./cmd ./cmd
-COPY ./downloader ./downloader
-COPY ./httpclient ./httpclient
+COPY ./internal ./internal
 
 # Install yt-dlp
 RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp

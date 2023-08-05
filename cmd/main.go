@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"ar2rworld/golang-telegram-video-downloader/downloader"
-    "ar2rworld/golang-telegram-video-downloader/cleaner"
+	"ar2rworld/golang-telegram-video-downloader/internal/downloader"
+    "ar2rworld/golang-telegram-video-downloader/internal/cleaner"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
