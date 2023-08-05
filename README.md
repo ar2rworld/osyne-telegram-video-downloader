@@ -6,7 +6,7 @@
 
 - Download videos from TikTok, Twitter, and Instagram
 - Sends downloaded videos back to users as a reply
-- Provides support for downloading videos from Instagram with authentication (using cookies)
+- Provides support for downloading videos from Instagram with authentication (using cookies(depricated))
 
 ## Getting Started
 
@@ -38,10 +38,7 @@ go get github.com/go-telegram-bot-api/telegram-bot-api/v5
 1. Set the required environment variables:
 
     - `BOT_TOKEN`: Your Telegram Bot API token.
-    - `INSTAGRAM_COOKIES_FILE`: Path to the file containing Instagram cookies (optional, only if you want to download videos from Instagram).
-      - How to get a file? Login to instagram -> download cookies file with [Export Cookies](https://github.com/rotemdan/ExportCookies) browser extention -> paste it to the project folder
     - `ADMIN_ID`: ID of the bot admin (the bot will send a "Hello, boss" message to this ID when it starts).
-    - `YT_DLP_PATH` is a configuration variable that points to the location of YouTube-DL-Python (YT-DLP), a powerful tool for downloading videos from various websites. Set the YT_DLP_PATH environment variable to specify the path to the YT-DLP binary and enable the Telegram Video Downloader Bot to use YT-DLP for video downloads from supported sources like TikTok, Twitter, and Instagram with authentication.
 
 2. Build and run the bot:
 

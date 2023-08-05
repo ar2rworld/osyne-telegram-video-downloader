@@ -9,7 +9,7 @@ import (
 )
 
 func DownloadVideo (url string) error {
-	goutubedl.Path = os.Getenv("YT_DLP_PATH")
+	goutubedl.Path = "yt-dlp"
 
 	result, err := goutubedl.New(context.Background(), url, goutubedl.Options{})
 	if err != nil {

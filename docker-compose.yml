@@ -6,4 +6,3 @@ services:
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
       - ADMIN_ID=${ADMIN_ID}
-      - YT_DLP_PATH=${YT_DLP_PATH}
