@@ -6,8 +6,6 @@ on:
     - releases/**
 
 env:
-  REGISTRY: ghcr.io
-  ghcr_user: ${{ github.actor }}
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
@@ -30,7 +28,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.IMAGE_NAME }}
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
