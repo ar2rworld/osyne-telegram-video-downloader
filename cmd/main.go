@@ -20,7 +20,7 @@ func main() {
         panic(err)
     }
 
-    bot, err := tgbotapi.NewBotAPI(os.Getenv("TELEGRAM_APITOKEN"))
+    bot, err := tgbotapi.NewBotAPI(os.Getenv("BOT_TOKEN"))
     if err != nil {
         panic(err)
     }
