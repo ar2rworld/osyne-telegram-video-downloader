@@ -16,6 +16,6 @@ RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o 
 RUN chmod a+rx /usr/local/bin/yt-dlp  # Make executable
 RUN yt-dlp --version
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o /osynetelegramvideodownloader ./cmd
+RUN CGO_ENABLED=0 GOOS=linux go build -o ./osynetelegramvideodownloader ./cmd
 
-CMD ["/osynetelegramvideodownloader"]
+CMD ["./osynetelegramvideodownloader"]
