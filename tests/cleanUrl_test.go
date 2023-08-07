@@ -1,8 +1,9 @@
 package tests
 
 import (
-	"ar2rworld/golang-telegram-video-downloader/cleaner"
 	"testing"
+	
+	"ar2rworld/golang-telegram-video-downloader/internal/cleaner"
 )
 
 func TestClearUrl(t *testing.T) {
