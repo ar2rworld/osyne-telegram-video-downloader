@@ -37,7 +37,7 @@ go mod download
 
 5. Run application
 ```
-go run ./cmd
+go run ./app
 ```
 
 ### OR
@@ -66,8 +66,8 @@ docker-compose --env-file .env up -d
 2. Build and run the bot:
 
 ```
-go build
-./telegram-video-downloader-bot
+go build -o ./osynetelegramvideodownloader ./app
+./osynetelegramvideodownloader
 ```
 
 3. Interact with the bot:

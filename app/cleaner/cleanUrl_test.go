@@ -1,10 +1,6 @@
-package tests
+package cleaner
 
-import (
-	"testing"
-	
-	"ar2rworld/golang-telegram-video-downloader/internal/cleaner"
-)
+import "testing"
 
 func TestClearUrl(t *testing.T) {
 	type urlCase struct {
@@ -47,7 +43,7 @@ func TestClearUrl(t *testing.T) {
 	}
 	for _, c := range(cases) {
 		t.Run(c.gotMessage, func(t *testing.T) {
-			cleaned := cleaner.CleanUrl(c.gotMessage)
+			cleaned := CleanUrl(c.gotMessage)
 			if cleaned != c.wantUrl {
 				t.Errorf("Failed to clean url:%s\n!=\n%s", c.wantUrl, cleaned)
 			}
