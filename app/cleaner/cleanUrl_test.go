@@ -40,6 +40,10 @@ func TestClearUrl(t *testing.T) {
 			gotMessage: "https://twitter.com/how-to-change-political-regime-in-your-country\nAn interesting point u got",
 			wantUrl: "https://twitter.com/how-to-change-political-regime-in-your-country",
 		},
+		{
+			gotMessage: "https://vm.tiktok.com/somevideoid/\n@a или мальчики из америки, что такое \"show reading\"?",
+			wantUrl: "https://vm.tiktok.com/somevideoid/",
+		},
 	}
 	for _, c := range(cases) {
 		t.Run(c.gotMessage, func(t *testing.T) {

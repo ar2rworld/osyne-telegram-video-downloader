@@ -57,13 +57,14 @@ func main() {
             if isInstagramRequest && os.Getenv("INSTAGRAM_COOKIES_FILE") != "" {
                 instagramAuthClient, err := httpclient.NewHttpClient(os.Getenv("INSTAGRAM_COOKIES_FILE"))
                 if err != nil {
-                    panic(err)
+                    log.Println(err)
+                    continue
                 }
-                downloadError = downloader.DownloadVideo(update.Message.Text, instagramAuthClient)
+                downloadError = downloader.DownloadVideo(messageText, instagramAuthClient)
             } else if isInstagramRequest {
                 downloadError = errors.New("I see that you are trying to share from instagram, but I don't have env var defined")
             } else {
-                downloadError = downloader.DownloadVideo(update.Message.Text, &http.Client{})
+                downloadError = downloader.DownloadVideo(messageText, &http.Client{})
             }
             if downloadError != nil {
                 log.Println(downloadError)
