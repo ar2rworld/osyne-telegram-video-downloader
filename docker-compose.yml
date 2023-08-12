@@ -8,4 +8,4 @@ services:
       - ADMIN_ID=${ADMIN_ID}
       - INSTAGRAM_COOKIES_FILE=${INSTAGRAM_COOKIES_FILE}
     volumes:
-      - ${ARTIFACTS_PATH}:/app
+      - ${ARTIFACTS_PATH}:/app/artifacts

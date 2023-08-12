@@ -4,6 +4,8 @@ FROM golang:1.19
 
 WORKDIR /app
 
+RUN mkdir artifacts
+
 COPY go.mod go.sum ./
 RUN go mod download
 
