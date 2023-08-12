@@ -21,8 +21,8 @@
 1. Clone this repository to your local machine:
 
 ```
-git clone https://github.com/ar2rworld/telegram-video-downloader-bot.git
-cd telegram-video-downloader-bot
+git clone https://github.com/ar2rworld/osyne-telegram-video-downloader.git
+cd osyne-telegram-video-downloader
 ```
 
 2. Install the required dependencies:
@@ -46,7 +46,8 @@ Use docker-compose from [docker hub](https://hub.docker.com/r/ar2rworld/osyne-te
 
 1. Clone repo
 ```
-git clone https://github.com/ar2rworld/telegram-video-downloader-bot.git
+git clone https://github.com/ar2rworld/osyne-telegram-video-downloader.git
+cd osyne-telegram-video-downloader
 ```
 
 2. Rename `template.env` to  `.env` file and add tokens
