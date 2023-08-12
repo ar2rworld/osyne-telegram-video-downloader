@@ -6,7 +6,7 @@
 
 - Download videos from TikTok, Twitter, Youtube shorts, and Instagram
 - Sends downloaded videos back to users as a reply
-- Provides support for downloading videos from Instagram with authentication (using cookies(depricated))
+- Provides support for downloading videos from Instagram with authentication (using cookies)
 
 ## Getting Started
 
@@ -14,7 +14,7 @@
 
 1. Go programming language installed on your system.
 2. A Telegram Bot API token. You can obtain it by creating a new bot on Telegram via the BotFather.
-3. A file containing Instagram **Netscape formatted** cookies (required if you want to download videos from Instagram). Learn how to obtain these cookies in the section below. (not implemented)
+3. A file containing Instagram **Netscape formatted** cookies (required if you want to download videos from Instagram).
 
 ### Installation
 
@@ -33,7 +33,7 @@ go mod download
 
 3. Complete installation process for [yt-dlp](https://github.com/yt-dlp/yt-dlp)
 
-4. Add enviroment variables for ADMIN_ID and BOT_TOKEN
+4. Add environment variables for ADMIN_ID, BOT_TOKEN, and INSTAGRAM_COOKIES_FILE
 
 5. Run application
 ```
@@ -42,14 +42,14 @@ go run ./app
 
 ### OR
 
-Use the image from [docker hub](https://hub.docker.com/r/ar2rworld/osyne-telegram-video-downloader)
+Use docker-compose from [docker hub](https://hub.docker.com/r/ar2rworld/osyne-telegram-video-downloader)
 
 1. Clone repo
 ```
 git clone https://github.com/ar2rworld/telegram-video-downloader-bot.git
 ```
 
-2. Add `.env` file
+2. Rename `template.env` to  `.env` file and add tokens
 
 3. Run container
 ```
@@ -62,6 +62,8 @@ docker-compose --env-file .env up -d
 
     - `BOT_TOKEN`: Your Telegram Bot API token.
     - `ADMIN_ID`: ID of the bot admin (the bot will send a "Hello, boss" message to this ID when it starts).
+    - `INSTAGRAM_COOKIES_FILE`: Instagram session cookies file
+    - `ARTIFACTS_PATH`: Instagram cookie file path on the server to pass it to the container through the volume
 
 2. Build and run the bot:
 
@@ -74,7 +76,7 @@ go build -o ./osynetelegramvideodownloader ./app
 
     - Send a video URL from TikTok, Twitter, Youtube shorts or Instagram to the bot.
     - The bot will download the video and send it back as a reply.
-    - Send `osyndasyn ba?` to chat and bot responds with `osyndaymyn` (In kazakh "Are you here?" and "I am here" - responce)
+    - Send `osyndaisyn ba?` to chat and bot responds with `osyndaymyn` (In kazakh "Are you here?" and "I am here" - responce)
 
 ## License
 
@@ -95,5 +97,6 @@ This project is licensed under the [MIT License](LICENSE).
   - read a file everytime instagram.com requested
 - Add https://golangci-lint.run/, locally could be run with https://pre-commit.com/, or with editor extention
   - https://gist.github.com/pantafive/3296201ef3dc14a71139cae157aa8c34
+- Improve the functionality with Steam (downloaded steam -> telegram new video steam)
 
 *Thanks to ChatGPT3.5*

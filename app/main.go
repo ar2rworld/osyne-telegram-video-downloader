@@ -1,13 +1,16 @@
 package main
 
 import (
+	"errors"
 	"log"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
 
+	"ar2rworld/golang-telegram-video-downloader/app/cleaner"
 	"ar2rworld/golang-telegram-video-downloader/app/downloader"
-    "ar2rworld/golang-telegram-video-downloader/app/cleaner"
+	"ar2rworld/golang-telegram-video-downloader/app/httpclient"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -36,23 +39,34 @@ func main() {
 
     for update := range updates {
         if update.Message == nil {
-            log.Println(update.Message)
             continue
         }
 
         messageText := update.Message.Text
 
+        isInstagramRequest := strings.Contains(messageText, "instagram.com")
+
         if strings.Contains(messageText, "tiktok.com") ||
         strings.Contains(messageText, "twitter.com") ||
-        strings.Contains(messageText, "instagram.com") ||
+        isInstagramRequest ||
         strings.Contains(messageText, "youtube.com/shorts") {
             log.Println("*** Got request to download video")
-
+            var downloadError error
             messageText = cleaner.CleanUrl(messageText)
 
-            err := downloader.DownloadVideo(messageText)
-            if err != nil {
-                log.Println(err)
+            if isInstagramRequest && os.Getenv("INSTAGRAM_COOKIES_FILE") != "" {
+                instagramAuthClient, err := httpclient.NewHttpClient(os.Getenv("INSTAGRAM_COOKIES_FILE"))
+                if err != nil {
+                    panic(err)
+                }
+                downloadError = downloader.DownloadVideo(update.Message.Text, instagramAuthClient)
+            } else if isInstagramRequest {
+                downloadError = errors.New("I see that you are trying to share from instagram, but I don't have env var defined")
+            } else {
+                downloadError = downloader.DownloadVideo(update.Message.Text, &http.Client{})
+            }
+            if downloadError != nil {
+                log.Println(downloadError)
                 log.Println(update.Message)
                 continue
             }
@@ -64,10 +78,9 @@ func main() {
         	log.Println("*** Started sending video")
             if _, err := bot.Send(videoMessage); err != nil {
           	    log.Println(err)
-                bot.Send(tgbotapi.NewMessage(videoMessage.ChatID, "Had problems sending video"))
         	}
             log.Println("*** Finished sending video")
-        } else if messageText == "osyndasyn ba?" {
+        } else if messageText == "osyndaisyn ba?" {
             message := tgbotapi.NewMessage(update.Message.Chat.ID, "osyndaymyn")
             bot.Send(message)
         }

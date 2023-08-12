@@ -2,7 +2,6 @@ package httpclient
 
 import (
 	"bufio"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -21,7 +20,6 @@ func NewHttpClient(cookieFileName string) (*http.Client, error) {
 	cookies := []*http.Cookie{}
 	for scanner.Scan() {
 		line := scanner.Text()
-		log.Println(line)
 		arguments := strings.Split(line, "\t")
 
 		// 7 values in the line
