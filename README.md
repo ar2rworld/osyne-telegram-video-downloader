@@ -90,5 +90,10 @@ This project is licensed under the [MIT License](LICENSE).
   - limit with 1 minute
   - Video part specified
     - (Implemented with shorts)
+- Instagram will require cookie settings
+  - adding volume to the local folder with cookies.txt file
+  - read a file everytime instagram.com requested
+- Add https://golangci-lint.run/, locally could be run with https://pre-commit.com/, or with editor extention
+  - https://gist.github.com/pantafive/3296201ef3dc14a71139cae157aa8c34
 
 *Thanks to ChatGPT3.5*
