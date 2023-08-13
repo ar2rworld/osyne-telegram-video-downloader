@@ -4,6 +4,9 @@ on:
   push:
     branches: ['master']
 
+env:
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   build:
     runs-on: ubuntu-22.04
