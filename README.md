@@ -99,5 +99,8 @@ This project is licensed under the [MIT License](LICENSE).
 - Add https://golangci-lint.run/, locally could be run with https://pre-commit.com/, or with editor extention
   - https://gist.github.com/pantafive/3296201ef3dc14a71139cae157aa8c34
 - Improve the functionality with Steam (downloaded steam -> telegram new video steam)
+- Grafana
+  - vector dev log collector
+  
 
 *Thanks to ChatGPT3.5*

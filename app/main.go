@@ -55,7 +55,7 @@ func main() {
             messageText = cleaner.CleanUrl(messageText)
 
             if isInstagramRequest && os.Getenv("INSTAGRAM_COOKIES_FILE") != "" {
-                instagramAuthClient, err := httpclient.NewHttpClient(os.Getenv("INSTAGRAM_COOKIES_FILE"))
+                instagramAuthClient, err := httpclient.NewHttpClientFromFile(os.Getenv("INSTAGRAM_COOKIES_FILE"))
                 if err != nil {
                     log.Println(err)
                     continue

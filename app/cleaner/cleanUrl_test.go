@@ -44,6 +44,10 @@ func TestClearUrl(t *testing.T) {
 			gotMessage: "https://vm.tiktok.com/somevideoid/\n@a или мальчики из америки, что такое \"show reading\"?",
 			wantUrl: "https://vm.tiktok.com/somevideoid/",
 		},
+		{
+			gotMessage: "Dua Lipa's emoji — https://www.youtube.com/shorts/zrws7lzoQJQ",
+			wantUrl: "https://www.youtube.com/shorts/zrws7lzoQJQ",
+		},
 	}
 	for _, c := range(cases) {
 		t.Run(c.gotMessage, func(t *testing.T) {
