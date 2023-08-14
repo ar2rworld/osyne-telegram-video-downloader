@@ -54,8 +54,8 @@ func main() {
             var downloadError error
             messageText = cleaner.CleanUrl(messageText)
 
-            if isInstagramRequest && os.Getenv("INSTAGRAM_COOKIES_FILE") != "" {
-                instagramAuthClient, err := httpclient.NewHttpClientFromFile(os.Getenv("INSTAGRAM_COOKIES_FILE"))
+            if isInstagramRequest && os.Getenv("INSTAGRAM_COOKIES_STRING") != "" {
+                instagramAuthClient, err := httpclient.NewHttpClientFromString(os.Getenv("INSTAGRAM_COOKIES_STRING"))
                 if err != nil {
                     log.Println(err)
                     continue

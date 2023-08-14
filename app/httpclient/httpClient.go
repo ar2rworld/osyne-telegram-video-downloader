@@ -32,10 +32,9 @@ func NewHttpClientFromFile(cookieFileName string) (*http.Client, error) {
 	client := NewClient(cookies)
 	return client, nil
 }
-func NewHttpClientFronEnv() (*http.Client, error) {
+func NewHttpClientFromString(cookiesString string) (*http.Client, error) {
 	var client *http.Client
 	var cookies []*http.Cookie
-	cookiesString := os.Getenv("INSTAGRAM_COOKIES_STRING")
 	if cookiesString == "" {
 		return client, errors.New("Missing INSTAGRAM_COOKIES_STRING in the invoronment")
 	}
