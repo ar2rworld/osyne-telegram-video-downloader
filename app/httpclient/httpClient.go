@@ -52,5 +52,3 @@ func (jar *MyCookieJar) SetCookies(u *url.URL, cookies []*http.Cookie) {
 func (jar *MyCookieJar) Cookies(u *url.URL) []*http.Cookie {
 	return jar.cookies
 }
-
-

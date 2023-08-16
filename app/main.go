@@ -73,7 +73,7 @@ func main() {
             }
             log.Println("*** Downloaded video without errors")
             videoMessage := tgbotapi.NewVideo(update.Message.Chat.ID, tgbotapi.FilePath("./output"))
-        	
+
             videoMessage.ReplyToMessageID = update.Message.MessageID
 
         	log.Println("*** Started sending video")
@@ -85,5 +85,5 @@ func main() {
             message := tgbotapi.NewMessage(update.Message.Chat.ID, "osyndaymyn")
             bot.Send(message)
         }
-    }    
+    }
 }

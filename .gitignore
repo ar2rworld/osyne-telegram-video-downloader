@@ -3,3 +3,4 @@
 .env
 output
 *bin
+vscode.env
