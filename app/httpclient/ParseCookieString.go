@@ -20,13 +20,13 @@ func ParseCookieString(s string, cookies []*http.Cookie) []*http.Cookie {
 		cookies = append(
 			cookies,
 			&http.Cookie{
-				Domain: arguments[0],
+				Domain:   arguments[0],
 				HttpOnly: arguments[1] == "TRUE",
-				Path: arguments[2],
-				Secure: arguments[3] == "TRUE",
-				Expires: timeArg,
-				Name: arguments[5],
-				Value: arguments[6],
+				Path:     arguments[2],
+				Secure:   arguments[3] == "TRUE",
+				Expires:  timeArg,
+				Name:     arguments[5],
+				Value:    arguments[6],
 			},
 		)
 	}

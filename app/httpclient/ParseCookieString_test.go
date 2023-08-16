@@ -12,13 +12,13 @@ func TestParseCookieString(t *testing.T) {
 		cookieString := ".domain.com	TRUE	/path	TRUE	1725656330	name	value"
 		parsedCookies := ParseCookieString(cookieString, cookies)
 		targetCookie := &http.Cookie{
-			Domain: ".domain.com",
+			Domain:   ".domain.com",
 			HttpOnly: true,
-			Path: "/path",
-			Secure: true,
-			Expires: time.Unix(1725656330, 0),
-			Name: "name",
-			Value: "value",
+			Path:     "/path",
+			Secure:   true,
+			Expires:  time.Unix(1725656330, 0),
+			Name:     "name",
+			Value:    "value",
 		}
 		parsedCookie := parsedCookies[0]
 		if parsedCookie.Domain != targetCookie.Domain &&

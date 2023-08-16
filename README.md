@@ -99,9 +99,12 @@ This project is licensed under the [MIT License](LICENSE).
   - setting up cookies from env var (Done)
 - Add https://golangci-lint.run/, locally could be run with https://pre-commit.com/, or with editor extention
   - https://gist.github.com/pantafive/3296201ef3dc14a71139cae157aa8c34
+  - Also add to cicd
 - Improve the functionality with Steam (downloaded steam -> telegram new video steam)
 - Grafana
   - vector dev log collector
+- Update the cleanUrl to add regexp finding the link
+  - in the range : if the message has two links and the first one is not to tiktok
 
 
 *Thanks to ChatGPT3.5*
