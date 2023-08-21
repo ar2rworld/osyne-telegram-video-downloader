@@ -7,11 +7,13 @@ import (
 	"time"
 )
 
+const NumberOfArguments = 7
+
 func ParseCookieString(s string, cookies []*http.Cookie) []*http.Cookie {
 	arguments := strings.Split(s, "\t")
 
 	// 7 values in the netscape formatted line
-	if len(arguments) == 7 {
+	if len(arguments) == NumberOfArguments {
 		timestamp, err := strconv.ParseInt(arguments[4], 10, 64)
 		if err != nil {
 			panic(err)
