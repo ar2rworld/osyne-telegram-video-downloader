@@ -60,6 +60,7 @@ linters:
   enable-all: true
   disable:
   - deadcode              # [deprecated]: Finds unused code [fast: false, auto-fix: false]
+  - depguard            # : Go linter that checks if package imports are in a list of acceptable packages
   - exhaustivestruct      # [deprecated]: Checks if all struct's fields are initialized [fast: false, auto-fix: false]
   - exhaustruct           # : Checks if all structure fields are initialized [fast: false, auto-fix: false]
   - forbidigo             # : Forbids identifiers [fast: true, auto-fix: false]
@@ -128,13 +129,13 @@ linters-settings:
     min-complexity: 10
 
   goimports:
-    local-prefixes: github.com/user/project
+    local-prefixes: github.com/ar2rworld/golang-telegram-video-downloader
 
   gci:
     sections:
     - standard                          # Standard section: captures all standard packages.
     - default                           # Default section: contains all imports that could not be matched to another section type.
-    - prefix(github.com/user/project)  # Custom section: groups all imports with the specified Prefix.
+    - prefix(github.com/ar2rworld/golang-telegram-video-downloader)  # Custom section: groups all imports with the specified Prefix.
     - blank                             # Blank section: contains all blank imports. This section is not present unless explicitly enabled.
     - dot                               # Dot section: contains all dot imports. This section is not present unless explicitly enabled.
     skip-generated: true
