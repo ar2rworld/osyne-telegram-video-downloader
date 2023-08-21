@@ -25,6 +25,9 @@ func DownloadVideo(url string, client *http.Client) error {
 		return err
 	}
 	defer f.Close()
-	io.Copy(f, downloadResult)
+	_, copyErr := io.Copy(f, downloadResult)
+	if copyErr != nil {
+		return copyErr
+	}
 	return nil
 }
