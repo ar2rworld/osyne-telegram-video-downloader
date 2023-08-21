@@ -41,13 +41,13 @@ func main() {
 	sentMessage, err := bot.Send(helloMessage)
 	myerrors.CheckTextMessage(&helloMessage, err, &sentMessage)
 
-	file := "../Paradise-Coldplay.webm"
-	videoMessage := tgbotapi.NewVideo(adminID, tgbotapi.FilePath(file))
+	// file := "./outputFullBestFilter2.mp4"
+	// videoMessage := tgbotapi.NewVideo(adminID, tgbotapi.FilePath(file))
 
-	log.Println("*** Started sending video")
-	if _, err := bot.Send(videoMessage); err != nil {
-		log.Println(err)
-	}
+	// log.Println("*** Started sending video")
+	// if _, err := bot.Send(videoMessage); err != nil {
+	// 	log.Println(err)
+	// }
 
 	for update := range updates {
 		if update.Message == nil {
