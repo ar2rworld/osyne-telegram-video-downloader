@@ -1,4 +1,4 @@
-module ar2rworld/golang-telegram-video-downloader
+module github.com/ar2rworld/golang-telegram-video-downloader
 
 go 1.20
 
