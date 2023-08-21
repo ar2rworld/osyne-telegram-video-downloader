@@ -79,6 +79,10 @@ go build -o ./osynetelegramvideodownloader ./app
     - The bot will download the video and send it back as a reply.
     - Send `osyndaisyn ba?` to chat and bot responds with `osyndaymyn` (In kazakh "Are you here?" and "I am here" - responce)
 
+### Run linters
+1. Install [pre-commit](https://pre-commit.com/#install)
+
+2. Run `pre-commit run -a`
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
@@ -99,7 +103,7 @@ This project is licensed under the [MIT License](LICENSE).
   - setting up cookies from env var (Done)
 - Add https://golangci-lint.run/, locally could be run with https://pre-commit.com/, or with editor extention
   - https://gist.github.com/pantafive/3296201ef3dc14a71139cae157aa8c34
-  - Also add to cicd
+  - Also add to cicd (Done)
 - Improve the functionality with Steam (downloaded steam -> telegram new video steam)
 - Grafana
   - vector dev log collector
