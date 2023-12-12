@@ -8,7 +8,6 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/handler"
-	"github.com/ar2rworld/golang-telegram-video-downloader/app/httpclient"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
 )
@@ -31,11 +30,6 @@ func main() {
 	updateConfig.Timeout = 30
 	updates := bot.GetUpdatesChan(updateConfig)
 
-	instagramAuthClient, err := httpclient.NewHTTPClientFromString(os.Getenv("INSTAGRAM_COOKIES_STRING"))
-	if err != nil {
-		log.Println(err)
-	}
-
 	// hello message to admin
 	helloMessage := tgbotapi.NewMessage(adminID, "Hello, boss")
 	sentMessage, err := bot.Send(helloMessage)
@@ -51,7 +45,7 @@ func main() {
 		url := match.Match(messageText)
 
 		if url != "" {
-			err := handler.VideoMessage(update, url, instagramAuthClient, bot)
+			err := handler.VideoMessage(update, url, bot)
 			if err != nil {
 				log.Println(err)
 			}

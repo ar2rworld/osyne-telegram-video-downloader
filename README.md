@@ -63,8 +63,8 @@ docker-compose --env-file .env up -d
 
     - `BOT_TOKEN`: Your Telegram Bot API token.
     - `ADMIN_ID`: ID of the bot admin (the bot will send a "Hello, boss" message to this ID when it starts).
-    - `INSTAGRAM_COOKIES_FILE`: Instagram session cookies file
-    - `ARTIFACTS_PATH`: Instagram cookie file path on the server to pass it to the container through the volume
+    - `INSTAGRAM_COOKIES_FILE`: Instagram session cookies file(REMOVED)
+    - `ARTIFACTS_PATH`: Instagram cookie file path on the server to pass it to the container through the volume(REMOVED)
 
 2. Build and run the bot:
 

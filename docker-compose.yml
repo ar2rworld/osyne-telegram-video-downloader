@@ -6,7 +6,3 @@ services:
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
       - ADMIN_ID=${ADMIN_ID}
-      - INSTAGRAM_COOKIES_FILE=${INSTAGRAM_COOKIES_FILE}
-      - INSTAGRAM_COOKIES_STRING=${INSTAGRAM_COOKIES_STRING}
-    volumes:
-      - ${ARTIFACTS_PATH}:/app/artifacts
