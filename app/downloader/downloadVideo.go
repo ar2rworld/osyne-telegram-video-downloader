@@ -10,7 +10,7 @@ import (
 )
 
 func DownloadVideo(url string, client *http.Client) error {
-	goutubedl.Path = "yt-dlp_macos"
+	goutubedl.Path = "yt-dlp"
 	result, err := goutubedl.New(context.Background(), url, goutubedl.Options{HTTPClient: client})
 	if err != nil {
 		return err

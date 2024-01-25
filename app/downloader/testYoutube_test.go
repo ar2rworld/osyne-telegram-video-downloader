@@ -8,7 +8,7 @@ import (
 )
 
 func TestYoutube(t *testing.T) {
-	goutubedl.Path = "yt-dlp_macos"
+	goutubedl.Path = "yt-dlp"
 	// Attempt to download section of a video, but currently goutubedl does not support this
 	result, err := goutubedl.New(context.Background(), "https://www.youtube.com/watch?v=OyuL5biOQ94",
 		goutubedl.Options{
