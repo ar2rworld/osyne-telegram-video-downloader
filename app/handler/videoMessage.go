@@ -23,12 +23,14 @@ func VideoMessage(update tgbotapi.Update, url string, bot *tgbotapi.BotAPI) erro
 		log.Printf("*** Downloading video from Youtube %s\n", opts.DownloadSections)
 	}
 
-	err := downloader.DownloadVideo(url, opts)
+	// save video with unique names and put them to /tmp, delete after sending or if error
+
+	fileName, err := downloader.DownloadVideo(url, opts)
 	if err != nil {
 		return err
 	}
 	log.Println("*** Downloaded video without errors")
-	videoMessage := tgbotapi.NewVideo(update.Message.Chat.ID, tgbotapi.FilePath("./output.mp4"))
+	videoMessage := tgbotapi.NewVideo(update.Message.Chat.ID, tgbotapi.FilePath("./"+fileName))
 
 	videoMessage.ReplyToMessageID = update.Message.MessageID
 
