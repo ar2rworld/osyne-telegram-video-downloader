@@ -4,3 +4,7 @@
 output
 *bin
 vscode.env
+.DS_Store
+__debug_bin*
+app
+*.mp4
