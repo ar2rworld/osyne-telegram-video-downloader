@@ -3,15 +3,15 @@ package downloader
 import (
 	"context"
 	"io"
-	"net/http"
 	"os"
 
 	"github.com/wader/goutubedl"
 )
 
-func DownloadVideo(url string, client *http.Client) error {
+func DownloadVideo(url string, opts goutubedl.Options) error {
 	goutubedl.Path = "yt-dlp"
-	result, err := goutubedl.New(context.Background(), url, goutubedl.Options{HTTPClient: client})
+
+	result, err := goutubedl.New(context.Background(), url, opts)
 	if err != nil {
 		return err
 	}
