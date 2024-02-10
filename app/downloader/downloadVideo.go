@@ -2,12 +2,14 @@ package downloader
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"os"
-	"os/exec"
 
 	"github.com/wader/goutubedl"
 )
+
+const magicn = 5
 
 func DownloadVideo(url string, opts goutubedl.Options) (string, error) {
 	goutubedl.Path = "yt-dlp"
@@ -21,7 +23,15 @@ func DownloadVideo(url string, opts goutubedl.Options) (string, error) {
 		return "", err
 	}
 	defer downloadResult.Close()
-	f, err := os.Create("output")
+
+	id, err := GenerateUniqueString(magicn)
+	if err != nil {
+		return "", err
+	}
+
+	output := fmt.Sprintf("output-%s", id)
+
+	f, err := os.Create(output)
 	if err != nil {
 		return "", err
 	}
@@ -31,14 +41,5 @@ func DownloadVideo(url string, opts goutubedl.Options) (string, error) {
 		return "", err
 	}
 
-	outputFile := "output.mp4"
-
-	cmd := exec.Command("ffmpeg", "-y", "-i", "output", "-b:v", "800k", "-c:v", "libx264", "-c:a", "aac", "-b:a", "128k", outputFile)
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
-	if err := cmd.Run(); err != nil {
-		return "", err
-	}
-
-	return outputFile, nil
+	return output, nil
 }
