@@ -4,5 +4,7 @@ github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1 h1:wG8n/XJQ07TmjbITcGi
 github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1/go.mod h1:A2S0CWkNylc2phvKXWBBdD3K0iGnDBGbzRpISP2zBl8=
 github.com/wader/goutubedl v0.0.0-20230802161025-b2b2500ae978 h1:X9JNBxpVis4ODQEBfIIx2tDhO9xYJeN45oWkrLCcxtw=
 github.com/wader/goutubedl v0.0.0-20230802161025-b2b2500ae978/go.mod h1:5KXd5tImdbmz4JoVhePtbIokCwAfEhUVVx3WLHmjYuw=
+github.com/wader/goutubedl v0.0.0-20240207160746-8b34407df2f3 h1:yRjHvzMGygSRVKKPPWJgnzrV7WHvSKU8RBoEDE6zuCA=
+github.com/wader/goutubedl v0.0.0-20240207160746-8b34407df2f3/go.mod h1:5KXd5tImdbmz4JoVhePtbIokCwAfEhUVVx3WLHmjYuw=
 github.com/wader/osleaktest v0.0.0-20191111175233-f643b0fed071 h1:QkrG4Zr5OVFuC9aaMPmFI0ibfhBZlAgtzDYWfu7tqQk=
 github.com/wader/osleaktest v0.0.0-20191111175233-f643b0fed071/go.mod h1:XD6emOFPHVzb0+qQpiNOdPL2XZ0SRUM0N5JHuq6OmXo=

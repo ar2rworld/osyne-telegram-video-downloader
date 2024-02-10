@@ -4,5 +4,5 @@ go 1.21
 
 require (
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
-	github.com/wader/goutubedl v0.0.0-20230802161025-b2b2500ae978
+	github.com/wader/goutubedl v0.0.0-20240207160746-8b34407df2f3
 )
