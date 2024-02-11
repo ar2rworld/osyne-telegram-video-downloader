@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/wader/goutubedl"
@@ -15,6 +16,14 @@ import (
 const Duration = 10
 
 func VideoMessage(update tgbotapi.Update, url string, bot *tgbotapi.BotAPI) error {
+	remove := []string{}
+	defer func() {
+		for _, fn := range remove {
+			err := os.Remove(fn)
+			log.Println("*** Removed file: ", fn, "error:", err)
+		}
+	}()
+
 	log.Println("*** Got request to download video")
 
 	opts := goutubedl.Options{HTTPClient: &http.Client{}, DebugLog: log.Default()}
