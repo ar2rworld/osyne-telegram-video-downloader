@@ -27,20 +27,29 @@ func VideoMessage(update tgbotapi.Update, url string, bot *tgbotapi.BotAPI) erro
 	log.Println("*** Got request to download video")
 
 	opts := goutubedl.Options{HTTPClient: &http.Client{}, DebugLog: log.Default()}
-	if match.Youtube(url) != "" {
+	isYoutubeVideo := match.Youtube(url) != ""
+	if isYoutubeVideo {
 		opts.DownloadSections = fmt.Sprintf("*0:0-0:%d", Duration)
 		log.Printf("*** Downloading video from Youtube %s\n", opts.DownloadSections)
 	}
-
-	// save video with unique names and put them to /tmp, delete after sending or if error
 
 	fileName, err := downloader.DownloadVideo(url, opts)
 	if err != nil {
 		return err
 	}
+	remove = append(remove, fileName)
 	log.Println("*** Downloaded video without errors")
-	videoMessage := tgbotapi.NewVideo(update.Message.Chat.ID, tgbotapi.FilePath("./"+fileName))
 
+	if isYoutubeVideo {
+		fileName, err = downloader.Convert(fileName)
+		if err != nil {
+			return err
+		}
+		remove = append(remove, fileName)
+		log.Println("*** Converted video without errors")
+	}
+
+	videoMessage := tgbotapi.NewVideo(update.Message.Chat.ID, tgbotapi.FilePath(fileName))
 	videoMessage.ReplyToMessageID = update.Message.MessageID
 
 	log.Println("*** Started sending video")
@@ -48,6 +57,7 @@ func VideoMessage(update tgbotapi.Update, url string, bot *tgbotapi.BotAPI) erro
 	if err != nil {
 		return err
 	}
+
 	log.Println(m.Video.FileName, m.Video.MimeType, "duration:", m.Video.Duration, "size:", m.Video.FileSize)
 	log.Println("*** Finished sending video")
 	return nil
