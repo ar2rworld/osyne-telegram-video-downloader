@@ -17,7 +17,8 @@ RUN chmod a+rx /usr/local/bin/yt-dlp  # Make executable
 RUN yt-dlp --version
 
 # Install ffmpeg
-RUN apt install ffmpeg
+RUN apt update
+RUN apt install -y ffmpeg
 RUN ffmpeg -version
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o ./osynetelegramvideodownloader ./app
