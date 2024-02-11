@@ -12,7 +12,7 @@ func TestYoutube(t *testing.T) {
 	// Attempt to download section of a video, but currently goutubedl does not support this
 	result, err := goutubedl.New(context.Background(), "https://www.youtube.com/watch?v=OyuL5biOQ94",
 		goutubedl.Options{
-			// DownloadSections: "*0:0-0:10",
+			DownloadSections: "*0:0-0:10",
 		})
 	if err != nil {
 		t.Errorf("new goutubedl err:\n%s", err)
