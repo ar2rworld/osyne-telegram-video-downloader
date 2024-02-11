@@ -13,7 +13,7 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
 )
 
-const Duration = 10
+const Duration = 30
 
 func VideoMessage(update tgbotapi.Update, url string, bot *tgbotapi.BotAPI) error {
 	remove := []string{}
@@ -29,7 +29,12 @@ func VideoMessage(update tgbotapi.Update, url string, bot *tgbotapi.BotAPI) erro
 	opts := goutubedl.Options{HTTPClient: &http.Client{}, DebugLog: log.Default()}
 	isYoutubeVideo := match.Youtube(url) != ""
 	if isYoutubeVideo {
-		opts.DownloadSections = fmt.Sprintf("*0:0-0:%d", Duration)
+		sections, err := parse(update.Message.Text)
+		if err != nil {
+			log.Println("*** Parsed video sections")
+			sections = fmt.Sprintf("*0:0-0:%d", Duration)
+		}
+		opts.DownloadSections = sections
 		log.Printf("*** Downloading video from Youtube %s\n", opts.DownloadSections)
 	}
 
