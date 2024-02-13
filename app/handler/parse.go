@@ -22,6 +22,10 @@ func parse(s string) (string, error) {
 		fmt.Println("Error parsing flags:", err)
 		return DefaultSections, err
 	}
+	// if flag parsed without errors but sections wasnot provided
+	if sections == "" {
+		sections = DefaultSections
+	}
 
 	return sections, nil
 }

@@ -33,6 +33,12 @@ func Test_parse(t *testing.T) { //nolint: all
 			wantErr: true,
 		},
 		{
+			name:    "test3 only -s with single space",
+			args:    args{s: "-s "},
+			want:    "*0:0-0:30",
+			wantErr: false,
+		},
+		{
 			name:    "test4",
 			args:    args{s: `-s *1111:00-1111:30`},
 			want:    "*1111:00-1111:30",
