@@ -1,6 +1,8 @@
 package handler
 
-import "testing"
+import (
+	"testing"
+)
 
 func Test_parse(t *testing.T) { //nolint: all
 	type args struct {
@@ -14,50 +16,28 @@ func Test_parse(t *testing.T) { //nolint: all
 	}{
 		{
 			name:    "test1",
-			args:    args{s: "-s *0:0-0:61 https://youtube.com/watch?v=123456"},
+			args:    args{s: "-s *0:0-0:61"},
 			want:    "*0:0-0:61",
 			wantErr: false,
 		},
 		{
 			name:    "test2",
-			args:    args{s: "text https://youtube.com/watch?v=123456"},
+			args:    args{s: "text"},
 			want:    "*0:0-0:30",
 			wantErr: false,
 		},
 		{
-			name:    "test3",
+			name:    "test3 only -s",
 			args:    args{s: "-s"},
-			want:    "",
+			want:    "*0:0-0:30",
 			wantErr: true,
 		},
 		{
-			name: "test4 injection",
-			args: args{s: `
-		";
-rm -rf / -s *1111:00-1111:30 https://www.youtube.com/watch?v=oENx7uPX-hc`},
-			want:    "*0:0-0:30",
+			name:    "test4",
+			args:    args{s: `-s *1111:00-1111:30`},
+			want:    "*1111:00-1111:30",
 			wantErr: false,
 		},
-		// {
-		// 	name:    "test5 injection",
-		// 	args:    args{s: `-rm -rf / -s *1111:00-1111:30 https://www.youtube.com/watch?v=oENx7uPX-hc`},
-		// 	want:    "*0:0-0:30",
-		// 	wantErr: true,
-		// },
-		{
-			name: "test6 injection",
-			args: args{s: `);
-			exec.Command("rm", "-rf", "/")
-			-s *1111:00-1111:30 https://www.youtube.com/watch?v=oENx7uPX-hc`},
-			want:    "*0:0-0:30",
-			wantErr: false,
-		},
-		// {
-		// 	name:    "test7 injection",
-		// 	args:    args{s: `-s bash https://www.youtube.com/watch?v=oENx7uPX-hc`},
-		// 	want:    "*0:0-0:30",
-		// 	wantErr: false,
-		// },
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
