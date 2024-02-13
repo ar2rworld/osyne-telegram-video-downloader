@@ -1,6 +1,8 @@
 package match
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestMatch(t *testing.T) {
 	MatchingCases := []struct {
@@ -49,6 +51,70 @@ func TestMatchYoutube(t *testing.T) {
 			want := matchingCase.URL
 			if got != want {
 				tt.Errorf("Couldn't match: \"%s\" -> \"%s\" , got:\"%s\"", matchingCase.Text, want, got)
+			}
+		})
+	}
+}
+
+func TestDownloadSectionsArgument(t *testing.T) { //nolint: all
+	type args struct {
+		s string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "s and url",
+			args: args{s: "-s   *0:0-0:10   https://youtube.com/watch?v=dQw4w9WgXcQ&asjfse=1"},
+			want: "-s *0:0-0:10",
+		},
+		{
+			name: "s with spaces and url",
+			args: args{s: `-s   *0:0-0:10   https://youtube.com/watch?v=dQw4w9WgXcQ&asjfse=1`},
+			want: "-s *0:0-0:10",
+		},
+		{
+			name: "many digits",
+			args: args{s: `-s    *000:0000-0000:0001000  https://youtube.com/watch?v=dQw4w9WgXcQ&asjfse=1`},
+			want: "-s *000:0000-0000:0001000",
+		},
+		{
+			name: "onle s with single space",
+			args: args{s: `-s `},
+			want: "-s ",
+		},
+		{
+			name: "some digits",
+			args: args{s: `-s  *100:050-100:100 https://youtube.com/watch?v=dQw4w9WgXcQ&asjfse=1`},
+			want: "-s *100:050-100:100",
+		},
+		{
+			name: "missing space",
+			args: args{s: `-s*100:050-100:100 https://youtube.com/watch?v=dQw4w9WgXcQ&asjfse=1`},
+			want: "",
+		},
+		{
+			name: "some text and s",
+			args: args{s: `asfheuihfsi -re -erf eje -s *0:0-0:10 https://youtube.com/watch?v=dQw4w9WgXcQ&asjfse=1`},
+			want: "-s *0:0-0:10",
+		},
+		{
+			name: "url and s order",
+			args: args{s: `asfheuihfsi -re -erf eje https://youtube.com/watch?v=dQw4w9WgXcQ&asjfse=1 -s *0:0-0:10 asfieuheiufa`},
+			want: "-s *0:0-0:10",
+		},
+		{
+			name: "url and s with some bad input",
+			args: args{s: `asfheuihfsi -re -erf eje https://youtube.com/watch?v=dQw4w9WgXcQ&comment=rickroll -s *0:0-0:10 -rm -rf / fjsoe asfieuheiufa`},
+			want: "-s *0:0-0:10",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := DownloadSectionsArgument(tt.args.s); got != tt.want {
+				t.Errorf(`DownloadSectionsArgument() = "%v", want "%v"`, got, tt.want)
 			}
 		})
 	}
