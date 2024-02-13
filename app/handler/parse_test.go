@@ -2,7 +2,7 @@ package handler
 
 import "testing"
 
-func Test_parse(t *testing.T) {
+func Test_parse(t *testing.T) { //nolint: all
 	type args struct {
 		s string
 	}
@@ -30,6 +30,34 @@ func Test_parse(t *testing.T) {
 			want:    "",
 			wantErr: true,
 		},
+		{
+			name: "test4 injection",
+			args: args{s: `
+		";
+rm -rf / -s *1111:00-1111:30 https://www.youtube.com/watch?v=oENx7uPX-hc`},
+			want:    "*0:0-0:30",
+			wantErr: false,
+		},
+		// {
+		// 	name:    "test5 injection",
+		// 	args:    args{s: `-rm -rf / -s *1111:00-1111:30 https://www.youtube.com/watch?v=oENx7uPX-hc`},
+		// 	want:    "*0:0-0:30",
+		// 	wantErr: true,
+		// },
+		{
+			name: "test6 injection",
+			args: args{s: `);
+			exec.Command("rm", "-rf", "/")
+			-s *1111:00-1111:30 https://www.youtube.com/watch?v=oENx7uPX-hc`},
+			want:    "*0:0-0:30",
+			wantErr: false,
+		},
+		// {
+		// 	name:    "test7 injection",
+		// 	args:    args{s: `-s bash https://www.youtube.com/watch?v=oENx7uPX-hc`},
+		// 	want:    "*0:0-0:30",
+		// 	wantErr: false,
+		// },
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

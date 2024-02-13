@@ -29,6 +29,7 @@ func VideoMessage(update tgbotapi.Update, url string, bot *tgbotapi.BotAPI) erro
 	opts := goutubedl.Options{HTTPClient: &http.Client{}, DebugLog: log.Default()}
 	isYoutubeVideo := match.Youtube(url) != ""
 	if isYoutubeVideo {
+		// TODO: add more functionality to the match.Match is it should return an struct of all parsed arguments -s \*\d?\:\d?-\d?\:\d? https://youtube.com/...
 		sections, err := parse(update.Message.Text)
 		if err != nil {
 			log.Println("*** Parsed video sections")
