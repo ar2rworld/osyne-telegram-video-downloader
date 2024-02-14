@@ -109,6 +109,8 @@ This project is licensed under the [MIT License](LICENSE).
   - vector dev log collector
 - Update the cleanUrl to add regexp finding the link
   - in the range : if the message has two links and the first one is not to tiktok
+- Delete message after posting a video
+  - add who sent, link to video
 
 
 *Thanks to ChatGPT3.5*
