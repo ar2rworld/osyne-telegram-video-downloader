@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   myapp:
-    image: ar2rworld/osyne-telegram-video-downloader:master
+    image: ar2rworld/osyne-telegram-video-downloader:main
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
       - ADMIN_ID=${ADMIN_ID}
