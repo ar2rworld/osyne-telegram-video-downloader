@@ -41,7 +41,6 @@ func main() {
 
 	for update := range updates {
 		if update.Message == nil {
-			log.Println("reaction:", update.MessageReaction, update.MessageReactionCount)
 			continue
 		}
 
