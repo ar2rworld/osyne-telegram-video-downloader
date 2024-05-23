@@ -8,7 +8,7 @@ services:
       - ADMIN_ID=${ADMIN_ID}
       - COOKIES_PATH=${COOKIES_PATH}
     volumes:
-      - ./cookies:/app
+      - ./cookies:/app/cookies
     deploy:
       resources:
         limits:
