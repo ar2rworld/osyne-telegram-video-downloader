@@ -7,6 +7,7 @@ services:
       - BOT_TOKEN=${BOT_TOKEN}
       - ADMIN_ID=${ADMIN_ID}
       - COOKIES_PATH=${COOKIES_PATH}
+      - LOG_CHANNEL_ID=${LOG_CHANNEL_ID}
     volumes:
       - ./cookies:/app/cookies
     deploy:
