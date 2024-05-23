@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"os"
+	"os/exec"
 
 	"github.com/wader/goutubedl"
 )
@@ -34,4 +35,17 @@ func DownloadVideo(url string, opts goutubedl.Options) (string, error) {
 	}
 
 	return f.Name(), nil
+}
+
+func DownloadWithCookies(url, cookiesPath string) (string, error) {
+	fileName := "videoDownloadedWithCookies.mp4"
+	cmd := exec.Command("yt-dlp", "-o", fileName, "--cookies", cookiesPath, url)
+	cmd.Stderr = os.Stderr
+	cmd.Stdout = os.Stdout
+
+	if err := cmd.Run(); err != nil {
+		return "", err
+	}
+
+	return fileName, nil
 }
