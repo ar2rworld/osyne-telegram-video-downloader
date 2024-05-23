@@ -15,13 +15,15 @@ import (
 func main() {
 	bot, err := tgbotapi.NewBotAPI(os.Getenv("BOT_TOKEN"))
 	if err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 
 	adminID, err := strconv.ParseInt(os.Getenv("ADMIN_ID"), 10, 64)
 	if err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
+
+	cookiesPath := os.Getenv("COOKIES_PATH")
 
 	bot.Debug = false
 
@@ -45,7 +47,7 @@ func main() {
 		url := match.Match(messageText)
 
 		if url != "" {
-			err := handler.VideoMessage(update, url, bot)
+			err := handler.VideoMessage(update, url, cookiesPath, bot)
 			if err != nil {
 				log.Println(err)
 			}

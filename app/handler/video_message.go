@@ -12,7 +12,7 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
 )
 
-func VideoMessage(update tgbotapi.Update, url string, bot *tgbotapi.BotAPI) error {
+func VideoMessage(update tgbotapi.Update, url, cookiesPath string, bot *tgbotapi.BotAPI) error {
 	remove := []string{}
 	defer func() {
 		for _, fn := range remove {
@@ -36,10 +36,19 @@ func VideoMessage(update tgbotapi.Update, url string, bot *tgbotapi.BotAPI) erro
 		log.Printf("*** Downloading video from Youtube %s", opts.DownloadSections)
 	}
 
-	fileName, err := downloader.DownloadVideo(url, opts)
+	var fileName string
+	var err error
+
+	// if Instagram and cookiesPath is defined download with cookies
+	if match.Instagram(url) != "" && cookiesPath != "" {
+		fileName, err = downloader.DownloadWithCookies(url, cookiesPath)
+	} else {
+		fileName, err = downloader.DownloadVideo(url, opts)
+	}
 	if err != nil {
 		return err
 	}
+
 	remove = append(remove, fileName)
 	log.Println("*** Downloaded video without errors")
 
