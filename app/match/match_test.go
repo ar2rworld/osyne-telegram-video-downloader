@@ -119,3 +119,28 @@ func TestDownloadSectionsArgument(t *testing.T) { //nolint: all
 		})
 	}
 }
+
+func TestMatchInstagram(t *testing.T) {
+	MatchingCases := []struct {
+		Name string
+		Text string
+		URL  string
+	}{
+		{"Empty", "Some text", ""},
+		{"Don't match tiktok", "https://vm.tiktok.com/ZM2KGqk1v/", ""},
+		{"Don't match youtube", "https://youtube.com/shorts/G90KEDm_G28?feature=share", ""},
+		{"Instagram reel", "https://www.instagram.com/reel/C6zLk3Op7b7/", "https://www.instagram.com/reel/C6zLk3Op7b7/"},
+		{"Instagram reel no https", "www.instagram.com/reel/C6zLk3Op7b7/", "www.instagram.com/reel/C6zLk3Op7b7/"},
+		{"Instagram reel no https no www", "instagram.com/reel/C6zLk3Op7b7/", "instagram.com/reel/C6zLk3Op7b7/"},
+	}
+
+	for _, matchingCase := range MatchingCases {
+		t.Run(matchingCase.Name, func(tt *testing.T) {
+			got := Instagram(matchingCase.Text)
+			want := matchingCase.URL
+			if got != want {
+				tt.Errorf("Couldn't match: \"%s\" -> \"%s\" , got:\"%s\"", matchingCase.Text, want, got)
+			}
+		})
+	}
+}

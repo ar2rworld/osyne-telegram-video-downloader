@@ -36,3 +36,14 @@ func Youtube(s string) string {
 	}
 	return ""
 }
+
+// Match only instagram content
+func Instagram(s string) string {
+	pattern := `(https?:\/\/)?(www)?\.?(instagram\.com)[^\s]+`
+	re := regexp.MustCompile(pattern)
+	matches := re.FindAllString(s, -1)
+	if len(matches) > 0 {
+		return matches[0]
+	}
+	return ""
+}
