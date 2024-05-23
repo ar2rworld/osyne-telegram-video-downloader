@@ -37,8 +37,11 @@ func main() {
 	sentMessage, err := bot.Send(helloMessage)
 	myerrors.CheckTextMessage(&helloMessage, err, &sentMessage)
 
+	h := handler.NewHandler(bot)
+
 	for update := range updates {
 		if update.Message == nil {
+			log.Println("reaction:", update.MessageReaction, update.MessageReactionCount)
 			continue
 		}
 
@@ -47,9 +50,13 @@ func main() {
 		url := match.Match(messageText)
 
 		if url != "" {
-			err := handler.VideoMessage(update, url, cookiesPath, bot)
+			err := h.VideoMessage(&update, url, cookiesPath)
 			if err != nil {
 				log.Println(err)
+				err = h.ThumbDown(&update)
+				if err != nil {
+					log.Println("Error while reacting:", err)
+				}
 			}
 		} else if messageText == "osyndaisyn ba?" {
 			message := tgbotapi.NewMessage(update.Message.Chat.ID, "osyndaymyn")

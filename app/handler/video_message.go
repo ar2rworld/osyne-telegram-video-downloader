@@ -12,7 +12,17 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
 )
 
-func VideoMessage(u tgbotapi.Update, url, cookiesPath string, bot *tgbotapi.BotAPI) error {
+type Handler struct {
+	bot *tgbotapi.BotAPI
+}
+
+func NewHandler(bot *tgbotapi.BotAPI) *Handler {
+	return &Handler{
+		bot: bot,
+	}
+}
+
+func (h *Handler) VideoMessage(u *tgbotapi.Update, url, cookiesPath string) error {
 	remove := []string{}
 	defer func() {
 		for _, fn := range remove {
@@ -63,10 +73,10 @@ func VideoMessage(u tgbotapi.Update, url, cookiesPath string, bot *tgbotapi.BotA
 	}
 
 	videoMessage := tgbotapi.NewVideo(u.Message.Chat.ID, tgbotapi.FilePath(fileName))
-	videoMessage.ReplyToMessageID = u.Message.MessageID
+	videoMessage.ReplyParameters.MessageID = u.Message.MessageID
 
 	log.Println("*** Started sending video")
-	_, err = bot.Send(videoMessage)
+	_, err = h.bot.Send(videoMessage)
 	if err != nil {
 		return err
 	}
