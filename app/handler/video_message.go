@@ -12,7 +12,7 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
 )
 
-func VideoMessage(update tgbotapi.Update, url, cookiesPath string, bot *tgbotapi.BotAPI) error {
+func VideoMessage(u tgbotapi.Update, url, cookiesPath string, bot *tgbotapi.BotAPI) error {
 	remove := []string{}
 	defer func() {
 		for _, fn := range remove {
@@ -22,11 +22,10 @@ func VideoMessage(update tgbotapi.Update, url, cookiesPath string, bot *tgbotapi
 	}()
 
 	log.Printf("*** Got request to download video: %s", url)
-
 	opts := goutubedl.Options{HTTPClient: &http.Client{}, DebugLog: log.Default()}
 	isYoutubeVideo := match.Youtube(url) != ""
 	if isYoutubeVideo {
-		args := match.DownloadSectionsArgument(update.Message.Text)
+		args := match.DownloadSectionsArgument(u.Message.Text)
 		sections, err := parse(args)
 		if err != nil {
 			log.Println("*** Error parsing video sections")
@@ -41,8 +40,10 @@ func VideoMessage(update tgbotapi.Update, url, cookiesPath string, bot *tgbotapi
 
 	// if Instagram and cookiesPath is defined download with cookies
 	if match.Instagram(url) != "" && cookiesPath != "" {
+		log.Println("*** DownloadWithCookies")
 		fileName, err = downloader.DownloadWithCookies(url, cookiesPath)
 	} else {
+		log.Println("*** DownloadVideo")
 		fileName, err = downloader.DownloadVideo(url, opts)
 	}
 	if err != nil {
@@ -61,16 +62,15 @@ func VideoMessage(update tgbotapi.Update, url, cookiesPath string, bot *tgbotapi
 		log.Println("*** Converted video without errors")
 	}
 
-	videoMessage := tgbotapi.NewVideo(update.Message.Chat.ID, tgbotapi.FilePath(fileName))
-	videoMessage.ReplyToMessageID = update.Message.MessageID
+	videoMessage := tgbotapi.NewVideo(u.Message.Chat.ID, tgbotapi.FilePath(fileName))
+	videoMessage.ReplyToMessageID = u.Message.MessageID
 
 	log.Println("*** Started sending video")
-	m, err := bot.Send(videoMessage)
+	_, err = bot.Send(videoMessage)
 	if err != nil {
 		return err
 	}
 
-	log.Println(m.Video.FileName, m.Video.MimeType, "duration:", m.Video.Duration, "size:", m.Video.FileSize)
 	log.Println("*** Finished sending video")
 	return nil
 }
