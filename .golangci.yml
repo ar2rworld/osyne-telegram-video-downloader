@@ -83,6 +83,7 @@ linters:
   - varnamelen            #: checks that the length of a variable's name matches its scope [fast: false, auto-fix: false]
   - wrapcheck             # : Checks that errors returned from external packages are wrapped [fast: false, auto-fix: false]
   - wsl                   # : Whitespace Linter - Forces you to use empty lines! [fast: true, auto-fix: false]
+  - gomoddirectives       # : Checks if go.mod file has directives [fast: false, auto-fix: false]
 
 # output configuration options
 output:
