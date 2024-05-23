@@ -19,8 +19,7 @@ func parse(s string) (string, error) {
 
 	err := fs.Parse(strings.Split(s, " "))
 	if err != nil {
-		fmt.Println("Error parsing flags:", err)
-		return "", err
+		return "", fmt.Errorf("error parsing sections: %w", err)
 	}
 	// if flag parsed without errors but sections wasnot provided
 	if sections == "" {

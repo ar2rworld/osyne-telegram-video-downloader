@@ -29,7 +29,7 @@ func Test_parse(t *testing.T) { //nolint: all
 		{
 			name:    "test3 only -s",
 			args:    args{s: "-s"},
-			want:    "*0:0-0:30",
+			want:    "",
 			wantErr: true,
 		},
 		{
