@@ -6,8 +6,11 @@ services:
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
       - ADMIN_ID=${ADMIN_ID}
+      - COOKIES_PATH=${COOKIES_PATH}
+    volumes:
+      - ./cookies:/app
     deploy:
       resources:
         limits:
           cpus: '0.50'
-          memory: 250M
+          memory: 512M
