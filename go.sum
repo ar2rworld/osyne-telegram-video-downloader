@@ -1,6 +1,8 @@
+github.com/ar2rworld/telegram-bot-api/v5 v5.0.0 h1:EJWxqI5OYR+DRWcUgLPf1phu9gNTWQzQe9Kvv0MQ7E4=
+github.com/ar2rworld/telegram-bot-api/v5 v5.0.0/go.mod h1:A2S0CWkNylc2phvKXWBBdD3K0iGnDBGbzRpISP2zBl8=
 github.com/fortytw2/leaktest v1.3.0 h1:u8491cBMTQ8ft8aeV+adlcytMZylmA5nnwwkRZjI8vw=
 github.com/fortytw2/leaktest v1.3.0/go.mod h1:jDsjWgpAGjm2CA7WthBh/CdZYEPF31XHquHwclZch5g=
-github.com/wader/goutubedl v0.0.0-20240207160746-8b34407df2f3 h1:yRjHvzMGygSRVKKPPWJgnzrV7WHvSKU8RBoEDE6zuCA=
-github.com/wader/goutubedl v0.0.0-20240207160746-8b34407df2f3/go.mod h1:5KXd5tImdbmz4JoVhePtbIokCwAfEhUVVx3WLHmjYuw=
+github.com/wader/goutubedl v0.0.0-20240508220059-aba4746463cb h1:pJDETWIDMaZEGnyLpJYeks8QlfZ9AV1kcqoOH8jXDVE=
+github.com/wader/goutubedl v0.0.0-20240508220059-aba4746463cb/go.mod h1:5KXd5tImdbmz4JoVhePtbIokCwAfEhUVVx3WLHmjYuw=
 github.com/wader/osleaktest v0.0.0-20191111175233-f643b0fed071 h1:QkrG4Zr5OVFuC9aaMPmFI0ibfhBZlAgtzDYWfu7tqQk=
 github.com/wader/osleaktest v0.0.0-20191111175233-f643b0fed071/go.mod h1:XD6emOFPHVzb0+qQpiNOdPL2XZ0SRUM0N5JHuq6OmXo=
