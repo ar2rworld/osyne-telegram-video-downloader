@@ -21,6 +21,10 @@ RUN apt update
 RUN apt install -y ffmpeg
 RUN ffmpeg -version
 
+# Install crontab and add yt-dlp updating cronjob
+RUN apt-get -y install cron
+RUN crontab -l | { cat; echo "0 0 * * * yt-dlp -U"; } | crontab -
+
 RUN CGO_ENABLED=0 GOOS=linux go build -o ./osynetelegramvideodownloader ./app
 
 CMD ["./osynetelegramvideodownloader"]
