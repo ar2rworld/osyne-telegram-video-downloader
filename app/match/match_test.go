@@ -43,6 +43,8 @@ func TestMatchYoutube(t *testing.T) {
 		{"Without https", "Some text youtube.com/shorts/G90KEDm_G28?feature=share", ""},
 		{"Youtube video", "Some text https://www.youtube.com/watch?v=rfwnQzS9KkA", "https://www.youtube.com/watch?v=rfwnQzS9KkA"},
 		{"Short link", "Some text https://youtu.be/rfwnQzS9KkA", "https://youtu.be/rfwnQzS9KkA"},
+		{"Single youtube word", "youtube", ""},
+		{"Single youtu.be word", "youtu.be", ""},
 	}
 
 	for _, matchingCase := range MatchingCases {
