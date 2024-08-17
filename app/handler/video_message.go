@@ -53,18 +53,18 @@ func (h *Handler) VideoMessage(u *tgbotapi.Update, url string) error { //nolint:
 	switch {
 	case match.Instagram(url) != "" && h.InstagramCookiesPath != "":
 		log.Println("*** Downloading Instagram with Cookies")
-		fileName, err = downloader.DownloadWithCookies(url, h.InstagramCookiesPath)
+		opts.Cookies = h.InstagramCookiesPath
 	case isYoutubeVideo && h.GoogleCookiesPath != "":
 		log.Println("*** Downloading Youtube Video with Cookies")
-		fileName, err = downloader.DownloadWithCookies(url, h.GoogleCookiesPath)
+		opts.Cookies = h.GoogleCookiesPath
 	case match.YoutubeShorts(url) != "" && h.GoogleCookiesPath != "":
 		log.Println("*** Downloading Youtube Shorts with Cookies")
-		fileName, err = downloader.DownloadWithCookies(url, h.GoogleCookiesPath)
+		opts.Cookies = h.GoogleCookiesPath
 	default:
 		log.Println("*** DownloadVideo")
-		fileName, err = downloader.DownloadVideo(url, opts)
 	}
 
+	fileName, err = downloader.DownloadVideo(url, opts)
 	if err != nil {
 		return err
 	}
