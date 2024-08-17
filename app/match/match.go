@@ -37,6 +37,17 @@ func Youtube(s string) string {
 	return ""
 }
 
+// Match only youtube shorts
+func YoutubeShorts(s string) string {
+	pattern := `(https?:\/\/)?(www)?\.?(youtube|youtu)(\.com|\.be)?\/shorts\/([^s][^h][^o][^r][^t][^s])[^\s]+`
+	re := regexp.MustCompile(pattern)
+	matches := re.FindAllString(s, -1)
+	if len(matches) > 0 {
+		return matches[0]
+	}
+	return ""
+}
+
 // Match only instagram content
 func Instagram(s string) string {
 	pattern := `(https?:\/\/)?(www)?\.?(instagram\.com)[^\s]+`

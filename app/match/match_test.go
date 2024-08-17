@@ -56,6 +56,31 @@ func TestMatchYoutube(t *testing.T) {
 	}
 }
 
+func TestMatchYoutubeShorts(t *testing.T) {
+	MatchingCases := []struct {
+		Name string
+		Text string
+		URL  string
+	}{
+		{"Empty", "Some text", ""},
+		{"Don't match tiktok", "https://vm.tiktok.com/ZM2KGqk1v/", ""},
+		{"Only youtubeshorts", "https://youtube.com/shorts/G90KEDm_G28?feature=share", "https://youtube.com/shorts/G90KEDm_G28?feature=share"},
+		{"Without https", "Some text youtube.com/shorts/G90KEDm_G28?feature=share", "youtube.com/shorts/G90KEDm_G28?feature=share"},
+		{"Youtube video", "Some text https://www.youtube.com/watch?v=rfwnQzS9KkA", ""},
+		{"Short link", "Some text https://youtu.be/rfwnQzS9KkA", ""},
+	}
+
+	for _, matchingCase := range MatchingCases {
+		t.Run(matchingCase.Name, func(tt *testing.T) {
+			got := YoutubeShorts(matchingCase.Text)
+			want := matchingCase.URL
+			if got != want {
+				tt.Errorf("Couldn't match: \"%s\" -> \"%s\" , got:\"%s\"", matchingCase.Text, want, got)
+			}
+		})
+	}
+}
+
 func TestDownloadSectionsArgument(t *testing.T) { //nolint: all
 	type args struct {
 		s string
