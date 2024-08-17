@@ -38,8 +38,8 @@ func DownloadVideo(url string, opts goutubedl.Options) (string, error) {
 }
 
 func DownloadWithCookies(url, cookiesPath string) (string, error) {
-	fileName := "videoDownloadedWithCookies.mp4"
-	cmd := exec.Command("yt-dlp", "-o", fileName, "--cookies", cookiesPath, url)
+	fileName := "videoDownloadedWithCookies"
+	cmd := exec.Command("yt-dlp", "-f", "mp4", "-o", fileName, "--cookies", cookiesPath, url)
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
 
