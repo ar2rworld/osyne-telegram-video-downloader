@@ -29,7 +29,8 @@ func main() { //nolint: funlen,gocyclo,cyclop
 		log.Fatalln(err)
 	}
 
-	cookiesPath := os.Getenv("COOKIES_PATH")
+	instagramCookiesPath := os.Getenv("INSTAGRAM_COOKIES_PATH")
+	googleCookiesPath := os.Getenv("GOOGLE_COOKIES_PATH")
 
 	botAPI.Debug = false
 
@@ -43,7 +44,7 @@ func main() { //nolint: funlen,gocyclo,cyclop
 	sentMessage, err := botAPI.Send(helloMessage)
 	myerrors.CheckTextMessage(&helloMessage, err, &sentMessage)
 
-	h := handler.NewHandler(botAPI)
+	h := handler.NewHandler(botAPI, instagramCookiesPath, googleCookiesPath)
 	botService := botservice.NewBotService(botAPI, logChannelID)
 
 	for update := range updates {
@@ -56,7 +57,7 @@ func main() { //nolint: funlen,gocyclo,cyclop
 		url := match.Match(messageText)
 
 		if url != "" { //nolint: nestif
-			err := h.VideoMessage(&update, url, cookiesPath)
+			err := h.VideoMessage(&update, url)
 			if err != nil {
 				log.Println(err)
 

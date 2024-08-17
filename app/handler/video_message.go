@@ -13,23 +13,22 @@ import (
 )
 
 type Handler struct {
-	bot *tgbotapi.BotAPI
+	bot                  *tgbotapi.BotAPI
+	InstagramCookiesPath string
+	GoogleCookiesPath    string
 }
 
-func NewHandler(bot *tgbotapi.BotAPI) *Handler {
+func NewHandler(bot *tgbotapi.BotAPI, i, g string) *Handler {
 	return &Handler{
-		bot: bot,
+		bot:                  bot,
+		InstagramCookiesPath: i,
+		GoogleCookiesPath:    g,
 	}
 }
 
-func (h *Handler) VideoMessage(u *tgbotapi.Update, url, cookiesPath string) error {
+func (h *Handler) VideoMessage(u *tgbotapi.Update, url string) error { //nolint: funlen,gocyclo,cyclop
 	remove := []string{}
-	defer func() {
-		for _, fn := range remove {
-			err := os.Remove(fn)
-			log.Println("*** Removed file: ", fn, "error:", err)
-		}
-	}()
+	defer removeFiles(remove)
 
 	log.Printf("*** Got request to download video: %s", url)
 	opts := goutubedl.Options{HTTPClient: &http.Client{}, DebugLog: log.Default()}
@@ -48,14 +47,24 @@ func (h *Handler) VideoMessage(u *tgbotapi.Update, url, cookiesPath string) erro
 	var fileName string
 	var err error
 
-	// if Instagram and cookiesPath is defined download with cookies
-	if match.Instagram(url) != "" && cookiesPath != "" {
-		log.Println("*** DownloadWithCookies")
-		fileName, err = downloader.DownloadWithCookies(url, cookiesPath)
-	} else {
+	// If handler has instagram cookies download with cookies
+	// If handler has google cookies download youtube video or short with cookies
+	// else just try downloading
+	switch {
+	case match.Instagram(url) != "" && h.InstagramCookiesPath != "":
+		log.Println("*** Downloading Instagram with Cookies")
+		fileName, err = downloader.DownloadWithCookies(url, h.InstagramCookiesPath)
+	case isYoutubeVideo && h.GoogleCookiesPath != "":
+		log.Println("*** Downloading Youtube Video with Cookies")
+		fileName, err = downloader.DownloadWithCookies(url, h.GoogleCookiesPath)
+	case match.YoutubeShorts(url) != "" && h.GoogleCookiesPath != "":
+		log.Println("*** Downloading Youtube Shorts with Cookies")
+		fileName, err = downloader.DownloadWithCookies(url, h.GoogleCookiesPath)
+	default:
 		log.Println("*** DownloadVideo")
 		fileName, err = downloader.DownloadVideo(url, opts)
 	}
+
 	if err != nil {
 		return err
 	}
@@ -82,5 +91,13 @@ func (h *Handler) VideoMessage(u *tgbotapi.Update, url, cookiesPath string) erro
 	}
 
 	log.Println("*** Finished sending video")
+	removeFiles(remove)
 	return nil
+}
+
+func removeFiles(files []string) {
+	for _, fn := range files {
+		err := os.Remove(fn)
+		log.Println("*** Removed file: ", fn, "error:", err)
+	}
 }
