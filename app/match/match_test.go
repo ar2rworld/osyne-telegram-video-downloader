@@ -18,6 +18,7 @@ func TestMatch(t *testing.T) {
 		{"Without https", "Some text youtube.com/shorts/G90KEDm_G28?feature=share", "youtube.com/shorts/G90KEDm_G28?feature=share"},
 		{"Short Youtube link", "Some text https://youtu.be/rfwnQzS9KkA", "https://youtu.be/rfwnQzS9KkA"},
 		{"Youtube video", "Some text https://www.youtube.com/watch?v=rfwnQzS9KkA", "https://www.youtube.com/watch?v=rfwnQzS9KkA"},
+		{"Single youtube word", "https://gist.ly/youtube-summarizer/effective-communication-strategies-lessons-from-ilya-yashin", ""},
 	}
 
 	for _, matchingCase := range MatchingCases {
@@ -45,6 +46,8 @@ func TestMatchYoutube(t *testing.T) {
 		{"Short link", "Some text https://youtu.be/rfwnQzS9KkA", "https://youtu.be/rfwnQzS9KkA"},
 		{"Single youtube word", "youtube", ""},
 		{"Single youtu.be word", "youtu.be", ""},
+		{"", "https://youtu.be/GG5u0sUe7sQ", "https://youtu.be/GG5u0sUe7sQ"},
+		{"Link with single word youtube", "https://gist.ly/youtube-summarizer/effective-communication-strategies-lessons-from-ilya-yashin", ""},
 	}
 
 	for _, matchingCase := range MatchingCases {

@@ -5,7 +5,7 @@ import (
 )
 
 func Match(s string) string {
-	pattern := `(https?:\/\/)?(www|vm)?\.?(youtube|youtu(\.com|\.be)|twitter\.com|tiktok\.com|instagram\.com)[^\s]+`
+	pattern := `(https?:\/\/)?(www|vm)?\.?(youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/|twitter\.com\/|tiktok\.com\/|instagram\.com\/)[^\s]+`
 	re := regexp.MustCompile(pattern)
 	matches := re.FindAllString(s, -1)
 	if len(matches) > 0 {
@@ -28,7 +28,7 @@ func DownloadSectionsArgument(s string) string {
 
 // Match only youtube video, but don't match shorts
 func Youtube(s string) string {
-	pattern := `(https?:\/\/)?(www)?\.?(youtube|youtu)(\.com|\.be)?\/([^s][^h][^o][^r][^t][^s])[^\s]+`
+	pattern := `(https?:\/\/)?(www\.)?(youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})`
 	re := regexp.MustCompile(pattern)
 	matches := re.FindAllString(s, -1)
 	if len(matches) > 0 {
