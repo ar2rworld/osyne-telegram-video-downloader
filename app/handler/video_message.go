@@ -34,14 +34,7 @@ func (h *Handler) VideoMessage(u *tgbotapi.Update, url string) error { //nolint:
 	opts := goutubedl.Options{HTTPClient: &http.Client{}, DebugLog: log.Default()}
 	isYoutubeVideo := match.Youtube(url) != ""
 	if isYoutubeVideo {
-		args := match.DownloadSectionsArgument(u.Message.Text)
-		sections, err := parse(args)
-		if err != nil {
-			log.Println("*** Error parsing video sections")
-			sections = DefaultSections
-		}
-		opts.DownloadSections = sections
-		log.Printf("*** Downloading video from Youtube %s", opts.DownloadSections)
+		alterDownloadSections(u, url, &opts)
 	}
 
 	var fileName string
