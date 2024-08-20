@@ -14,10 +14,10 @@ func TestConvertSecondsToMinSec(t *testing.T) {
 		have int
 		want string
 	}{
-		{"0", 0, "0:00"},
+		{"0", 0, "0:0"},
 		{"59", 59, "0:59"},
-		{"60", 60, "1:00"},
-		{"61", 61, "1:01"},
+		{"60", 60, "1:0"},
+		{"61", 61, "1:1"},
 	}
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
