@@ -5,14 +5,20 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/wader/goutubedl"
+
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
+)
+
+const (
+	halfMinute      = 30
+	secondsInMinute = 60
 )
 
 func convertSecondsToMinSec(seconds int) string {
-	minutes := seconds / 60
-	seconds = seconds % 60
+	minutes := seconds / secondsInMinute
+	seconds %= secondsInMinute
 	return strconv.Itoa(minutes) + ":" + strconv.Itoa(seconds)
 }
 
@@ -22,7 +28,6 @@ func setDownloadSections(opts *goutubedl.Options, start, finish int) *goutubedl.
 	opts.DownloadSections = fmt.Sprintf("*%s-%s", s, f)
 	return opts
 }
-
 
 func alterDownloadSections(u *tgbotapi.Update, url string, opts *goutubedl.Options) {
 	args := match.DownloadSectionsArgument(u.Message.Text)
@@ -41,7 +46,7 @@ func alterDownloadSections(u *tgbotapi.Update, url string, opts *goutubedl.Optio
 		if err != nil {
 			log.Printf("*** Error converting to int while changing DownloadSections for youtube: %s", err.Error())
 		}
-		setDownloadSections(opts, t, t + 30)
+		setDownloadSections(opts, t, t+halfMinute)
 		log.Printf("*** Downloading section(%s) of the video from currentTime: %s", opts.DownloadSections, currentTime)
 	}
 

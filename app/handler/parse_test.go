@@ -61,10 +61,10 @@ func Test_parse(t *testing.T) { //nolint: all
 	}
 }
 
-func TestParseStartTime(t * testing.T) {
-	testcases := []struct{
-		name string
-		arg string
+func TestParseStartTime(t *testing.T) { // nolint:funlen
+	testcases := []struct {
+		name   string
+		arg    string
 		result string
 	}{
 		{

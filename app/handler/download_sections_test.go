@@ -8,32 +8,32 @@ import (
 	"github.com/wader/goutubedl"
 )
 
-func TestConvertSecondsToMinSec(t *testing.T){
-	testcases := []struct{
+func TestConvertSecondsToMinSec(t *testing.T) {
+	testcases := []struct {
 		name string
 		have int
 		want string
 	}{
-		{"0",0,"0:00"},
-		{"59",59,"0:59"},
-		{"60",60,"1:00"},
-		{"61",61,"1:01"},
+		{"0", 0, "0:00"},
+		{"59", 59, "0:59"},
+		{"60", 60, "1:00"},
+		{"61", 61, "1:01"},
 	}
-	for _,tc := range testcases{
-		t.Run(tc.name,func(t *testing.T){
+	for _, tc := range testcases {
+		t.Run(tc.name, func(t *testing.T) {
 			got := convertSecondsToMinSec(tc.have)
-			if got != tc.want{
-				t.Errorf("want %s, but got %s",tc.want,got)
+			if got != tc.want {
+				t.Errorf("want %s, but got %s", tc.want, got)
 			}
 		})
 	}
 }
 
-func TestChangeDownloadSectionsStart(t *testing.T){
-	testcases := []struct{
-		name string
+func TestChangeDownloadSectionsStart(t *testing.T) {
+	testcases := []struct {
+		name  string
 		start int
-		want string
+		want  string
 	}{
 		{
 			"",
@@ -57,10 +57,10 @@ func TestChangeDownloadSectionsStart(t *testing.T){
 		},
 	}
 
-	for _, tc := range testcases{
-		t.Run(tc.name, func(t *testing.T){
+	for _, tc := range testcases {
+		t.Run(tc.name, func(t *testing.T) {
 			opts := &goutubedl.Options{}
-			got := setDownloadSections(opts, tc.start, tc.start + 30)
+			got := setDownloadSections(opts, tc.start, tc.start+30)
 			assert.Equal(t, tc.want, got.DownloadSections)
 		})
 	}
@@ -69,7 +69,7 @@ func TestChangeDownloadSectionsStart(t *testing.T){
 func TestAlterDownloadSections(t *testing.T) {
 	t.Run("Testing alterDownloadSections Youtube", func(t *testing.T) {
 		url := "https://www.youtube.com/watch?v=T_JKIkSf93Y"
-		u := &tgbotapi.Update{ Message: &tgbotapi.Message{ Text: url } }
+		u := &tgbotapi.Update{Message: &tgbotapi.Message{Text: url}}
 		opts := &goutubedl.Options{}
 		alterDownloadSections(u, url, opts)
 		assert.Equal(t, "*0:0-0:30", opts.DownloadSections)
@@ -77,7 +77,7 @@ func TestAlterDownloadSections(t *testing.T) {
 
 	t.Run("Testing alterDownloadSections with sections argument Youtube", func(t *testing.T) {
 		url := "-s *1:10-2:10 https://www.youtube.com/watch?v=T_JKIkSf93Y"
-		u := &tgbotapi.Update{ Message: &tgbotapi.Message{ Text: url } }
+		u := &tgbotapi.Update{Message: &tgbotapi.Message{Text: url}}
 		opts := &goutubedl.Options{}
 		alterDownloadSections(u, url, opts)
 		assert.Equal(t, "*1:10-2:10", opts.DownloadSections)
@@ -85,7 +85,7 @@ func TestAlterDownloadSections(t *testing.T) {
 
 	t.Run("Testing alterDownloadSections with current time in url Youtube", func(t *testing.T) {
 		url := "https://youtu.be/T_JKIkSf93Y?t=2289"
-		u := &tgbotapi.Update{ Message: &tgbotapi.Message{ Text: url } }
+		u := &tgbotapi.Update{Message: &tgbotapi.Message{Text: url}}
 		opts := &goutubedl.Options{}
 		alterDownloadSections(u, url, opts)
 		assert.Equal(t, "*38:9-38:39", opts.DownloadSections)
@@ -94,7 +94,7 @@ func TestAlterDownloadSections(t *testing.T) {
 	t.Run("Testing alterDownloadSections with sections arg and with current time in url Youtube", func(t *testing.T) {
 		url := "https://youtu.be/T_JKIkSf93Y?t=2289"
 		message := "-s *1:10-2:10 " + url
-		u := &tgbotapi.Update{ Message: &tgbotapi.Message{ Text: message } }
+		u := &tgbotapi.Update{Message: &tgbotapi.Message{Text: message}}
 		opts := &goutubedl.Options{}
 		alterDownloadSections(u, url, opts)
 		assert.Equal(t, "*1:10-2:10", opts.DownloadSections)
