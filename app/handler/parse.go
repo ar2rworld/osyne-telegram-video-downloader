@@ -3,7 +3,10 @@ package handler
 import (
 	"flag"
 	"fmt"
+	"net/url"
 	"os"
+	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -27,4 +30,26 @@ func parse(s string) (string, error) {
 	}
 
 	return sections, nil
+}
+
+// parse youtube url for current time argument
+func parseCurrentTime(videoURL string) string {
+	// Claude 3.5 Sonnet
+	parsedURL, err := url.Parse(videoURL)
+	if err != nil {
+		return ""
+	}
+
+	// Check query parameters
+	if t := parsedURL.Query().Get("t"); t != "" {
+		// Remove any non-digit characters and parse as int
+		re := regexp.MustCompile(`\d+`)
+		if match := re.FindString(t); match != "" {
+			if _, err := strconv.Atoi(match); err == nil {
+				return match
+			}
+		}
+	}
+
+	return ""
 }
