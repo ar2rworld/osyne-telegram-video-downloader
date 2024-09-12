@@ -1,35 +1,34 @@
 package handler
 
 import (
-	"flag"
 	"fmt"
 	"net/url"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
+	"github.com/jessevdk/go-flags"
 )
 
 const DefaultSections = "*0:0-0:30"
 
-// If user specifies -s with some argument to download only section of video
-func parse(s string) (string, error) {
-	fs := flag.NewFlagSet("sections", flag.ContinueOnError)
-	fs.SetOutput(os.Stdout)
-	var sections string
-
-	fs.StringVar(&sections, "s", DefaultSections, "Download sections")
-
-	err := fs.Parse(strings.Split(s, " "))
-	if err != nil {
-		return "", fmt.Errorf("error parsing sections: %w", err)
-	}
-	// if flag parsed without errors but sections wasnot provided
-	if sections == "" {
-		sections = DefaultSections
+type UserOptions struct {
+    Sections     *string `short:"s" long:"sections" description:"Download sections"`
+    ExtractAudio *bool   `short:"x" long:"extract-audio" description:"Extract audio from video"`
 	}
 
-	return sections, nil
+// parses the string and return UserOptions
+func parse(s string) (*UserOptions, error) {
+    opts := &UserOptions{}
+
+    parser := flags.NewParser(opts, flags.None)
+    
+    args := strings.Split(s, " ")
+    _, err := parser.ParseArgs(args)
+    if err != nil {
+        return nil, fmt.Errorf("error parsing arguments: %w", err)
+    }
+
+    return opts, nil
 }
 
 // parse youtube url for current time argument

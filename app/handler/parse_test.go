@@ -7,55 +7,80 @@ import (
 )
 
 func Test_parse(t *testing.T) { //nolint: all
-	type args struct {
+	type want struct {
 		s string
+		x bool
 	}
 	tests := []struct {
 		name    string
-		args    args
-		want    string
+		args    string
+		want    want
 		wantErr bool
 	}{
 		{
+			name:    "empty",
+			args:    "just a link",
+			want:    want{s: "", x: false},
+			wantErr: false,
+		},
+		{
 			name:    "test1",
-			args:    args{s: "-s *0:0-0:61"},
-			want:    "*0:0-0:61",
+			args:    "-s *0:0-0:61",
+			want:    want{s: "*0:0-0:61", x: false},
 			wantErr: false,
 		},
 		{
 			name:    "test2",
-			args:    args{s: "text"},
-			want:    "*0:0-0:30",
-			wantErr: false,
+			args:    "text",
+			want:    want{s: "", x: false},
 		},
 		{
 			name:    "test3 only -s",
-			args:    args{s: "-s"},
-			want:    "",
+			args:    "-s",
+			want:    want{s: "", x: false},
 			wantErr: true,
 		},
 		{
 			name:    "test3 only -s with single space",
-			args:    args{s: "-s "},
-			want:    "*0:0-0:30",
-			wantErr: false,
+			args:    "-s ",
+			want:    want{s: "", x: false},
 		},
 		{
 			name:    "test4",
-			args:    args{s: `-s *1111:00-1111:30`},
-			want:    "*1111:00-1111:30",
-			wantErr: false,
+			args:    `-s *1111:00-1111:30`,
+			want:    want{s: "*1111:00-1111:30", x: false},
+		},
+		{
+			name:    "test5 extract audio",
+			args:    `-s *1111:00-1111:30 -x`,
+			want:    want{s: "*1111:00-1111:30", x: true},
+		},
+		{
+			name:    "test6 extract audio",
+			args:    `-x -s *1111:00-1111:30`,
+			want:    want{s: "*1111:00-1111:30", x: true},
+		},
+		{
+			name:    "test7 extract audio",
+			args:    `-x`,
+			want:    want{s: "*1111:00-1111:30", x: true},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := parse(tt.args.s)
+			got, err := parse(tt.args)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("parse() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got != tt.want {
-				t.Errorf("parse() = %v, want %v", got, tt.want)
+			if tt.wantErr {
+				return
+			}
+			if got.Sections != nil {
+				assert.Equal(t, tt.want.s, *got.Sections)
+			}
+			if got.ExtractAudio != nil {
+				assert.Equal(t, tt.want.x, *got.ExtractAudio)
 			}
 		})
 	}
