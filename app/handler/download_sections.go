@@ -30,16 +30,17 @@ func setDownloadSections(opts *goutubedl.Options, start, finish int) *goutubedl.
 }
 
 func alterDownloadSections(u *tgbotapi.Update, url string, opts *goutubedl.Options) {
+	// modity this one to match -s and -x
 	args := match.DownloadSectionsArgument(u.Message.Text)
 	currentTime := parseCurrentTime(url)
 
 	if args != "" {
-		sections, err := parse(args)
+		userOptions, err := parse(args)
 		if err != nil {
-			log.Printf("*** Error parsing video sections: %s", err.Error())
-			sections = DefaultSections
+			log.Printf("*** Error parsing video options: %s", err.Error())
+			*userOptions.Sections = DefaultSections
 		}
-		opts.DownloadSections = sections
+		opts.DownloadSections = *userOptions.Sections
 		log.Printf("*** Downloading section of the video: %s", opts.DownloadSections)
 	} else if currentTime != "" {
 		t, err := strconv.Atoi(currentTime)
