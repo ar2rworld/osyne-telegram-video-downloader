@@ -150,6 +150,52 @@ func TestDownloadSectionsArgument(t *testing.T) { //nolint: all
 	}
 }
 
+func TestDownloadAudioArgument(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{
+			"x",
+			"-x",
+			"-x",
+		},
+		{
+			"x with s",
+			"-x -s *0:0-0:10",
+			"-x",
+		},
+		{
+			"x with s url",
+			"-x -s *0:0-0:10 https://someurl.com",
+			"-x",
+		},
+		{
+			"s with x",
+			"-s *0:0-0:10 -x",
+			"-x",
+		},
+		{
+			"s with x and url",
+			"-s *0:0-0:10 -x https://someurl.com text",
+			"-x",
+		},
+		{
+			"s with x and url and rm -rf",
+			"-s *0:0-0:10 -x https://someurl.com text rm -rf /",
+			"-x",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := DownloadAudioArgument(tt.input); got != tt.want {
+				t.Errorf(`DownloadSectionsArgument() = "%v", want "%v"`, got, tt.want)
+			}
+		})
+	}
+}
+
 func TestMatchInstagram(t *testing.T) {
 	MatchingCases := []struct {
 		Name string

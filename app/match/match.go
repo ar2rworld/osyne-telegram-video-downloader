@@ -26,6 +26,19 @@ func DownloadSectionsArgument(s string) string {
 	return ""
 }
 
+func DownloadAudioArgument(s string) string {
+	// Pattern to match -x argument
+	pattern := `(?:^|\s)(-x)(?:\s|$)`
+	re := regexp.MustCompile(pattern)
+	matches := re.FindStringSubmatch(s)
+
+	if len(matches) > 1 {
+		return matches[1]
+	}
+
+	return ""
+}
+
 // Match only youtube video, but don't match shorts
 func Youtube(s string) string {
 	pattern := `(https?:\/\/)?(www\.)?(youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})`
