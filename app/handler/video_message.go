@@ -33,8 +33,9 @@ func (h *Handler) VideoMessage(u *tgbotapi.Update, url string) error { //nolint:
 	log.Printf("*** Got request to download video: %s", url)
 	opts := goutubedl.Options{HTTPClient: &http.Client{}, DebugLog: log.Default()}
 	isYoutubeVideo := match.Youtube(url) != ""
+	var do *goutubedl.DownloadOptions
 	if isYoutubeVideo {
-		alterDownloadSections(u, url, &opts)
+		do = alterDownloadOptions(u, url, &opts)
 	}
 
 	var fileName string
@@ -57,7 +58,7 @@ func (h *Handler) VideoMessage(u *tgbotapi.Update, url string) error { //nolint:
 		log.Println("*** DownloadVideo")
 	}
 
-	fileName, err = downloader.DownloadVideo(url, opts)
+	fileName, err = downloader.DownloadVideo(url, opts, do)
 	if err != nil {
 		return err
 	}

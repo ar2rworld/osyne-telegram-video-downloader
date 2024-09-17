@@ -9,14 +9,19 @@ import (
 	"github.com/wader/goutubedl"
 )
 
-func DownloadVideo(url string, opts goutubedl.Options) (string, error) {
+func DownloadVideo(url string, opts goutubedl.Options, do *goutubedl.DownloadOptions) (string, error) {
 	goutubedl.Path = "yt-dlp"
 
 	result, err := goutubedl.New(context.Background(), url, opts)
 	if err != nil {
 		return "", err
 	}
-	downloadResult, err := result.Download(context.Background(), "best")
+
+	if do == nil {
+		do = &goutubedl.DownloadOptions{}
+	}
+	do.Filter = "best"
+	downloadResult, err := result.DownloadWithOptions(context.Background(), *do)
 	if err != nil {
 		return "", err
 	}
