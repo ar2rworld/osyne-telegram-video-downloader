@@ -29,13 +29,18 @@ func setDownloadSections(opts *goutubedl.Options, start, finish int) *goutubedl.
 	return opts
 }
 
-func alterDownloadSections(u *tgbotapi.Update, url string, opts *goutubedl.Options) {
+// alterDownloadOptions modifies the goutubedl.Options
+// if arguments provided else shortens video to 30 sec
+// return DownloadOptions to use goutubedl.DownloadResult.DownloadWithOptions method
+func alterDownloadOptions(u *tgbotapi.Update, url string, opts *goutubedl.Options) *goutubedl.DownloadOptions {
 	// modity this one to match -s and -x
-	args := match.DownloadSectionsArgument(u.Message.Text)
+	sections := match.DownloadSectionsArgument(u.Message.Text)
+	audioOnly := match.DownloadAudioArgument(u.Message.Text)
+
 	currentTime := parseCurrentTime(url)
 
-	if args != "" {
-		userOptions, err := parse(args)
+	if sections != "" {
+		userOptions, err := parse(sections)
 		if err != nil {
 			log.Printf("*** Error parsing video options: %s", err.Error())
 			*userOptions.Sections = DefaultSections
@@ -55,4 +60,11 @@ func alterDownloadSections(u *tgbotapi.Update, url string, opts *goutubedl.Optio
 		opts.DownloadSections = DefaultSections
 		log.Printf("*** Downloading default sections of the video: %s", DefaultSections)
 	}
+
+	do := &goutubedl.DownloadOptions{}
+	if audioOnly != "" {
+		do.DownloadAudioOnly = true
+	}
+	
+	return do
 }

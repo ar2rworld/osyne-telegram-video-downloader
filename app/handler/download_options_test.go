@@ -112,43 +112,71 @@ func TestChangeDownloadSectionsStart(t *testing.T) {
 // 	})
 // }
 
-func TestAlterDownloadSections(t *testing.T) {
+func TestAlterDownloadOptions(t *testing.T) {
 	// Claude 3.5 Sonnet.
+	emptyDownloadOptions := &goutubedl.DownloadOptions{}
 	tests := []struct {
 		name           string
 		inputURL       string
 		inputMessage   string
 		expectedOutput string
+		expectedDownloadOptions *goutubedl.DownloadOptions
 	}{
 		{
 			name:           "Youtube URL",
 			inputURL:       "https://www.youtube.com/watch?v=T_JKIkSf93Y",
 			inputMessage:   "https://www.youtube.com/watch?v=T_JKIkSf93Y",
 			expectedOutput: "*0:0-0:30",
+			expectedDownloadOptions: emptyDownloadOptions,
 		},
 		{
 			name:           "Youtube URL with sections argument",
 			inputURL:       "https://www.youtube.com/watch?v=T_JKIkSf93Y",
 			inputMessage:   "-s *1:10-2:10 https://www.youtube.com/watch?v=T_JKIkSf93Y",
 			expectedOutput: "*1:10-2:10",
+			expectedDownloadOptions: emptyDownloadOptions,
 		},
 		{
 			name:           "Youtube URL with current time",
 			inputURL:       "https://youtu.be/T_JKIkSf93Y?t=2289",
 			inputMessage:   "https://youtu.be/T_JKIkSf93Y?t=2289",
 			expectedOutput: "*38:9-38:39",
+			expectedDownloadOptions: emptyDownloadOptions,
 		},
 		{
 			name:           "Youtube URL with sections arg and current time",
 			inputURL:       "https://youtu.be/T_JKIkSf93Y?t=2289",
 			inputMessage:   "-s *1:10-2:10 https://youtu.be/T_JKIkSf93Y?t=2289",
 			expectedOutput: "*1:10-2:10",
+			expectedDownloadOptions: emptyDownloadOptions,
 		},
 		{
 			name:           "Youtube URL with current time (alternate format)",
 			inputURL:       "https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s",
 			inputMessage:   "https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s",
 			expectedOutput: "*3:19-3:49",
+			expectedDownloadOptions: emptyDownloadOptions,
+		},
+		{
+			name:           "Youtube URL with current time (alternate format)",
+			inputURL:       "https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s",
+			inputMessage:   "https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s",
+			expectedOutput: "*3:19-3:49",
+			expectedDownloadOptions: emptyDownloadOptions,
+		},
+		{
+			name:           "Youtube URL with timestamp and -x",
+			inputURL:       "https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s",
+			inputMessage:   "-x https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s",
+			expectedOutput: "*3:19-3:49",
+			expectedDownloadOptions: &goutubedl.DownloadOptions{DownloadAudioOnly: true},
+		},
+		{
+			name:           "Youtube URL and -x",
+			inputURL:       "https://www.youtube.com/watch?v=AWVUp12XPpU",
+			inputMessage:   "-x https://www.youtube.com/watch?v=AWVUp12XPpU&",
+			expectedOutput: "*0:0-0:30",
+			expectedDownloadOptions: &goutubedl.DownloadOptions{DownloadAudioOnly: true},
 		},
 	}
 
@@ -156,8 +184,9 @@ func TestAlterDownloadSections(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			u := &tgbotapi.Update{Message: &tgbotapi.Message{Text: tt.inputMessage}}
 			opts := &goutubedl.Options{}
-			alterDownloadSections(u, tt.inputURL, opts)
+			do := alterDownloadOptions(u, tt.inputURL, opts)
 			assert.Equal(t, tt.expectedOutput, opts.DownloadSections)
+			assert.Equal(t, tt.expectedDownloadOptions.DownloadAudioOnly, do.DownloadAudioOnly)
 		})
 	}
 }
