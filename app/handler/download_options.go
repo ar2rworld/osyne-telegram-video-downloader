@@ -56,7 +56,7 @@ func alterDownloadOptions(u *tgbotapi.Update, url string, opts *goutubedl.Option
 		log.Printf("*** Downloading section(%s) of the video from currentTime: %s", opts.DownloadSections, currentTime)
 	}
 
-	if opts.DownloadSections == "" {
+	if opts.DownloadSections == "" && audioOnly == "" {
 		opts.DownloadSections = DefaultSections
 		log.Printf("*** Downloading default sections of the video: %s", DefaultSections)
 	}
