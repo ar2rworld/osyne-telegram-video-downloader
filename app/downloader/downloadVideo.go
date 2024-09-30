@@ -20,14 +20,19 @@ func DownloadVideo(url string, opts goutubedl.Options, do *goutubedl.DownloadOpt
 	if do == nil {
 		do = &goutubedl.DownloadOptions{}
 	}
-	do.Filter = "best"
+	
+	// Weird stuff to make yt-dlp download only audio
+	if ! do.DownloadAudioOnly {
+		do.Filter = "best"
+	}
+
 	downloadResult, err := result.DownloadWithOptions(context.Background(), *do)
 	if err != nil {
 		return "", err
 	}
 	defer downloadResult.Close()
 
-	output := "output"
+	output := result.Info.Title
 
 	f, err := os.CreateTemp("", output)
 	if err != nil {

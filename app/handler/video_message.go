@@ -64,6 +64,8 @@ func (h *Handler) VideoMessage(u *tgbotapi.Update, url string) error { //nolint:
 	}
 
 	remove = append(remove, fileName)
+	defer removeFiles(remove)
+
 	log.Println("*** Downloaded video without errors")
 
 	if isYoutubeVideo {
@@ -75,18 +77,35 @@ func (h *Handler) VideoMessage(u *tgbotapi.Update, url string) error { //nolint:
 		log.Println("*** Converted video without errors")
 	}
 
-	videoMessage := tgbotapi.NewVideo(u.Message.Chat.ID, tgbotapi.FilePath(fileName))
-	videoMessage.ReplyParameters.MessageID = u.Message.MessageID
+	err = h.handleAudioVideoMessage(do, u, fileName)
 
-	log.Println("*** Started sending video")
-	_, err = h.bot.Send(videoMessage)
 	if err != nil {
 		return err
 	}
-
-	log.Println("*** Finished sending video")
-	removeFiles(remove)
+	
+	log.Println("*** Finished sending video/audio")
 	return nil
+}
+
+func (h *Handler) handleAudioVideoMessage(do *goutubedl.DownloadOptions, u *tgbotapi.Update, fileName string) error {
+	var err error
+	if do.DownloadAudioOnly {
+		log.Println("*** Started sending audio")
+
+		audioMessage := tgbotapi.NewAudio(u.Message.Chat.ID, tgbotapi.FilePath(fileName))
+		audioMessage.ReplyParameters.MessageID = u.Message.MessageID
+
+		_, err = h.bot.Send(audioMessage)
+	} else {
+		log.Println("*** Started sending video")
+
+		videoMessage := tgbotapi.NewVideo(u.Message.Chat.ID, tgbotapi.FilePath(fileName))
+		videoMessage.ReplyParameters.MessageID = u.Message.MessageID
+
+		_, err = h.bot.Send(videoMessage)
+	}
+
+	return err
 }
 
 func removeFiles(files []string) {
