@@ -33,7 +33,7 @@ func (h *Handler) VideoMessage(u *tgbotapi.Update, url string) error {
 	log.Printf("*** Got request to download video: %s", url)
 	opts := goutubedl.Options{HTTPClient: &http.Client{}, DebugLog: log.Default()}
 	isYoutubeVideo := match.Youtube(url) != ""
-	var do *goutubedl.DownloadOptions
+	do := &goutubedl.DownloadOptions{}
 	if isYoutubeVideo {
 		do = alterDownloadOptions(u, url, &opts)
 	}
@@ -41,7 +41,7 @@ func (h *Handler) VideoMessage(u *tgbotapi.Update, url string) error {
 	var fileName string
 	var err error
 
-	h.setupCookies(url, opts, isYoutubeVideo)
+	h.setupCookies(url, &opts, isYoutubeVideo)
 
 	fileName, err = downloader.DownloadVideo(url, opts, do)
 	if err != nil {
@@ -74,7 +74,7 @@ func (h *Handler) VideoMessage(u *tgbotapi.Update, url string) error {
 // If handler has instagram cookies download with cookies
 // If handler has google cookies download youtube video or short with cookies
 // else just try downloading
-func (h *Handler) setupCookies(url string, opts goutubedl.Options, isYoutubeVideo bool) {
+func (h *Handler) setupCookies(url string, opts *goutubedl.Options, isYoutubeVideo bool) {
 	switch {
 	case match.Instagram(url) != "" && h.InstagramCookiesPath != "":
 		log.Println("*** Downloading Instagram with Cookies")
