@@ -30,9 +30,9 @@ func Test_parse(t *testing.T) { //nolint: all
 			wantErr: false,
 		},
 		{
-			name:    "test2",
-			args:    "text",
-			want:    want{s: "", x: false},
+			name: "test2",
+			args: "text",
+			want: want{s: "", x: false},
 		},
 		{
 			name:    "test3 only -s",
@@ -41,29 +41,29 @@ func Test_parse(t *testing.T) { //nolint: all
 			wantErr: true,
 		},
 		{
-			name:    "test3 only -s with single space",
-			args:    "-s ",
-			want:    want{s: "", x: false},
+			name: "test3 only -s with single space",
+			args: "-s ",
+			want: want{s: "", x: false},
 		},
 		{
-			name:    "test4",
-			args:    `-s *1111:00-1111:30`,
-			want:    want{s: "*1111:00-1111:30", x: false},
+			name: "test4",
+			args: `-s *1111:00-1111:30`,
+			want: want{s: "*1111:00-1111:30", x: false},
 		},
 		{
-			name:    "test5 extract audio",
-			args:    `-s *1111:00-1111:30 -x`,
-			want:    want{s: "*1111:00-1111:30", x: true},
+			name: "test5 extract audio",
+			args: `-s *1111:00-1111:30 -x`,
+			want: want{s: "*1111:00-1111:30", x: true},
 		},
 		{
-			name:    "test6 extract audio",
-			args:    `-x -s *1111:00-1111:30`,
-			want:    want{s: "*1111:00-1111:30", x: true},
+			name: "test6 extract audio",
+			args: `-x -s *1111:00-1111:30`,
+			want: want{s: "*1111:00-1111:30", x: true},
 		},
 		{
-			name:    "test7 extract audio",
-			args:    `-x`,
-			want:    want{s: "*1111:00-1111:30", x: true},
+			name: "test7 extract audio",
+			args: `-x`,
+			want: want{s: "*1111:00-1111:30", x: true},
 		},
 	}
 	for _, tt := range tests {

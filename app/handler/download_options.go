@@ -66,6 +66,6 @@ func alterDownloadOptions(u *tgbotapi.Update, url string, opts *goutubedl.Option
 		log.Printf("*** Extracting audio from the video")
 		do.DownloadAudioOnly = true
 	}
-	
+
 	return do
 }

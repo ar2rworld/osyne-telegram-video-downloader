@@ -6,29 +6,30 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
 	"github.com/jessevdk/go-flags"
 )
 
 const DefaultSections = "*0:0-0:30"
 
 type UserOptions struct {
-    Sections     *string `short:"s" long:"sections" description:"Download sections"`
-    ExtractAudio *bool   `short:"x" long:"extract-audio" description:"Extract audio from video"`
-	}
+	Sections     *string `description:"Download sections"        long:"sections"      short:"s"`
+	ExtractAudio *bool   `description:"Extract audio from video" long:"extract-audio" short:"x"`
+}
 
 // parses the string and return UserOptions
 func parse(s string) (*UserOptions, error) {
-    opts := &UserOptions{}
+	opts := &UserOptions{}
 
-    parser := flags.NewParser(opts, flags.None)
-    
-    args := strings.Split(s, " ")
-    _, err := parser.ParseArgs(args)
-    if err != nil {
-        return nil, fmt.Errorf("error parsing arguments: %w", err)
-    }
+	parser := flags.NewParser(opts, flags.None)
 
-    return opts, nil
+	args := strings.Split(s, " ")
+	_, err := parser.ParseArgs(args)
+	if err != nil {
+		return nil, fmt.Errorf("error parsing arguments: %w", err)
+	}
+
+	return opts, nil
 }
 
 // parse youtube url for current time argument

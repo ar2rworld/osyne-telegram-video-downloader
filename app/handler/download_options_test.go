@@ -66,144 +66,98 @@ func TestChangeDownloadSectionsStart(t *testing.T) {
 	}
 }
 
-// func TestAlterDownloadSections(t *testing.T) {
-// 	t.Run("Testing alterDownloadSections Youtube", func(t *testing.T) {
-// 		url := "https://www.youtube.com/watch?v=T_JKIkSf93Y"
-// 		u := &tgbotapi.Update{Message: &tgbotapi.Message{Text: url}}
-// 		opts := &goutubedl.Options{}
-// 		alterDownloadSections(u, url, opts)
-// 		assert.Equal(t, "*0:0-0:30", opts.DownloadSections)
-// 	})
-
-// 	t.Run("Testing alterDownloadSections with sections argument Youtube", func(t *testing.T) {
-// 		url := "-s *1:10-2:10 https://www.youtube.com/watch?v=T_JKIkSf93Y"
-// 		u := &tgbotapi.Update{Message: &tgbotapi.Message{Text: url}}
-// 		opts := &goutubedl.Options{}
-// 		alterDownloadSections(u, url, opts)
-// 		assert.Equal(t, "*1:10-2:10", opts.DownloadSections)
-// 	})
-
-// 	t.Run("Testing alterDownloadSections with current time in url Youtube", func(t *testing.T) {
-// 		url := "https://youtu.be/T_JKIkSf93Y?t=2289"
-// 		u := &tgbotapi.Update{Message: &tgbotapi.Message{Text: url}}
-// 		opts := &goutubedl.Options{}
-// 		alterDownloadSections(u, url, opts)
-// 		assert.Equal(t, "*38:9-38:39", opts.DownloadSections)
-// 	})
-
-// 	t.Run("Testing alterDownloadSections with sections arg and with current time in url Youtube", func(t *testing.T) {
-// 		url := "https://youtu.be/T_JKIkSf93Y?t=2289"
-// 		message := "-s *1:10-2:10 " + url
-// 		u := &tgbotapi.Update{Message: &tgbotapi.Message{Text: message}}
-// 		opts := &goutubedl.Options{}
-// 		alterDownloadSections(u, url, opts)
-// 		assert.Equal(t, "*1:10-2:10", opts.DownloadSections)
-// 	})
-
-// 	t.Run("Testing alterDownloadSections with current time in url Youtube", func(t *testing.T) {
-// 		url := "https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s"
-// 		u := &tgbotapi.Update{Message: &tgbotapi.Message{Text: url}}
-// 		opts := &goutubedl.Options{}
-// 		alterDownloadSections(u, url, opts)
-// 		assert.Equal(t, "*3:19-3:49", opts.DownloadSections)
-// 		// if opts.DownloadSections != "*3:20-3:49" {
-
-// 		// }
-// 	})
-// }
-
-func TestAlterDownloadOptions(t *testing.T) {
+func TestAlterDownloadOptions(t *testing.T) { //nolint: funlen
 	// Claude 3.5 Sonnet.
 	emptyDownloadOptions := &goutubedl.DownloadOptions{}
 	tests := []struct {
-		name           string
-		inputURL       string
-		inputMessage   string
-		expectedOutput string
+		name                    string
+		inputURL                string
+		inputMessage            string
+		expectedOutput          string
 		expectedDownloadOptions *goutubedl.DownloadOptions
 	}{
 		{
-			name:           "Youtube URL",
-			inputURL:       "https://www.youtube.com/watch?v=T_JKIkSf93Y",
-			inputMessage:   "https://www.youtube.com/watch?v=T_JKIkSf93Y",
-			expectedOutput: "*0:0-0:30",
+			name:                    "Youtube URL",
+			inputURL:                "https://www.youtube.com/watch?v=T_JKIkSf93Y",
+			inputMessage:            "https://www.youtube.com/watch?v=T_JKIkSf93Y",
+			expectedOutput:          "*0:0-0:30",
 			expectedDownloadOptions: emptyDownloadOptions,
 		},
 		{
-			name:           "Youtube URL with sections argument",
-			inputURL:       "https://www.youtube.com/watch?v=T_JKIkSf93Y",
-			inputMessage:   "-s *1:10-2:10 https://www.youtube.com/watch?v=T_JKIkSf93Y",
-			expectedOutput: "*1:10-2:10",
+			name:                    "Youtube URL with sections argument",
+			inputURL:                "https://www.youtube.com/watch?v=T_JKIkSf93Y",
+			inputMessage:            "-s *1:10-2:10 https://www.youtube.com/watch?v=T_JKIkSf93Y",
+			expectedOutput:          "*1:10-2:10",
 			expectedDownloadOptions: emptyDownloadOptions,
 		},
 		{
-			name:           "Youtube URL with current time",
-			inputURL:       "https://youtu.be/T_JKIkSf93Y?t=2289",
-			inputMessage:   "https://youtu.be/T_JKIkSf93Y?t=2289",
-			expectedOutput: "*38:9-38:39",
+			name:                    "Youtube URL with current time",
+			inputURL:                "https://youtu.be/T_JKIkSf93Y?t=2289",
+			inputMessage:            "https://youtu.be/T_JKIkSf93Y?t=2289",
+			expectedOutput:          "*38:9-38:39",
 			expectedDownloadOptions: emptyDownloadOptions,
 		},
 		{
-			name:           "Youtube URL with sections arg and current time",
-			inputURL:       "https://youtu.be/T_JKIkSf93Y?t=2289",
-			inputMessage:   "-s *1:10-2:10 https://youtu.be/T_JKIkSf93Y?t=2289",
-			expectedOutput: "*1:10-2:10",
+			name:                    "Youtube URL with sections arg and current time",
+			inputURL:                "https://youtu.be/T_JKIkSf93Y?t=2289",
+			inputMessage:            "-s *1:10-2:10 https://youtu.be/T_JKIkSf93Y?t=2289",
+			expectedOutput:          "*1:10-2:10",
 			expectedDownloadOptions: emptyDownloadOptions,
 		},
 		{
-			name:           "Youtube URL with current time (alternate format)",
-			inputURL:       "https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s",
-			inputMessage:   "https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s",
-			expectedOutput: "*3:19-3:49",
+			name:                    "Youtube URL with current time (alternate format)",
+			inputURL:                "https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s",
+			inputMessage:            "https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s",
+			expectedOutput:          "*3:19-3:49",
 			expectedDownloadOptions: emptyDownloadOptions,
 		},
 		{
-			name:           "Youtube URL with current time (alternate format)",
-			inputURL:       "https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s",
-			inputMessage:   "https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s",
-			expectedOutput: "*3:19-3:49",
+			name:                    "Youtube URL with current time (alternate format)",
+			inputURL:                "https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s",
+			inputMessage:            "https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s",
+			expectedOutput:          "*3:19-3:49",
 			expectedDownloadOptions: emptyDownloadOptions,
 		},
 		{
-			name:           "Youtube URL with timestamp and -x",
-			inputURL:       "https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s",
-			inputMessage:   "-x https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s",
-			expectedOutput: "*3:19-3:49",
+			name:                    "Youtube URL with timestamp and -x",
+			inputURL:                "https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s",
+			inputMessage:            "-x https://www.youtube.com/watch?v=AWVUp12XPpU&t=199s",
+			expectedOutput:          "*3:19-3:49",
 			expectedDownloadOptions: &goutubedl.DownloadOptions{DownloadAudioOnly: true},
 		},
 		{
-			name:           "Youtube URL and -x",
-			inputURL:       "https://www.youtube.com/watch?v=AWVUp12XPpU",
-			inputMessage:   "-x https://www.youtube.com/watch?v=AWVUp12XPpU&",
-			expectedOutput: "",
+			name:                    "Youtube URL and -x",
+			inputURL:                "https://www.youtube.com/watch?v=AWVUp12XPpU",
+			inputMessage:            "-x https://www.youtube.com/watch?v=AWVUp12XPpU&",
+			expectedOutput:          "",
 			expectedDownloadOptions: &goutubedl.DownloadOptions{DownloadAudioOnly: true},
 		},
 		{
-			name: "test if no x and no s",
-			inputURL: "https://www.youtube.com/watch?v=AWVUp12XPpU",
-			inputMessage: "https://www.youtube.com/watch?v=AWVUp12XPpU",
-			expectedOutput: "*0:0-0:30",
+			name:                    "test if no x and no s",
+			inputURL:                "https://www.youtube.com/watch?v=AWVUp12XPpU",
+			inputMessage:            "https://www.youtube.com/watch?v=AWVUp12XPpU",
+			expectedOutput:          "*0:0-0:30",
 			expectedDownloadOptions: &goutubedl.DownloadOptions{DownloadAudioOnly: false},
 		},
 		{
-			name: "test if no x and s",
-			inputURL: "https://www.youtube.com/watch?v=AWVUp12XPpU",
-			inputMessage: "-s *0:5-0:35 https://www.youtube.com/watch?v=AWVUp12XPpU",
-			expectedOutput: "*0:5-0:35",
+			name:                    "test if no x and s",
+			inputURL:                "https://www.youtube.com/watch?v=AWVUp12XPpU",
+			inputMessage:            "-s *0:5-0:35 https://www.youtube.com/watch?v=AWVUp12XPpU",
+			expectedOutput:          "*0:5-0:35",
 			expectedDownloadOptions: &goutubedl.DownloadOptions{DownloadAudioOnly: false},
 		},
 		{
-			name: "test if x and no s",
-			inputURL: "https://www.youtube.com/watch?v=AWVUp12XPpU",
-			inputMessage: "-x https://www.youtube.com/watch?v=AWVUp12XPpU",
-			expectedOutput: "",
+			name:                    "test if x and no s",
+			inputURL:                "https://www.youtube.com/watch?v=AWVUp12XPpU",
+			inputMessage:            "-x https://www.youtube.com/watch?v=AWVUp12XPpU",
+			expectedOutput:          "",
 			expectedDownloadOptions: &goutubedl.DownloadOptions{DownloadAudioOnly: true},
 		},
 		{
-			name: "test if x and s",
-			inputURL: "https://www.youtube.com/watch?v=AWVUp12XPpU",
-			inputMessage: "-s  *0:0-0:40 -x https://www.youtube.com/watch?v=AWVUp12XPpU",
-			expectedOutput: "*0:0-0:40",
+			name:                    "test if x and s",
+			inputURL:                "https://www.youtube.com/watch?v=AWVUp12XPpU",
+			inputMessage:            "-s  *0:0-0:40 -x https://www.youtube.com/watch?v=AWVUp12XPpU",
+			expectedOutput:          "*0:0-0:40",
 			expectedDownloadOptions: &goutubedl.DownloadOptions{DownloadAudioOnly: true},
 		},
 	}
