@@ -3,11 +3,14 @@ package downloader
 import (
 	"context"
 	"io"
+	"math"
 	"os"
 	"os/exec"
 
 	"github.com/wader/goutubedl"
 )
+
+const MaxFileNameLength = 90
 
 func DownloadVideo(url string, opts goutubedl.Options, do *goutubedl.DownloadOptions) (string, error) {
 	goutubedl.Path = "yt-dlp"
@@ -32,7 +35,7 @@ func DownloadVideo(url string, opts goutubedl.Options, do *goutubedl.DownloadOpt
 	}
 	defer downloadResult.Close()
 
-	output := result.Info.Title
+	output := cutString(result.Info.Title, MaxFileNameLength) + result.Info.Ext
 
 	f, err := os.CreateTemp("", output)
 	if err != nil {
@@ -58,4 +61,12 @@ func DownloadWithCookies(url, cookiesPath string) (string, error) {
 	}
 
 	return fileName, nil
+}
+
+func cutString(s string, maxLength int) string {
+	absMaxLength := int(math.Abs(float64(maxLength)))
+	if len(s) <= absMaxLength {
+		return s
+	}
+	return s[:absMaxLength]
 }
