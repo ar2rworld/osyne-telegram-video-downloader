@@ -47,7 +47,7 @@ func (h *Handler) VideoMessage(u *tgbotapi.Update, url string) error {
 	if err != nil {
 		return err
 	}
- 
+
 	remove = append(remove, fileName)
 
 	log.Println("*** Downloaded video without errors")
