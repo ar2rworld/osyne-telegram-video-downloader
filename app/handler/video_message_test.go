@@ -13,5 +13,5 @@ func TestSetupCookies(t *testing.T) {
 	opts := &goutubedl.Options{}
 	isYoutubeVideo := false
 	h.setupCookies(url, opts, isYoutubeVideo)
-	assert.Equal(t, opts.Cookies, "g")
+	assert.Equal(t, "g", opts.Cookies)
 }

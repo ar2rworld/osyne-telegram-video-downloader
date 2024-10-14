@@ -75,7 +75,7 @@ func cutString(s string, maxLength int) string {
 
 func ConvertToUTF8(s string) string {
 	result := make([]byte, 0, len(s))
-	for len(s) > 0 {
+	for s != "" {
 		r, size := utf8.DecodeRuneInString(s)
 		if r != utf8.RuneError || size > 1 {
 			result = append(result, s[:size]...)
