@@ -73,6 +73,7 @@ func TestMatchYoutubeShorts(t *testing.T) {
 		{"Without https", "Some text youtube.com/shorts/G90KEDm_G28?feature=share", "youtube.com/shorts/G90KEDm_G28?feature=share"},
 		{"Youtube video", "Some text https://www.youtube.com/watch?v=rfwnQzS9KkA", ""},
 		{"Short link", "Some text https://youtu.be/rfwnQzS9KkA", ""},
+		{"http youtubeshorts no params", "https://youtube.com/shorts/id", "https://youtube.com/shorts/id"},
 	}
 
 	for _, matchingCase := range MatchingCases {
