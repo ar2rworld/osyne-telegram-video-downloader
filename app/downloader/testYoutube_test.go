@@ -58,3 +58,30 @@ func TestCutString(t *testing.T) {
 		})
 	}
 }
+
+func TestConvertToUTF8(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{"ASCII only", "Hello, World!", "Hello, World!"},
+		{"UTF-8 characters", "こんにちは世界", "こんにちは世界"},
+		{"Mixed valid and invalid", "Hello\xFFWorld", "HelloWorld"},
+		{"All invalid", "\xF0\x8C\xBC", ""},
+		{"Empty string", "", ""},
+		{"Emoji", "👋🌍", "👋🌍"},
+		{"Mixed script", "Hello världen こんにちは 123", "Hello världen こんにちは 123"},
+		{"Invalid sequence with valid ASCII", "\xf0(\x8c\xbc", "("},
+		{"Multiple invalid sequences", "a\xFFb\xFEc\xFD", "abc"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := ConvertToUTF8(tt.input)
+			if result != tt.expected {
+				t.Errorf("%s ConvertToUTF8(%q) = %q; want %q", tt.name, tt.input, result, tt.expected)
+			}
+		})
+	}
+}

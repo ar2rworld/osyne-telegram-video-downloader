@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"os/exec"
+	"unicode/utf8"
 
 	"github.com/wader/goutubedl"
 )
@@ -35,7 +36,8 @@ func DownloadVideo(url string, opts goutubedl.Options, do *goutubedl.DownloadOpt
 	}
 	defer downloadResult.Close()
 
-	output := cutString(result.Info.Title, MaxFileNameLength) + result.Info.Ext
+	title := ConvertToUTF8(result.Info.Title)
+	output := cutString(title, MaxFileNameLength) + result.Info.Ext
 
 	f, err := os.CreateTemp("", output)
 	if err != nil {
@@ -69,4 +71,16 @@ func cutString(s string, maxLength int) string {
 		return s
 	}
 	return s[:absMaxLength]
+}
+
+func ConvertToUTF8(s string) string {
+	result := make([]byte, 0, len(s))
+	for len(s) > 0 {
+		r, size := utf8.DecodeRuneInString(s)
+		if r != utf8.RuneError || size > 1 {
+			result = append(result, s[:size]...)
+		}
+		s = s[size:]
+	}
+	return string(result)
 }
