@@ -2,7 +2,6 @@ package downloader
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"math"
 	"os"
@@ -44,12 +43,12 @@ func DownloadVideo(url string, opts goutubedl.Options, do *goutubedl.DownloadOpt
 
 	f, err := os.CreateTemp("", output)
 	if err != nil {
-		return "", fmt.Errorf("error creating temp file: %s", err)
+		return "", err
 	}
 	defer f.Close()
 	_, err = io.Copy(f, downloadResult)
 	if err != nil {
-		return "", fmt.Errorf("error coping video result to file: %s", err)
+		return "", err
 	}
 
 	return f.Name(), nil
