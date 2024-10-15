@@ -2,10 +2,13 @@ package downloader
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"math"
 	"os"
 	"os/exec"
+	"regexp"
+	"strings"
 	"unicode/utf8"
 
 	"github.com/wader/goutubedl"
@@ -36,17 +39,17 @@ func DownloadVideo(url string, opts goutubedl.Options, do *goutubedl.DownloadOpt
 	}
 	defer downloadResult.Close()
 
-	title := ConvertToUTF8(result.Info.Title)
+	title := RemoveNonAlphanumericRegex(ConvertToUTF8(result.Info.Title))
 	output := cutString(title, MaxFileNameLength) + result.Info.Ext
 
 	f, err := os.CreateTemp("", output)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("error creating temp file: %s", err)
 	}
 	defer f.Close()
 	_, err = io.Copy(f, downloadResult)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("error coping video result to file: %s", err)
 	}
 
 	return f.Name(), nil
@@ -83,4 +86,11 @@ func ConvertToUTF8(s string) string {
 		s = s[size:]
 	}
 	return string(result)
+}
+
+// RemoveNonAlphanumericRegex uses a regular expression to remove non-alphanumeric characters.
+// This version also preserves spaces but trims leading and trailing whitespace.
+func RemoveNonAlphanumericRegex(s string) string {
+	reg := regexp.MustCompile(`[^a-zA-Z0-9\s]+`)
+	return strings.TrimSpace(reg.ReplaceAllString(s, ""))
 }
