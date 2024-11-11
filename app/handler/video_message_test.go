@@ -8,7 +8,7 @@ import (
 )
 
 func TestSetupCookies(t *testing.T) {
-	h := NewHandler(nil, "i", "g")
+	h := NewHandler(nil, "c", "i", "g")
 	url := "https://youtube.com/shorts/id"
 	opts := &goutubedl.Options{}
 	isYoutubeVideo := false

@@ -14,13 +14,15 @@ import (
 
 type Handler struct {
 	bot                  *tgbotapi.BotAPI
+	CookiesPath          string // Added this field
 	InstagramCookiesPath string
 	GoogleCookiesPath    string
 }
 
-func NewHandler(bot *tgbotapi.BotAPI, i, g string) *Handler {
+func NewHandler(bot *tgbotapi.BotAPI, c, i, g string) *Handler {
 	return &Handler{
 		bot:                  bot,
+		CookiesPath:          c,
 		InstagramCookiesPath: i,
 		GoogleCookiesPath:    g,
 	}

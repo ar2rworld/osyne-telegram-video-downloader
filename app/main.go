@@ -29,13 +29,13 @@ func main() { //nolint: funlen,gocyclo,cyclop
 		log.Fatalln(err)
 	}
 
+	cookiesPath := os.Getenv("COOKIES_PATH")
 	instagramCookiesPath := os.Getenv("INSTAGRAM_COOKIES_PATH")
 	googleCookiesPath := os.Getenv("GOOGLE_COOKIES_PATH")
 
 	botAPI.Debug = false
 
 	updateConfig := tgbotapi.NewUpdate(0)
-
 	updateConfig.Timeout = 30
 	updates := botAPI.GetUpdatesChan(updateConfig)
 
@@ -44,7 +44,7 @@ func main() { //nolint: funlen,gocyclo,cyclop
 	sentMessage, err := botAPI.Send(helloMessage)
 	myerrors.CheckTextMessage(&helloMessage, err, &sentMessage)
 
-	h := handler.NewHandler(botAPI, instagramCookiesPath, googleCookiesPath)
+	h := handler.NewHandler(botAPI, cookiesPath, instagramCookiesPath, googleCookiesPath)
 	botService := botservice.NewBotService(botAPI, logChannelID)
 
 	for update := range updates {
@@ -54,18 +54,28 @@ func main() { //nolint: funlen,gocyclo,cyclop
 
 		messageText := update.Message.Text
 
-		url := match.Match(messageText)
-
-		if url != "" { //nolint: nestif
-			err := h.VideoMessage(&update, url)
+		// Inside the main loop where you handle updates
+		if update.Message.From.ID == adminID && update.Message.Document != nil {
+			err := h.HandleAdminMessage(&update)
 			if err != nil {
 				log.Println(err)
-
 				err = botService.Log(&update, err)
 				if err != nil {
 					log.Println(err)
 				}
+			}
+			continue
+		}
 
+		url := match.Match(messageText)
+		if url != "" { //nolint: nestif
+			err := h.VideoMessage(&update, url)
+			if err != nil {
+				log.Println(err)
+				err = botService.Log(&update, err)
+				if err != nil {
+					log.Println(err)
+				}
 				err = h.ThumbDown(&update)
 				if err != nil {
 					log.Println("Error while reacting:", err)
