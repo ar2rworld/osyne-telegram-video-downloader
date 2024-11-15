@@ -12,6 +12,14 @@ func (h *Handler) ThumbDown(u *tgbotapi.Update) error {
 	return h.reaction(u, thumbdown)
 }
 
+func (h *Handler) Whaat(u *tgbotapi.Update) error {
+	whaat := tgbotapi.ReactionType{
+		Type:  "emoji",
+		Emoji: "🤔",
+	}
+	return h.reaction(u, whaat)
+}
+
 func (h *Handler) reaction(update *tgbotapi.Update, reaction tgbotapi.ReactionType) error {
 	r := tgbotapi.SetMessageReactionConfig{
 		BaseChatMessage: tgbotapi.BaseChatMessage{

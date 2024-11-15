@@ -8,23 +8,36 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/wader/goutubedl"
 
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/botservice"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/downloader"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
 )
 
 type Handler struct {
 	bot                  *tgbotapi.BotAPI
+	botService           *botservice.BotService
 	CookiesPath          string // Added this field
 	InstagramCookiesPath string
 	GoogleCookiesPath    string
 }
 
-func NewHandler(bot *tgbotapi.BotAPI, c, i, g string) *Handler {
+func NewHandler(bot *tgbotapi.BotAPI, botService *botservice.BotService, c, i, g string) *Handler {
 	return &Handler{
 		bot:                  bot,
+		botService:           botService,
 		CookiesPath:          c,
 		InstagramCookiesPath: i,
 		GoogleCookiesPath:    g,
+	}
+}
+
+func (h *Handler) HandleError(u *tgbotapi.Update, err error) {
+	if err != nil {
+		log.Println(err)
+		err = h.botService.Log(u, err)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 }
 

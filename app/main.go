@@ -1,9 +1,11 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
@@ -44,8 +46,8 @@ func main() { //nolint: funlen,gocyclo,cyclop
 	sentMessage, err := botAPI.Send(helloMessage)
 	myerrors.CheckTextMessage(&helloMessage, err, &sentMessage)
 
-	h := handler.NewHandler(botAPI, cookiesPath, instagramCookiesPath, googleCookiesPath)
 	botService := botservice.NewBotService(botAPI, logChannelID)
+	h := handler.NewHandler(botAPI, botService, cookiesPath, instagramCookiesPath, googleCookiesPath)
 
 	for update := range updates {
 		if update.Message == nil {
@@ -54,28 +56,29 @@ func main() { //nolint: funlen,gocyclo,cyclop
 
 		messageText := update.Message.Text
 
-		// Inside the main loop where you handle updates
-		if update.Message.From.ID == adminID && update.Message.Document != nil {
-			err := h.HandleAdminMessage(&update)
-			if err != nil {
-				log.Println(err)
-				err = botService.Log(&update, err)
-				if err != nil {
-					log.Println(err)
-				}
+		if len(update.Message.Entities) > 0 && update.Message.ReplyToMessage != nil && strings.Contains(messageText, botAPI.Self.UserName) {
+			err = h.HandleMentionMessage(&update)
+			if err != nil && errors.Is(err, handler.ErrNoURLFound) {
+				err = h.Whaat(&update)
+				h.HandleError(&update, err)
+			} else if err != nil {
+				h.HandleError(&update, err)
 			}
 			continue
 		}
 
+		// Inside the main loop where you handle updates
+		if update.Message.From.ID == adminID && update.Message.Document != nil {
+			err := h.HandleAdminMessage(&update)
+			h.HandleError(&update, err)
+			continue
+		}
+
 		url := match.Match(messageText)
-		if url != "" { //nolint: nestif
+		if url != "" { 
 			err := h.VideoMessage(&update, url)
 			if err != nil {
-				log.Println(err)
-				err = botService.Log(&update, err)
-				if err != nil {
-					log.Println(err)
-				}
+				h.HandleError(&update, err)
 				err = h.ThumbDown(&update)
 				if err != nil {
 					log.Println("Error while reacting:", err)
