@@ -75,7 +75,7 @@ func main() { //nolint: funlen,gocyclo,cyclop
 		}
 
 		url := match.Match(messageText)
-		if url != "" { 
+		if url != "" {
 			err := h.VideoMessage(&update, url)
 			if err != nil {
 				h.HandleError(&update, err)
