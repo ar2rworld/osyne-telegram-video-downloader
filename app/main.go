@@ -75,19 +75,26 @@ func main() { //nolint: funlen,gocyclo,cyclop
 		}
 
 		url := match.Match(messageText)
-		if url != "" {
+
+		switch {
+		case url != "":
 			err := h.VideoMessage(&update, url)
 			if err != nil {
 				h.HandleError(&update, err)
-				err = h.ThumbDown(&update)
-				if err != nil {
+				if err := h.ThumbDown(&update); err != nil {
 					log.Println("Error while reacting:", err)
 				}
 			}
-		} else if messageText == "osyndaisyn ba?" {
+
+		case messageText == "osyndaisyn ba?":
 			message := tgbotapi.NewMessage(update.Message.Chat.ID, "osyndaymyn")
 			sentMessage, err := botAPI.Send(message)
 			myerrors.CheckTextMessage(&message, err, &sentMessage)
+
+		case update.Message.Chat.ID == update.Message.From.ID:
+			// No URL found in private message
+			err := h.Whaat(&update)
+			h.HandleError(&update, err)
 		}
 	}
 }

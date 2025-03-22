@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/wader/goutubedl"
@@ -32,12 +33,28 @@ func NewHandler(bot *tgbotapi.BotAPI, botService *botservice.BotService, c, i, g
 }
 
 func (h *Handler) HandleError(u *tgbotapi.Update, err error) {
-	if err != nil {
-		log.Println(err)
-		err = h.botService.Log(u, err)
+	if err == nil {
+		return
+	}
+
+	// catches json: cannot unmarshal bool into Go value of type tgbotapi.Message
+	if strings.Contains(err.Error(), "cannot unmarshal bool") {
+		return
+	}
+
+	// if error accured in private message, let user know that there is an error
+	if u.Message != nil && u.Message.Chat.ID == u.Message.From.ID {
+		msg := tgbotapi.NewMessage(u.Message.Chat.ID, "Something went wrong, I will let the Creator know")
+		_, err = h.bot.Send(msg)
 		if err != nil {
 			log.Println(err)
 		}
+	}
+
+	log.Println(err)
+	err = h.botService.Log(u, err)
+	if err != nil {
+		log.Println(err)
 	}
 }
 
