@@ -101,6 +101,7 @@ This project is licensed under the [MIT License](LICENSE).
   - adding volume to the local folder with cookies.txt file
   - read a file everytime instagram.com requested
   - setting up cookies from env var (Done)
+  - bot will replace cookies file in direct message for google and instagram
 - Add https://golangci-lint.run/, locally could be run with https://pre-commit.com/, or with editor extention
   - https://gist.github.com/pantafive/3296201ef3dc14a71139cae157aa8c34
   - Also add to cicd (Done)
@@ -113,4 +114,4 @@ This project is licensed under the [MIT License](LICENSE).
   - add who sent, link to video
 
 
-*Thanks to ChatGPT3.5*
+*Thanks to @pantafive, ChatGPT 3.5, 4o*

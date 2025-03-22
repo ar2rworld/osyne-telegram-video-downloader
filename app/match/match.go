@@ -5,7 +5,7 @@ import (
 )
 
 func Match(s string) string {
-	pattern := `(https?:\/\/)?(www|vm)?\.?(youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/|twitter\.com\/|tiktok\.com\/|instagram\.com\/)[^\s]+`
+	pattern := `(https?:\/\/)?(www|vm)?\.?(youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/|twitter\.com\/|tiktok\.com\/|instagram\.com\/|facebook\.com\/(?:reel|share\/r\/))[^\s]+`
 	re := regexp.MustCompile(pattern)
 	matches := re.FindAllString(s, -1)
 	if len(matches) > 0 {
@@ -61,6 +61,16 @@ func YoutubeShorts(s string) string {
 // Match only instagram content
 func Instagram(s string) string {
 	pattern := `(https?:\/\/)?(www)?\.?(instagram\.com)[^\s]+`
+	re := regexp.MustCompile(pattern)
+	matches := re.FindAllString(s, -1)
+	if len(matches) > 0 {
+		return matches[0]
+	}
+	return ""
+}
+
+func FacebookReels(s string) string {
+	pattern := `(https?:\/\/)?(www\.)?(facebook\.com\/(?:reel|share\/r\/)[^\s]+)`
 	re := regexp.MustCompile(pattern)
 	matches := re.FindAllString(s, -1)
 	if len(matches) > 0 {

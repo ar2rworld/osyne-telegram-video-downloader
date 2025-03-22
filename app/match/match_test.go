@@ -221,3 +221,30 @@ func TestMatchInstagram(t *testing.T) {
 		})
 	}
 }
+
+func TestMatchFacebookReels(t *testing.T) {
+	MatchingCases := []struct {
+		Name string
+		Text string
+		URL  string
+	}{
+		{"Empty", "Some text", ""},
+		{"Don't match tiktok", "https://vm.tiktok.com/ZM2KGqk1v/", ""},
+		{"Don't match youtube", "https://youtube.com/shorts/G90KEDm_G28?feature=share", ""},
+		{"Facebook reels direct link", "https://www.facebook.com/reel/643236801729548", "https://www.facebook.com/reel/643236801729548"},
+		{"Facebook reels direct link with some text", "Hello guys, my dad just sent me this https://www.facebook.com/reel/643236801729548 amazing right?", "https://www.facebook.com/reel/643236801729548"},
+		{"Facebook reels share option", "https://www.facebook.com/share/r/1DBVN8ZL9n/", "https://www.facebook.com/share/r/1DBVN8ZL9n/"},
+		{"Facebook reels no https", "www.facebook.com/share/r/1DBVN8ZL9n/", "www.facebook.com/share/r/1DBVN8ZL9n/"},
+		{"Facebook reels no https no www", "facebook.com/share/r/1DBVN8ZL9n/", "facebook.com/share/r/1DBVN8ZL9n/"},
+	}
+
+	for _, matchingCase := range MatchingCases {
+		t.Run(matchingCase.Name, func(tt *testing.T) {
+			got := FacebookReels(matchingCase.Text)
+			want := matchingCase.URL
+			if got != want {
+				tt.Errorf("Couldn't match: \"%s\" -> \"%s\", got:\"%s\"", matchingCase.Text, want, got)
+			}
+		})
+	}
+}
