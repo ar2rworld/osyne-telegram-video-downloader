@@ -4,8 +4,9 @@ import (
 	"regexp"
 )
 
+// Match - matches all the media sources supported by bot (e.g. youtube, youtube shorts, tiktok, instagram, ...)
 func Match(s string) string {
-	pattern := `(https?:\/\/)?(www|vm)?\.?(youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/|twitter\.com\/|tiktok\.com\/|instagram\.com\/|facebook\.com\/(?:reel|share\/r\/))[^\s]+`
+	pattern := `(https?:\/\/)?(www|vm)?\.?(youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/|twitter\.com\/|x\.com\/|tiktok\.com\/|instagram\.com\/|facebook\.com\/(?:reel|share\/r\/))[^\s]+`
 	re := regexp.MustCompile(pattern)
 	matches := re.FindAllString(s, -1)
 	if len(matches) > 0 {
@@ -69,6 +70,7 @@ func Instagram(s string) string {
 	return ""
 }
 
+// Match only Facebook reels
 func FacebookReels(s string) string {
 	pattern := `(https?:\/\/)?(www\.)?(facebook\.com\/(?:reel|share\/r\/)[^\s]+)`
 	re := regexp.MustCompile(pattern)

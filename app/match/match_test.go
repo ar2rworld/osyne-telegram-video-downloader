@@ -14,6 +14,8 @@ func TestMatch(t *testing.T) {
 		{"Only isntagram", "https://www.instagram.com/reel/Cv-hdiDt9Ix/", "https://www.instagram.com/reel/Cv-hdiDt9Ix/"},
 		{"Only tiktok", "https://vm.tiktok.com/ZM2KGqk1v/", "https://vm.tiktok.com/ZM2KGqk1v/"},
 		{"Only twitter", "https://twitter.com/webflite/status/1692079842689159520?s=20", "https://twitter.com/webflite/status/1692079842689159520?s=20"},
+		{"Only x.com", "https://x.com/KeyDatch/status/1903332041124368783", "https://x.com/KeyDatch/status/1903332041124368783"},
+		{"Some other blahblahx.com", "blahblahx.com", ""},
 		{"Only youtubeshorts", "https://youtube.com/shorts/G90KEDm_G28?feature=share", "https://youtube.com/shorts/G90KEDm_G28?feature=share"},
 		{"Without https", "Some text youtube.com/shorts/G90KEDm_G28?feature=share", "youtube.com/shorts/G90KEDm_G28?feature=share"},
 		{"Short Youtube link", "Some text https://youtu.be/rfwnQzS9KkA", "https://youtu.be/rfwnQzS9KkA"},
