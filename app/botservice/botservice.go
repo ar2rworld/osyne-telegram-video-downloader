@@ -19,8 +19,12 @@ func NewBotService(api *tgbotapi.BotAPI, logChannelID int64) *BotService {
 }
 
 func (b *BotService) Log(u *tgbotapi.Update, err error) error {
-	if u.Message == nil {
+	if u != nil && u.Message == nil {
 		log.Println("BotService Log used without message in update")
+		return nil
+	}
+	if err == nil {
+		log.Println("BotService Log used without error")
 		return nil
 	}
 
