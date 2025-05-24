@@ -42,7 +42,7 @@ func TestCutString(t *testing.T) {
 		{"String equal to max", "Hello", 5, "Hello"},
 		{"String longer than max", "Hello, World!", 5, "Hello"},
 		{"Max length 0", "Hello", 0, ""},
-		{"Unicode characters", "你好世界", 2, "\xe4\xbd"},
+		{"Unicode characters", "你好世界", 2, "\xe4\xbd"}, //nolint:gosmopolitan
 		{"Max length 1", "Hello", 1, "H"},
 		{"Spaces in string", "Hello World", 6, "Hello "},
 		{"Very long string", "This is a very long string", 10, "This is a "},
@@ -66,7 +66,7 @@ func TestConvertToUTF8(t *testing.T) {
 		expected string
 	}{
 		{"ASCII only", "Hello, World!", "Hello, World!"},
-		{"UTF-8 characters", "こんにちは世界", "こんにちは世界"},
+		{"UTF-8 characters", "こんにちは世界", "こんにちは世界"}, //nolint:gosmopolitan
 		{"Mixed valid and invalid", "Hello\xFFWorld", "HelloWorld"},
 		{"All invalid", "\xF0\x8C\xBC", ""},
 		{"Empty string", "", ""},
