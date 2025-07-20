@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -45,9 +46,9 @@ func (h *Handler) HandleError(u *tgbotapi.Update, err error) {
 	// if error accured in private message, let user know that there is an error
 	if u.Message != nil && u.Message.Chat.ID == u.Message.From.ID {
 		msg := tgbotapi.NewMessage(u.Message.Chat.ID, "Something went wrong, I will let the Creator know")
-		_, err = h.bot.Send(msg)
-		if err != nil {
-			log.Println(err)
+		_, sendErr := h.bot.Send(msg)
+		if sendErr != nil {
+			log.Println(sendErr)
 		}
 	}
 
@@ -95,7 +96,7 @@ func (h *Handler) VideoMessage(u *tgbotapi.Update, url string) error {
 
 	err = h.handleAudioVideoMessage(do, u, fileName)
 	if err != nil {
-		return err
+		return fmt.Errorf("error sending video/audio: %w", err)
 	}
 
 	log.Println("*** Finished sending video/audio")
