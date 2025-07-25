@@ -15,6 +15,7 @@ func (h *Handler) HandleAdminMessage(u *tgbotapi.Update) error {
 	if u.Message.Document == nil {
 		message := tgbotapi.NewMessage(u.Message.Chat.ID, "Please attach a cookies file.")
 		_, err := h.bot.Send(message)
+
 		return err
 	}
 
@@ -35,12 +36,14 @@ func (h *Handler) HandleAdminMessage(u *tgbotapi.Update) error {
 	defer newFile.Close()
 
 	ctx := context.Background()
+
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, file.Link(h.bot.Token), http.NoBody)
 	if err != nil {
 		return err
 	}
 
 	client := &http.Client{}
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return err
@@ -58,5 +61,6 @@ func (h *Handler) HandleAdminMessage(u *tgbotapi.Update) error {
 	// Send confirmation message
 	message := tgbotapi.NewMessage(u.Message.Chat.ID, "Cookies file updated successfully.")
 	_, err = h.bot.Send(message)
+
 	return err
 }

@@ -9,6 +9,7 @@ import (
 func TestParseCookieString(t *testing.T) {
 	t.Run("Parsing cookie in a string", func(t *testing.T) {
 		var cookies []*http.Cookie
+
 		cookieString := ".domain.com	TRUE	/path	TRUE	1725656330	name	value"
 		parsedCookies := ParseCookieString(cookieString, cookies)
 		targetCookie := &http.Cookie{
@@ -20,6 +21,7 @@ func TestParseCookieString(t *testing.T) {
 			Name:     "name",
 			Value:    "value",
 		}
+
 		parsedCookie := parsedCookies[0]
 		if parsedCookie.Domain != targetCookie.Domain &&
 			parsedCookie.HttpOnly != targetCookie.HttpOnly &&

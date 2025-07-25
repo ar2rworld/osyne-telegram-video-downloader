@@ -15,6 +15,7 @@ func NewClient(cookies []*http.Cookie) *http.Client {
 	client := &http.Client{
 		Jar: jar,
 	}
+
 	return client
 }
 
@@ -25,25 +26,34 @@ func NewHTTPClientFromFile(cookieFileName string) (*http.Client, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	scanner := bufio.NewScanner(f)
 	cookies := []*http.Cookie{}
+
 	for scanner.Scan() {
 		line := scanner.Text()
 		cookies = ParseCookieString(line, cookies)
 	}
+
 	client := NewClient(cookies)
+
 	return client, nil
 }
 
 func NewHTTPClientFromString(cookiesString string) (*http.Client, error) {
-	var client *http.Client
-	var cookies []*http.Cookie
+	var (
+		client  *http.Client
+		cookies []*http.Cookie
+	)
+
 	if cookiesString == "" {
 		return client, errInstagramCookiesString
 	}
+
 	for _, cookie := range strings.Split(cookiesString, "|,|") {
 		cookies = ParseCookieString(cookie, cookies)
 	}
+
 	return NewClient(cookies), nil
 }
 

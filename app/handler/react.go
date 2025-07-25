@@ -9,6 +9,7 @@ func (h *Handler) ThumbDown(u *tgbotapi.Update) error {
 		Type:  "emoji",
 		Emoji: "👎",
 	}
+
 	return h.reaction(u, thumbdown)
 }
 
@@ -17,6 +18,7 @@ func (h *Handler) Whaat(u *tgbotapi.Update) error {
 		Type:  "emoji",
 		Emoji: "🤔",
 	}
+
 	return h.reaction(u, whaat)
 }
 

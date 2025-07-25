@@ -24,6 +24,7 @@ func parse(s string) (*UserOptions, error) {
 	parser := flags.NewParser(opts, flags.None)
 
 	args := strings.Split(s, " ")
+
 	_, err := parser.ParseArgs(args)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing arguments: %w", err)

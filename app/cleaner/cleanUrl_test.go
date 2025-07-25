@@ -7,6 +7,7 @@ func TestClearUrl(t *testing.T) {
 		gotMessage string
 		wantURL    string
 	}
+
 	cases := []urlCase{
 		{
 			gotMessage: "Omg look at this empty input!",

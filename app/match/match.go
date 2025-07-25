@@ -8,10 +8,12 @@ import (
 func Match(s string) string {
 	pattern := `(https?:\/\/)?(www|vm)?\.?(youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/|twitter\.com\/|x\.com\/|tiktok\.com\/|instagram\.com\/|facebook\.com\/(?:reel|share\/r\/))[^\s]+`
 	re := regexp.MustCompile(pattern)
+
 	matches := re.FindAllString(s, -1)
 	if len(matches) > 0 {
 		return matches[0]
 	}
+
 	return ""
 }
 
@@ -20,10 +22,12 @@ func DownloadSectionsArgument(s string) string {
 	s = re.ReplaceAllString(s, " ")
 	pattern := `(-s\s+\*\d+:\d+-\d+:\d+)|(-s\s+)`
 	re = regexp.MustCompile(pattern)
+
 	matches := re.FindAllString(s, -1)
 	if len(matches) > 0 {
 		return matches[0]
 	}
+
 	return ""
 }
 
@@ -44,10 +48,12 @@ func DownloadAudioArgument(s string) string {
 func Youtube(s string) string {
 	pattern := `(https?:\/\/)?(www\.)?(youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})`
 	re := regexp.MustCompile(pattern)
+
 	matches := re.FindAllString(s, -1)
 	if len(matches) > 0 {
 		return matches[0]
 	}
+
 	return ""
 }
 
@@ -56,6 +62,7 @@ func YoutubeShorts(s string) string {
 	pattern := `(?i)(https?:\/\/)?(www\.)?(youtube|youtu)(\.com|\.be)?\/shorts\/[^\s]+`
 	re := regexp.MustCompile(pattern)
 	matches := re.FindString(s)
+
 	return matches
 }
 
@@ -63,10 +70,12 @@ func YoutubeShorts(s string) string {
 func Instagram(s string) string {
 	pattern := `(https?:\/\/)?(www)?\.?(instagram\.com)[^\s]+`
 	re := regexp.MustCompile(pattern)
+
 	matches := re.FindAllString(s, -1)
 	if len(matches) > 0 {
 		return matches[0]
 	}
+
 	return ""
 }
 
@@ -74,9 +83,11 @@ func Instagram(s string) string {
 func FacebookReels(s string) string {
 	pattern := `(https?:\/\/)?(www\.)?(facebook\.com\/(?:reel|share\/r\/)[^\s]+)`
 	re := regexp.MustCompile(pattern)
+
 	matches := re.FindAllString(s, -1)
 	if len(matches) > 0 {
 		return matches[0]
 	}
+
 	return ""
 }

@@ -17,6 +17,7 @@ func TestYoutube(t *testing.T) {
 	if err != nil {
 		t.Errorf("new goutubedl err:\n%s", err)
 	}
+
 	downloadResult, err := result.Download(context.Background(), "best[ext=mp4]/best")
 	if err != nil {
 		t.Errorf("download err:\n%s", err)
@@ -24,6 +25,7 @@ func TestYoutube(t *testing.T) {
 	defer downloadResult.Close()
 
 	mybytes := make([]byte, 128)
+
 	_, downloadErr := downloadResult.Read(mybytes)
 	if downloadErr != nil {
 		t.Errorf("err while reading download result:\n%s", downloadErr)

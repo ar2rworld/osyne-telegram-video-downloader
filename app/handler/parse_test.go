@@ -11,6 +11,7 @@ func Test_parse(t *testing.T) { //nolint: all
 		s string
 		x bool
 	}
+
 	tests := []struct {
 		name    string
 		args    string
@@ -73,12 +74,15 @@ func Test_parse(t *testing.T) { //nolint: all
 				t.Errorf("parse() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+
 			if tt.wantErr {
 				return
 			}
+
 			if got.Sections != nil {
 				assert.Equal(t, tt.want.s, *got.Sections)
 			}
+
 			if got.ExtractAudio != nil {
 				assert.Equal(t, tt.want.x, *got.ExtractAudio)
 			}

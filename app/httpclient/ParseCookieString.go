@@ -18,6 +18,7 @@ func ParseCookieString(s string, cookies []*http.Cookie) []*http.Cookie {
 		if err != nil {
 			panic(err)
 		}
+
 		timeArg := time.Unix(timestamp, 0)
 		cookies = append(
 			cookies,
@@ -32,5 +33,6 @@ func ParseCookieString(s string, cookies []*http.Cookie) []*http.Cookie {
 			},
 		)
 	}
+
 	return cookies
 }

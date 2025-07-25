@@ -23,6 +23,7 @@ func (b *BotService) Log(u *tgbotapi.Update, err error) error {
 		log.Println("BotService Log used without message in update")
 		return nil
 	}
+
 	if err == nil {
 		log.Println("BotService Log used without error")
 		return nil

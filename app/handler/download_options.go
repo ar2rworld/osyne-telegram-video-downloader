@@ -19,6 +19,7 @@ const (
 func convertSecondsToMinSec(seconds int) string {
 	minutes := seconds / secondsInMinute
 	seconds %= secondsInMinute
+
 	return strconv.Itoa(minutes) + ":" + strconv.Itoa(seconds)
 }
 
@@ -26,6 +27,7 @@ func setDownloadSections(opts *goutubedl.Options, start, finish int) *goutubedl.
 	s := convertSecondsToMinSec(start)
 	f := convertSecondsToMinSec(finish)
 	opts.DownloadSections = fmt.Sprintf("*%s-%s", s, f)
+
 	return opts
 }
 
@@ -43,8 +45,10 @@ func alterDownloadOptions(u *tgbotapi.Update, url string, opts *goutubedl.Option
 		userOptions, err := parse(sections)
 		if err != nil {
 			log.Printf("*** Error parsing video options: %s", err.Error())
+
 			*userOptions.Sections = DefaultSections
 		}
+
 		opts.DownloadSections = *userOptions.Sections
 		log.Printf("*** Downloading section of the video: %s", opts.DownloadSections)
 	} else if currentTime != "" {
@@ -52,6 +56,7 @@ func alterDownloadOptions(u *tgbotapi.Update, url string, opts *goutubedl.Option
 		if err != nil {
 			log.Printf("*** Error converting to int while changing DownloadSections for youtube: %s", err.Error())
 		}
+
 		setDownloadSections(opts, t, t+halfMinute)
 		log.Printf("*** Downloading section(%s) of the video from currentTime: %s", opts.DownloadSections, currentTime)
 	}
@@ -62,8 +67,10 @@ func alterDownloadOptions(u *tgbotapi.Update, url string, opts *goutubedl.Option
 	}
 
 	do := &goutubedl.DownloadOptions{}
+
 	if audioOnly != "" {
 		log.Printf("*** Extracting audio from the video")
+
 		do.DownloadAudioOnly = true
 	}
 
