@@ -46,7 +46,8 @@ func parseCurrentTime(videoURL string) string {
 		// Remove any non-digit characters and parse as int
 		re := regexp.MustCompile(`\d+`)
 		if match := re.FindString(t); match != "" {
-			if _, err := strconv.Atoi(match); err == nil {
+			_, err := strconv.Atoi(match)
+			if err == nil {
 				return match
 			}
 		}
