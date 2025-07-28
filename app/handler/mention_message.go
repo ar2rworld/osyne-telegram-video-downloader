@@ -14,6 +14,7 @@ import (
 var ErrNoURLFound = errors.New("no url found in message")
 
 func (h *Handler) HandleMentionMessage(ctx context.Context, u *tgbotapi.Update) error {
+
 	messageText := u.Message.Text
 	if !strings.Contains(messageText, h.bot.Self.UserName) {
 		return nil

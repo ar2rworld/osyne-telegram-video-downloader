@@ -23,7 +23,7 @@ func (h *Handler) HandleUpdate(ctx context.Context, wg *sync.WaitGroup, update *
 	messageText := update.Message.Text
 
 	if len(update.Message.Entities) > 0 && update.Message.ReplyToMessage != nil && strings.Contains(messageText, h.bot.Self.UserName) {
-		err := h.HandleMentionMessage(ctx, wg, update)
+		err := h.HandleMentionMessage(ctx, update)
 		if err != nil && errors.Is(err, ErrNoURLFound) {
 			err = h.Whaat(update)
 			h.HandleError(update, err)
