@@ -11,7 +11,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-func (h *Handler) HandleAdminMessage(u *tgbotapi.Update) error {
+func (h *Handler) HandleAdminMessage(ctx context.Context, u *tgbotapi.Update) error {
 	if u.Message.Document == nil {
 		message := tgbotapi.NewMessage(u.Message.Chat.ID, "Please attach a cookies file.")
 		_, err := h.bot.Send(message)
@@ -34,8 +34,6 @@ func (h *Handler) HandleAdminMessage(u *tgbotapi.Update) error {
 		return err
 	}
 	defer newFile.Close()
-
-	ctx := context.Background()
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, file.Link(h.bot.Token), http.NoBody)
 	if err != nil {
