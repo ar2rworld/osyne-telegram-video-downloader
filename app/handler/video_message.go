@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -46,6 +47,7 @@ func (h *Handler) HandleError(u *tgbotapi.Update, err error) {
 	// if error accured in private message, let user know that there is an error
 	if u.Message != nil && u.Message.Chat.ID == u.Message.From.ID {
 		msg := tgbotapi.NewMessage(u.Message.Chat.ID, "Something went wrong, I will let the Creator know")
+
 		_, sendErr := h.bot.Send(msg)
 		if sendErr != nil {
 			log.Println(sendErr)
@@ -53,30 +55,34 @@ func (h *Handler) HandleError(u *tgbotapi.Update, err error) {
 	}
 
 	log.Println(err)
+
 	err = h.botService.Log(u, err)
 	if err != nil {
 		log.Println(err)
 	}
 }
 
-func (h *Handler) VideoMessage(u *tgbotapi.Update, url string) error {
+func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url string) error {
 	remove := []string{}
 	defer removeFiles(remove)
 
 	log.Printf("*** Got request to download video: %s", url)
 	opts := goutubedl.Options{HTTPClient: &http.Client{}, DebugLog: log.Default()}
 	isYoutubeVideo := match.Youtube(url) != ""
+
 	do := &goutubedl.DownloadOptions{}
 	if isYoutubeVideo {
 		do = alterDownloadOptions(u, url, &opts)
 	}
 
-	var fileName string
-	var err error
+	var (
+		fileName string
+		err      error
+	)
 
 	h.setupCookies(url, &opts, isYoutubeVideo)
 
-	fileName, err = downloader.DownloadVideo(url, opts, do)
+	fileName, err = downloader.DownloadVideo(ctx, url, opts, do)
 	if err != nil {
 		return err
 	}
@@ -86,11 +92,13 @@ func (h *Handler) VideoMessage(u *tgbotapi.Update, url string) error {
 	log.Println("*** Downloaded video without errors")
 
 	if isYoutubeVideo {
-		fileName, err = downloader.Convert(fileName)
+		fileName, err = downloader.Convert(ctx, fileName)
 		if err != nil {
 			return err
 		}
+
 		remove = append(remove, fileName)
+
 		log.Println("*** Converted video without errors")
 	}
 
@@ -101,6 +109,7 @@ func (h *Handler) VideoMessage(u *tgbotapi.Update, url string) error {
 
 	log.Println("*** Finished sending video/audio")
 	removeFiles(remove)
+
 	return nil
 }
 
@@ -111,12 +120,15 @@ func (h *Handler) setupCookies(url string, opts *goutubedl.Options, isYoutubeVid
 	switch {
 	case match.Instagram(url) != "" && h.InstagramCookiesPath != "":
 		log.Println("*** Downloading Instagram with Cookies")
+
 		opts.Cookies = h.InstagramCookiesPath
 	case isYoutubeVideo && h.GoogleCookiesPath != "":
 		log.Println("*** Downloading Youtube Video with Cookies")
+
 		opts.Cookies = h.GoogleCookiesPath
 	case match.YoutubeShorts(url) != "" && h.GoogleCookiesPath != "":
 		log.Println("*** Downloading Youtube Shorts with Cookies")
+
 		opts.Cookies = h.GoogleCookiesPath
 	default:
 		log.Println("*** DownloadVideo")
@@ -125,6 +137,7 @@ func (h *Handler) setupCookies(url string, opts *goutubedl.Options, isYoutubeVid
 
 func (h *Handler) handleAudioVideoMessage(do *goutubedl.DownloadOptions, u *tgbotapi.Update, fileName string) error {
 	var err error
+
 	if do.DownloadAudioOnly {
 		log.Println("*** Started sending audio")
 

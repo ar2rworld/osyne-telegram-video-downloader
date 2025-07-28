@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"log"
 	"os"
@@ -49,6 +50,8 @@ func main() { //nolint: funlen,gocyclo,cyclop
 	botService := botservice.NewBotService(botAPI, logChannelID)
 	h := handler.NewHandler(botAPI, botService, cookiesPath, instagramCookiesPath, googleCookiesPath)
 
+	ctx := context.Background()
+
 	for update := range updates {
 		if update.Message == nil {
 			continue
@@ -57,13 +60,14 @@ func main() { //nolint: funlen,gocyclo,cyclop
 		messageText := update.Message.Text
 
 		if len(update.Message.Entities) > 0 && update.Message.ReplyToMessage != nil && strings.Contains(messageText, botAPI.Self.UserName) {
-			err = h.HandleMentionMessage(&update)
+			err = h.HandleMentionMessage(ctx, &update)
 			if err != nil && errors.Is(err, handler.ErrNoURLFound) {
 				err = h.Whaat(&update)
 				h.HandleError(&update, err)
 			} else if err != nil {
 				h.HandleError(&update, err)
 			}
+
 			continue
 		}
 
@@ -71,6 +75,7 @@ func main() { //nolint: funlen,gocyclo,cyclop
 		if update.Message.From.ID == adminID && update.Message.Document != nil {
 			err := h.HandleAdminMessage(&update)
 			h.HandleError(&update, err)
+
 			continue
 		}
 
@@ -78,10 +83,12 @@ func main() { //nolint: funlen,gocyclo,cyclop
 
 		switch {
 		case url != "":
-			err := h.VideoMessage(&update, url)
+			err := h.VideoMessage(ctx, &update, url)
 			if err != nil {
 				h.HandleError(&update, err)
-				if err := h.ThumbDown(&update); err != nil {
+
+				err := h.ThumbDown(&update)
+				if err != nil {
 					log.Println("Error while reacting:", err)
 				}
 			}
