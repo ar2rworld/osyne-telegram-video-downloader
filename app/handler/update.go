@@ -13,7 +13,7 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
 )
 
-func (h *Handler) HandleUpdate(ctx context.Context, wg *sync.WaitGroup, update *tgbotapi.Update) {
+func (h *Handler) HandleUpdate(ctx context.Context, wg *sync.WaitGroup, update *tgbotapi.Update) { //nolint: gocyclo, cyclop
 	defer wg.Done()
 
 	if update.Message == nil {

@@ -16,7 +16,7 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
 )
 
-func main() { //nolint: funlen,gocyclo,cyclop
+func main() {
 	botAPI, err := tgbotapi.NewBotAPI(os.Getenv("BOT_TOKEN"))
 	if err != nil {
 		log.Fatalln(err)
