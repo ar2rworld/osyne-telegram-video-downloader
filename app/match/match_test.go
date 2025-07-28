@@ -26,6 +26,7 @@ func TestMatch(t *testing.T) {
 	for _, matchingCase := range MatchingCases {
 		t.Run(matchingCase.Name, func(tt *testing.T) {
 			got := Match(matchingCase.Text)
+
 			want := matchingCase.URL
 			if got != want {
 				tt.Errorf("Couldn't match: \"%s\" -> \"%s\" , got:\"%s\"", matchingCase.Text, want, got)
@@ -55,6 +56,7 @@ func TestMatchYoutube(t *testing.T) {
 	for _, matchingCase := range MatchingCases {
 		t.Run(matchingCase.Name, func(tt *testing.T) {
 			got := Youtube(matchingCase.Text)
+
 			want := matchingCase.URL
 			if got != want {
 				tt.Errorf("Couldn't match: \"%s\" -> \"%s\" , got:\"%s\"", matchingCase.Text, want, got)
@@ -81,6 +83,7 @@ func TestMatchYoutubeShorts(t *testing.T) {
 	for _, matchingCase := range MatchingCases {
 		t.Run(matchingCase.Name, func(tt *testing.T) {
 			got := YoutubeShorts(matchingCase.Text)
+
 			want := matchingCase.URL
 			if got != want {
 				tt.Errorf("Couldn't match: \"%s\" -> \"%s\" , got:\"%s\"", matchingCase.Text, want, got)
@@ -93,6 +96,7 @@ func TestDownloadSectionsArgument(t *testing.T) { //nolint: all
 	type args struct {
 		s string
 	}
+
 	tests := []struct {
 		name string
 		args args
@@ -216,6 +220,7 @@ func TestMatchInstagram(t *testing.T) {
 	for _, matchingCase := range MatchingCases {
 		t.Run(matchingCase.Name, func(tt *testing.T) {
 			got := Instagram(matchingCase.Text)
+
 			want := matchingCase.URL
 			if got != want {
 				tt.Errorf("Couldn't match: \"%s\" -> \"%s\" , got:\"%s\"", matchingCase.Text, want, got)
@@ -243,6 +248,7 @@ func TestMatchFacebookReels(t *testing.T) {
 	for _, matchingCase := range MatchingCases {
 		t.Run(matchingCase.Name, func(tt *testing.T) {
 			got := FacebookReels(matchingCase.Text)
+
 			want := matchingCase.URL
 			if got != want {
 				tt.Errorf("Couldn't match: \"%s\" -> \"%s\", got:\"%s\"", matchingCase.Text, want, got)

@@ -112,6 +112,10 @@ This project is licensed under the [MIT License](LICENSE).
   - in the range : if the message has two links and the first one is not to tiktok
 - Delete message after posting a video
   - add who sent, link to video
+- If youtube video is less than 50Mb(telegram limit), upload whole video
+  - yt-dlp_macos --list-formats --cookies cookies.txt https://www.instagram.com/reels/DMbDC95Ij9p/
+  - 2 min video yt-dlp_macos --list-formats --cookies cookiesg.txt https://www.youtube.com/watch\?v\=WmVLcj-XKnM\&pp\=ygUGbmF0dXJl
+- Graceful shutdown, all the contexts and cancel
 
 
 *Thanks to @pantafive, ChatGPT 3.5, 4o*

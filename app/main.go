@@ -1,17 +1,18 @@
 package main
 
 import (
-	"errors"
+	"context"
 	"log"
 	"os"
+	"os/signal"
 	"strconv"
-	"strings"
+	"sync"
+	"syscall"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/botservice"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/handler"
-	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
 )
 
@@ -47,54 +48,35 @@ func main() { //nolint: funlen,gocyclo,cyclop
 	myerrors.CheckTextMessage(&helloMessage, err, &sentMessage)
 
 	botService := botservice.NewBotService(botAPI, logChannelID)
-	h := handler.NewHandler(botAPI, botService, cookiesPath, instagramCookiesPath, googleCookiesPath)
+	h := handler.NewHandler(botAPI, botService, cookiesPath, instagramCookiesPath, googleCookiesPath, adminID)
 
-	for update := range updates {
-		if update.Message == nil {
-			continue
+	// Create a context to handle graceful shutdown
+	ctx, cancel := context.WithCancel(context.Background())
+
+	// Create a WaitGroup to keep track of running goroutines
+	wg := &sync.WaitGroup{}
+
+	signalCh := make(chan os.Signal, 1)
+	signal.Notify(signalCh, syscall.SIGINT, syscall.SIGTERM)
+
+	log.Println("Starting handling updates")
+
+	go func() {
+		for update := range updates {
+			wg.Add(1)
+
+			go h.HandleUpdate(ctx, wg, &update)
 		}
+	}()
 
-		messageText := update.Message.Text
+	signalReceived := <-signalCh
+	log.Println("signalReceived: ", signalReceived)
 
-		if len(update.Message.Entities) > 0 && update.Message.ReplyToMessage != nil && strings.Contains(messageText, botAPI.Self.UserName) {
-			err = h.HandleMentionMessage(&update)
-			if err != nil && errors.Is(err, handler.ErrNoURLFound) {
-				err = h.Whaat(&update)
-				h.HandleError(&update, err)
-			} else if err != nil {
-				h.HandleError(&update, err)
-			}
-			continue
-		}
+	log.Println("HandleUpdate loop has stopped")
 
-		// Inside the main loop where you handle updates
-		if update.Message.From.ID == adminID && update.Message.Document != nil {
-			err := h.HandleAdminMessage(&update)
-			h.HandleError(&update, err)
-			continue
-		}
+	cancel()
 
-		url := match.Match(messageText)
+	wg.Wait()
 
-		switch {
-		case url != "":
-			err := h.VideoMessage(&update, url)
-			if err != nil {
-				h.HandleError(&update, err)
-				if err := h.ThumbDown(&update); err != nil {
-					log.Println("Error while reacting:", err)
-				}
-			}
-
-		case messageText == "osyndaisyn ba?":
-			message := tgbotapi.NewMessage(update.Message.Chat.ID, "osyndaymyn")
-			sentMessage, err := botAPI.Send(message)
-			myerrors.CheckTextMessage(&message, err, &sentMessage)
-
-		case update.Message.Chat.ID == update.Message.From.ID:
-			// No URL found in private message
-			err := h.Whaat(&update)
-			h.HandleError(&update, err)
-		}
-	}
+	log.Println("Shutdown complete.")
 }
