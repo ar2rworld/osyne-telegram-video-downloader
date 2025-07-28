@@ -22,15 +22,17 @@ type Handler struct {
 	CookiesPath          string // Added this field
 	InstagramCookiesPath string
 	GoogleCookiesPath    string
+	AdminID              int64
 }
 
-func NewHandler(bot *tgbotapi.BotAPI, botService *botservice.BotService, c, i, g string) *Handler {
+func NewHandler(bot *tgbotapi.BotAPI, botService *botservice.BotService, c, i, g string, adminID int64) *Handler {
 	return &Handler{
 		bot:                  bot,
 		botService:           botService,
 		CookiesPath:          c,
 		InstagramCookiesPath: i,
 		GoogleCookiesPath:    g,
+		AdminID:              adminID,
 	}
 }
 
@@ -84,7 +86,7 @@ func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url stri
 
 	fileName, err = downloader.DownloadVideo(ctx, url, opts, do)
 	if err != nil {
-		return err
+		return fmt.Errorf("error downloading video: %w", err)
 	}
 
 	remove = append(remove, fileName)
