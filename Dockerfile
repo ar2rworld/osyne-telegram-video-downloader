@@ -11,29 +11,44 @@ RUN go mod download
 
 COPY ./app ./app
 
-# Install dependencies for Python and general tools
+# Install build tools and dependencies for Python
 RUN apt update && apt install -y \
-    software-properties-common \
     curl \
-    gnupg \
-    lsb-release
+    wget \
+    build-essential \
+    libssl-dev \
+    zlib1g-dev \
+    libbz2-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    libncursesw5-dev \
+    xz-utils \
+    tk-dev \
+    libxml2-dev \
+    libxmlsec1-dev \
+    libffi-dev \
+    liblzma-dev \
+    ffmpeg \
+    cron \
+    && rm -rf /var/lib/apt/lists/*
 
-# Add deadsnakes PPA for Python 3.13
-RUN add-apt-repository ppa:deadsnakes/ppa && apt update && \
-    apt install -y python3.13 python3.13-venv python3.13-dev python3-pip && \
-    python3.13 --version && pip3 --version
+# Build Python 3.13.6 from source
+RUN curl -O https://www.python.org/ftp/python/3.13.6/Python-3.13.6.tgz && \
+    tar -xf Python-3.13.6.tgz && \
+    cd Python-3.13.6 && \
+    ./configure --enable-optimizations && \
+    make -j$(nproc) && \
+    make altinstall && \
+    cd .. && rm -rf Python-3.13.6*
+
+RUN python3.13 --version && pip3.13 --version
 
 # Install yt-dlp
-RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
-RUN chmod a+rx /usr/local/bin/yt-dlp  # Make executable
-RUN yt-dlp --version
+RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp && \
+    chmod a+rx /usr/local/bin/yt-dlp && \
+    yt-dlp --version
 
-# Install ffmpeg
-RUN apt install -y ffmpeg
-RUN ffmpeg -version
-
-# Install crontab and add yt-dlp updating cronjob
-RUN apt-get -y install cron
+# Set up yt-dlp auto-update
 RUN crontab -l | { cat; echo "0 0 * * * yt-dlp -U"; } | crontab -
 
 # Build Go binary
