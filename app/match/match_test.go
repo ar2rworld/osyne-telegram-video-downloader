@@ -13,6 +13,7 @@ func TestMatch(t *testing.T) {
 		{"Empty", "Some text", ""},
 		{"Only isntagram", "https://www.instagram.com/reel/Cv-hdiDt9Ix/", "https://www.instagram.com/reel/Cv-hdiDt9Ix/"},
 		{"Only tiktok", "https://vm.tiktok.com/ZM2KGqk1v/", "https://vm.tiktok.com/ZM2KGqk1v/"},
+		{"Only vt tiktok", "https://vt.tiktok.com/ZSStmh9rh/", "https://vt.tiktok.com/ZSStmh9rh/"},
 		{"Only twitter", "https://twitter.com/webflite/status/1692079842689159520?s=20", "https://twitter.com/webflite/status/1692079842689159520?s=20"},
 		{"Only x.com", "https://x.com/KeyDatch/status/1903332041124368783", "https://x.com/KeyDatch/status/1903332041124368783"},
 		{"Some other blahblahx.com", "blahblahx.com", ""},
