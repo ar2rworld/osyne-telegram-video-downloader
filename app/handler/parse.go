@@ -10,8 +10,6 @@ import (
 	"github.com/jessevdk/go-flags"
 )
 
-const DefaultSections = "*0:0-0:30"
-
 type UserOptions struct {
 	Sections     *string `description:"Download sections"        long:"sections"      short:"s"`
 	ExtractAudio *bool   `description:"Extract audio from video" long:"extract-audio" short:"x"`
