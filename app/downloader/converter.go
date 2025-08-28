@@ -10,7 +10,13 @@ import (
 func Convert(ctx context.Context, path string) (string, error) {
 	outputFile := path + ".mp4"
 
-	cmd := exec.CommandContext(ctx, "ffmpeg", "-y", "-i", path, "-b:v", "800k", "-c:v", "libx264", "-c:a", "aac", "-b:a", "128k", outputFile)
+	cmd := exec.CommandContext(ctx, "ffmpeg",
+			"-y", "-i", path,
+			"-c:v", "copy",
+			"-c:a", "aac", "-b:a", "128k",
+			outputFile,
+	)
+
 	cmd.Stderr = os.Stderr
 
 	cmd.Stdout = os.Stdout
