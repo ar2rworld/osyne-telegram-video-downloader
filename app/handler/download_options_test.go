@@ -6,6 +6,8 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/wader/goutubedl"
+
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/downloader"
 )
 
 func TestConvertSecondsToMinSec(t *testing.T) {
@@ -21,7 +23,7 @@ func TestConvertSecondsToMinSec(t *testing.T) {
 	}
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
-			got := convertSecondsToMinSec(tc.have)
+			got := downloader.ConvertSecondsToMinSec(tc.have)
 			if got != tc.want {
 				t.Errorf("want %s, but got %s", tc.want, got)
 			}
@@ -166,7 +168,7 @@ func TestAlterDownloadOptions(t *testing.T) { //nolint: funlen
 		t.Run(tt.name, func(t *testing.T) {
 			u := &tgbotapi.Update{Message: &tgbotapi.Message{Text: tt.inputMessage}}
 			opts := &goutubedl.Options{}
-			do := alterDownloadOptions(u, tt.inputURL, opts)
+			do := AlterDownloadOptions(u, tt.inputURL, opts)
 			assert.Equal(t, tt.expectedOutput, opts.DownloadSections)
 			assert.Equal(t, tt.expectedDownloadOptions.DownloadAudioOnly, do.DownloadAudioOnly)
 		})
