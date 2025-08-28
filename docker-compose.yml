@@ -13,8 +13,3 @@ services:
       - LOG_CHANNEL_ID=${LOG_CHANNEL_ID}
     volumes:
       - ./cookies:/app/cookies
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 512M
