@@ -16,6 +16,13 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
 )
 
+const (
+	RequestEntityTooLarge           = "Request Entity Too Large"
+	UnableToExtractWebpageVideoData = "Unable to extract webpage video data"
+	UnsupportedURL                  = "Unsupported URL"
+	VideoUnavailable                = "Video unavailable"
+)
+
 type Handler struct {
 	bot                  *tgbotapi.BotAPI
 	botService           *botservice.BotService
@@ -36,18 +43,56 @@ func NewHandler(bot *tgbotapi.BotAPI, botService *botservice.BotService, c, i, g
 	}
 }
 
-func (h *Handler) HandleError(u *tgbotapi.Update, err error) {
+func (h *Handler) HandleError(u *tgbotapi.Update, err error) { //nolint: gocyclo,cyclop
 	if err == nil {
 		return
 	}
 
+	estr := err.Error()
+
 	// catches json: cannot unmarshal bool into Go value of type tgbotapi.Message
-	if strings.Contains(err.Error(), "cannot unmarshal bool") {
+	if strings.Contains(estr, "cannot unmarshal bool") {
 		return
 	}
 
 	// if error accured in private message, let user know that there is an error
-	if u.Message != nil && u.Message.Chat.ID == u.Message.From.ID {
+	if u.Message != nil && u.Message.Chat.ID == u.Message.From.ID { //nolint: nestif
+		if strings.Contains(estr, UnableToExtractWebpageVideoData) {
+			msg := tgbotapi.NewMessage(u.Message.Chat.ID, UnableToExtractWebpageVideoData)
+
+			_, sendErr := h.bot.Send(msg)
+			if sendErr != nil {
+				log.Println(sendErr)
+			}
+		}
+
+		if strings.Contains(estr, RequestEntityTooLarge) {
+			msg := tgbotapi.NewMessage(u.Message.Chat.ID, "File is too large to download")
+
+			_, sendErr := h.bot.Send(msg)
+			if sendErr != nil {
+				log.Println(sendErr)
+			}
+		}
+
+		if strings.Contains(estr, UnsupportedURL) {
+			msg := tgbotapi.NewMessage(u.Message.Chat.ID, UnsupportedURL)
+
+			_, sendErr := h.bot.Send(msg)
+			if sendErr != nil {
+				log.Println(sendErr)
+			}
+		}
+
+		if strings.Contains(estr, VideoUnavailable) {
+			msg := tgbotapi.NewMessage(u.Message.Chat.ID, VideoUnavailable)
+
+			_, sendErr := h.bot.Send(msg)
+			if sendErr != nil {
+				log.Println(sendErr)
+			}
+		}
+
 		msg := tgbotapi.NewMessage(u.Message.Chat.ID, "Something went wrong, I will let the Creator know")
 
 		_, sendErr := h.bot.Send(msg)
