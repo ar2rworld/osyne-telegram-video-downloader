@@ -65,8 +65,8 @@ func (h *Handler) HandleError(u *tgbotapi.Update, err error) {
 }
 
 func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url string) error {
-	remove := []string{}
-	defer removeFiles(remove)
+	prms := downloader.NewParameters()
+	defer removeFiles(prms.TempFiles)
 
 	log.Printf("*** Got request to download video: %s", url)
 	opts := goutubedl.Options{HTTPClient: &http.Client{}, DebugLog: log.Default()}
@@ -74,7 +74,7 @@ func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url stri
 
 	do := &goutubedl.DownloadOptions{}
 	if isYoutubeVideo {
-		do = alterDownloadOptions(u, url, &opts)
+		do = AlterDownloadOptions(u, url, &opts)
 	}
 
 	var (
@@ -82,27 +82,16 @@ func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url stri
 		err      error
 	)
 
-	h.setupCookies(url, &opts, isYoutubeVideo)
+	h.setupCookies(url, &opts, prms, isYoutubeVideo)
 
-	fileName, err = downloader.DownloadVideo(ctx, url, opts, do)
+	fileName, err = downloader.DownloadVideo(ctx, url, opts, do, prms)
 	if err != nil {
 		return fmt.Errorf("error downloading video: %w", err)
 	}
 
-	remove = append(remove, fileName)
+	prms.AddTempFile(fileName)
 
 	log.Println("*** Downloaded video without errors")
-
-	if isYoutubeVideo {
-		fileName, err = downloader.Convert(ctx, fileName)
-		if err != nil {
-			return err
-		}
-
-		remove = append(remove, fileName)
-
-		log.Println("*** Converted video without errors")
-	}
 
 	err = h.handleAudioVideoMessage(do, u, fileName)
 	if err != nil {
@@ -110,7 +99,7 @@ func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url stri
 	}
 
 	log.Println("*** Finished sending video/audio")
-	removeFiles(remove)
+	removeFiles(prms.TempFiles)
 
 	return nil
 }
@@ -118,19 +107,22 @@ func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url stri
 // If handler has instagram cookies download with cookies
 // If handler has google cookies download youtube video or short with cookies
 // else just try downloading
-func (h *Handler) setupCookies(url string, opts *goutubedl.Options, isYoutubeVideo bool) {
+func (h *Handler) setupCookies(url string, opts *goutubedl.Options, prms *downloader.Parameters, isYoutubeVideo bool) {
 	switch {
 	case match.Instagram(url) != "" && h.InstagramCookiesPath != "":
 		log.Println("*** Downloading Instagram with Cookies")
 
+		prms.IsInstagram = true
 		opts.Cookies = h.InstagramCookiesPath
 	case isYoutubeVideo && h.GoogleCookiesPath != "":
 		log.Println("*** Downloading Youtube Video with Cookies")
 
+		prms.IsYoutubeVideo = true
 		opts.Cookies = h.GoogleCookiesPath
 	case match.YoutubeShorts(url) != "" && h.GoogleCookiesPath != "":
 		log.Println("*** Downloading Youtube Shorts with Cookies")
 
+		prms.IsYoutubeShorts = true
 		opts.Cookies = h.GoogleCookiesPath
 	default:
 		log.Println("*** DownloadVideo")
@@ -159,8 +151,8 @@ func (h *Handler) handleAudioVideoMessage(do *goutubedl.DownloadOptions, u *tgbo
 	return err
 }
 
-func removeFiles(files []string) {
-	for _, fn := range files {
+func removeFiles(files *[]string) {
+	for _, fn := range *files {
 		err := os.Remove(fn)
 		log.Println("*** Removed file: ", fn, "error:", err)
 	}
