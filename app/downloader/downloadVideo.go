@@ -28,7 +28,7 @@ const (
 	HalfMinute      = 30
 	SecondsInMinute = 60
 )
-const FileSizeFix = 0.6
+const FileSizeFix = 0.5
 
 type Parameters struct {
 	IsYoutubeVideo  bool
@@ -110,6 +110,7 @@ func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *
 		do.Filter = "best"
 	}
 
+	log.Printf("*** DownloadWithOptions: section: %s, filesize: %f, filesize approx: %f\n", opts.DownloadSections, result.Info.Filesize, result.Info.FilesizeApprox)
 	downloadResult, err := result.DownloadWithOptions(ctx, *do)
 	if err != nil {
 		return "", err
@@ -138,20 +139,38 @@ func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *
 		}
 
 		prms.AddTempFile(filename)
+ 
+		s, _ := FileSizeMB(filename)
+		log.Printf("*** Filesize of downloaded video before converting: %f\n", s)
 
 		if ext != "mp4" || result.Info.Ext != "mp4" {
-			filename, err = Convert(ctx, filename)
-			if err != nil {
-				return "", err
-			}
+			log.Printf("*** Convert video ext is not mp4: ext: %s, info.ext: %s\n", ext, result.Info.Ext)
+			// filename, err = Convert(ctx, filename)
+			// if err != nil {
+			// 	return "", err
+			// }
 
 			prms.AddTempFile(filename)
 
 			log.Println("*** Converted video without errors")
 		}
 	}
+	s, _ := FileSizeMB(filename)
+	log.Printf("*** Filesize of downloaded video: %f\n", s)
 
 	return filename, nil
+}
+
+// FileSizeMB takes a filepath and returns file size in MB (float64)
+func FileSizeMB(filepath string) (float64, error) {
+	fileInfo, err := os.Stat(filepath)
+	if err != nil {
+		return 0, err
+	}
+
+	sizeBytes := fileInfo.Size()          // size in bytes
+	sizeMB := float64(sizeBytes) / (1024 * 1024) // convert to MB
+	return sizeMB, nil
 }
 
 func DownloadWithCookies(ctx context.Context, url, cookiesPath string) (string, error) {
