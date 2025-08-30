@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -14,13 +15,11 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/botservice"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/downloader"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
 )
 
 const (
-	RequestEntityTooLarge           = "Request Entity Too Large"
 	UnableToExtractWebpageVideoData = "Unable to extract webpage video data"
-	UnsupportedURL                  = "Unsupported URL"
-	VideoUnavailable                = "Video unavailable"
 )
 
 type Handler struct {
@@ -43,7 +42,7 @@ func NewHandler(bot *tgbotapi.BotAPI, botService *botservice.BotService, c, i, g
 	}
 }
 
-func (h *Handler) HandleError(u *tgbotapi.Update, err error) { //nolint: gocyclo,cyclop
+func (h *Handler) HandleError(u *tgbotapi.Update, err error) {
 	if err == nil {
 		return
 	}
@@ -66,26 +65,9 @@ func (h *Handler) HandleError(u *tgbotapi.Update, err error) { //nolint: gocyclo
 			}
 		}
 
-		if strings.Contains(estr, RequestEntityTooLarge) {
-			msg := tgbotapi.NewMessage(u.Message.Chat.ID, "File is too large to download")
-
-			_, sendErr := h.bot.Send(msg)
-			if sendErr != nil {
-				log.Println(sendErr)
-			}
-		}
-
-		if strings.Contains(estr, UnsupportedURL) {
-			msg := tgbotapi.NewMessage(u.Message.Chat.ID, UnsupportedURL)
-
-			_, sendErr := h.bot.Send(msg)
-			if sendErr != nil {
-				log.Println(sendErr)
-			}
-		}
-
-		if strings.Contains(estr, VideoUnavailable) {
-			msg := tgbotapi.NewMessage(u.Message.Chat.ID, VideoUnavailable)
+		msgText := h.selectErrorMessage(err)
+		if msgText != "" {
+			msg := tgbotapi.NewMessage(u.Message.Chat.ID, msgText)
 
 			_, sendErr := h.bot.Send(msg)
 			if sendErr != nil {
@@ -190,6 +172,10 @@ func (h *Handler) handleAudioVideoMessage(do *goutubedl.DownloadOptions, u *tgbo
 		_, err = h.bot.Send(videoMessage)
 	}
 
+	if err != nil && strings.Contains(err.Error(), myerrors.RequestEntityTooLarge) {
+		return myerrors.ErrRequestEntityTooLarge
+	}
+
 	return err
 }
 
@@ -198,4 +184,24 @@ func removeFiles(files *[]string) {
 		err := os.Remove(fn)
 		log.Println("*** Removed file: ", fn, "error:", err)
 	}
+}
+
+func (h *Handler) selectErrorMessage(err error) string {
+	if errors.Is(err, myerrors.ErrRequestEntityTooLarge) {
+		return "File is too large to download"
+	}
+
+	if errors.Is(err, myerrors.ErrUnsupportedURL) {
+		return myerrors.UnsupportedURL
+	}
+
+	if errors.Is(err, myerrors.ErrVideoUnavailable) {
+		return myerrors.VideoUnavailable
+	}
+
+	if errors.Is(err, myerrors.ErrRequestedContentIsNotAvailable) {
+		return "Cookies expired, the dev will need to refresh them"
+	}
+
+	return ""
 }

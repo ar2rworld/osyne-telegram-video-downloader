@@ -53,7 +53,7 @@ func (p *Parameters) AddTempFile(s string) {
 // After download If youtube video, remux video to MP4
 // If video ext is not mp4, Convert file
 func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *goutubedl.DownloadOptions, prms *Parameters) (string, error) { //nolint: gocyclo,cyclop,funlen
-	goutubedl.Path = "yt-dlp"
+	goutubedl.Path = "yt-dlp_macos"
 
 	isDefaultSection := opts.DownloadSections == DefaultSections
 	// if DefaultSections is set, select video section under TgUploadLimit
@@ -63,7 +63,7 @@ func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *
 
 	result, err := goutubedl.New(ctx, url, opts)
 	if err != nil {
-		return "", err
+		return "", ReturnNewRequestError(err)
 	}
 
 	if do == nil {
@@ -249,4 +249,20 @@ func ConvertSecondsToMinSec(seconds int) string {
 	seconds %= SecondsInMinute
 
 	return strconv.Itoa(minutes) + ":" + strconv.Itoa(seconds)
+}
+
+func ReturnNewRequestError(err error) error {
+	if strings.Contains(err.Error(), myerrors.UnsupportedURL) {
+		return myerrors.ErrUnsupportedURL
+	}
+
+	if strings.Contains(err.Error(), myerrors.VideoUnavailable) {
+		return myerrors.ErrVideoUnavailable
+	}
+
+	if strings.Contains(err.Error(), myerrors.RequestedContentIsNotAvailable) {
+		return myerrors.ErrRequestedContentIsNotAvailable
+	}
+
+	return err
 }
