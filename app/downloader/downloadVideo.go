@@ -111,6 +111,7 @@ func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *
 	}
 
 	log.Printf("*** DownloadWithOptions: section: %s, filesize: %f, filesize approx: %f\n", opts.DownloadSections, result.Info.Filesize, result.Info.FilesizeApprox)
+
 	downloadResult, err := result.DownloadWithOptions(ctx, *do)
 	if err != nil {
 		return "", err
@@ -139,7 +140,7 @@ func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *
 		}
 
 		prms.AddTempFile(filename)
- 
+
 		s, _ := FileSizeMB(filename)
 		log.Printf("*** Filesize of downloaded video before converting: %f\n", s)
 
@@ -155,6 +156,7 @@ func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *
 			log.Println("*** Converted video without errors")
 		}
 	}
+
 	s, _ := FileSizeMB(filename)
 	log.Printf("*** Filesize of downloaded video: %f\n", s)
 
@@ -168,8 +170,9 @@ func FileSizeMB(filepath string) (float64, error) {
 		return 0, err
 	}
 
-	sizeBytes := fileInfo.Size()          // size in bytes
-	sizeMB := float64(sizeBytes) / (1024 * 1024) // convert to MB
+	sizeBytes := fileInfo.Size()                                 // size in bytes
+	sizeMB := float64(sizeBytes) / (BytesInKByte * BytesInKByte) // convert to MB
+
 	return sizeMB, nil
 }
 
