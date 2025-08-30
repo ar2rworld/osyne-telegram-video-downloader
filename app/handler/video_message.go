@@ -103,10 +103,7 @@ func (h *Handler) HandleError(u *tgbotapi.Update, err error) { //nolint: gocyclo
 
 	log.Println(err)
 
-	err = h.botService.Log(u, err)
-	if err != nil {
-		log.Println(err)
-	}
+	h.botService.Log(u, err)
 }
 
 func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url string) error {

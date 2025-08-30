@@ -18,21 +18,28 @@ func NewBotService(api *tgbotapi.BotAPI, logChannelID int64) *BotService {
 	}
 }
 
-func (b *BotService) Log(u *tgbotapi.Update, err error) error {
+func (b *BotService) Log(u *tgbotapi.Update, err error) {
 	if u != nil && u.Message == nil {
 		log.Println("BotService Log used without message in update")
-		return nil
 	}
 
 	if err == nil {
 		log.Println("BotService Log used without error")
-		return nil
 	}
 
 	text := "Error in " + u.Message.Chat.Title + " (" + u.Message.Chat.UserName + "): " + err.Error()
 
 	msg := tgbotapi.NewMessage(b.logChannelID, text)
-	_, err = b.api.Send(msg)
 
-	return err
+	_, err = b.api.Send(msg)
+	if err != nil {
+		log.Println("BotService Log error: " + err.Error())
+	}
+
+	msg = tgbotapi.NewMessage(b.logChannelID, "Error msg text: "+u.Message.Text)
+
+	_, err = b.api.Send(msg)
+	if err != nil {
+		log.Println("BotService Log error: " + err.Error())
+	}
 }
