@@ -19,17 +19,17 @@ import (
 func main() {
 	botAPI, err := tgbotapi.NewBotAPI(os.Getenv("BOT_TOKEN"))
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln("BOT_TOKEN: ", err)
 	}
 
 	adminID, err := strconv.ParseInt(os.Getenv("ADMIN_ID"), 10, 64)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln("parsing ADMIN_ID: ", err)
 	}
 
 	logChannelID, err := strconv.ParseInt(os.Getenv("LOG_CHANNEL_ID"), 10, 64)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln("parsing LOG_CHANNEL_ID: ", err)
 	}
 
 	cookiesPath := os.Getenv("COOKIES_PATH")
