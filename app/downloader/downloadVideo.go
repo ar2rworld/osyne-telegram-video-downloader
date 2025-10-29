@@ -19,6 +19,8 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
 )
 
+var YTDLP_PATH = "yt-dlp_macos"
+
 const (
 	MaxFileNameLength = 90
 	DefaultSections   = "*0:0-0:30"
@@ -53,7 +55,7 @@ func (p *Parameters) AddTempFile(s string) {
 // After download If youtube video, remux video to MP4
 // If video ext is not mp4, Convert file
 func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *goutubedl.DownloadOptions, prms *Parameters) (string, error) { //nolint: gocyclo,cyclop,funlen
-	goutubedl.Path = "yt-dlp"
+	goutubedl.Path = YTDLP_PATH
 
 	isDefaultSection := opts.DownloadSections == DefaultSections
 	// if DefaultSections is set, select video section under TgUploadLimit
@@ -94,7 +96,8 @@ func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *
 	if cutRequired && isDefaultSection {
 		seconds, err := MaxDuration(bytesToMb(result.Info.FilesizeApprox), result.Info.Duration)
 		if err != nil {
-			return "", fmt.Errorf("failed to figure out maxduration of video: %w", err)
+			log.Printf("failed to figure out maxduration of video(filesizeapprox: %.2f, filesize: %.2f): %s", result.Info.FilesizeApprox, result.Info.Filesize, err.Error())
+			seconds = HalfMinute
 		}
 
 		opts.DownloadSections = "*0:0-" + ConvertSecondsToMinSec(seconds)
