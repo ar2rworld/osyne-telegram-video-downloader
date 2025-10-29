@@ -25,6 +25,6 @@ RUN ffmpeg -version
 RUN apt-get -y install cron
 RUN crontab -l | { cat; echo "0 0 * * * yt-dlp -U"; } | crontab -
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o ./osynetelegramvideodownloader ./app
+RUN CGO_ENABLED=0 GOOS=linux go build -o ./osynetelegramvideodownloader -ldflags "-X github.com/ar2rworld/golang-telegram-video-downloader/app/downloader.YTDLP_PATH=yt-dlp" ./app
 
 CMD ["./osynetelegramvideodownloader"]
