@@ -19,7 +19,7 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
 )
 
-const YTDLP_PATH = "yt-dlp_macos" //nolint:revive
+var YtdlpPath = "yt-dlp_macos" //nolint:gochecknoglobals
 
 const (
 	MaxFileNameLength = 90
@@ -55,7 +55,7 @@ func (p *Parameters) AddTempFile(s string) {
 // After download If youtube video, remux video to MP4
 // If video ext is not mp4, Convert file
 func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *goutubedl.DownloadOptions, prms *Parameters) (string, error) { //nolint: gocyclo,cyclop,funlen
-	goutubedl.Path = YTDLP_PATH
+	goutubedl.Path = YtdlpPath
 
 	isDefaultSection := opts.DownloadSections == DefaultSections
 	// if DefaultSections is set, select video section under TgUploadLimit
