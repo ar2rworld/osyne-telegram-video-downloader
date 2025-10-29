@@ -19,7 +19,7 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
 )
 
-var YTDLP_PATH = "yt-dlp_macos"
+const YTDLP_PATH = "yt-dlp_macos" //nolint:revive
 
 const (
 	MaxFileNameLength = 90
@@ -97,6 +97,7 @@ func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *
 		seconds, err := MaxDuration(bytesToMb(result.Info.FilesizeApprox), result.Info.Duration)
 		if err != nil {
 			log.Printf("failed to figure out maxduration of video(filesizeapprox: %.2f, filesize: %.2f): %s", result.Info.FilesizeApprox, result.Info.Filesize, err.Error())
+
 			seconds = HalfMinute
 		}
 
