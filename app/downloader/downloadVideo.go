@@ -180,20 +180,6 @@ func FileSizeMB(filepath string) (float64, error) {
 	return sizeMB, nil
 }
 
-func DownloadWithCookies(ctx context.Context, url, cookiesPath string) (string, error) {
-	fileName := "videoDownloadedWithCookies"
-	cmd := exec.CommandContext(ctx, "yt-dlp", "-f", "mp4", "-o", fileName, "--cookies", cookiesPath, url)
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
-
-	err := cmd.Run()
-	if err != nil {
-		return "", err
-	}
-
-	return fileName, nil
-}
-
 func cutString(s string, maxLength int) string {
 	absMaxLength := int(math.Abs(float64(maxLength)))
 	if len(s) <= absMaxLength {
