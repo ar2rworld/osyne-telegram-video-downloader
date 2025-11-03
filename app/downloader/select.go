@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/constants"
 	"github.com/wader/goutubedl"
 )
 
@@ -17,7 +18,6 @@ const (
 )
 
 const (
-	TgUploadLimit = 50
 	AudioCodec    = "mp4a"
 	VideoCodec    = "avc1"
 )
@@ -45,7 +45,7 @@ func SelectFormat(formats []goutubedl.Format) (filter, ext string, err error) { 
 			videoFormat := &videoFormats[videoFormatIndex]
 
 			currentSize := bytesToMb(videoFormat.Filesize) + bytesToMb(audioFormat.Filesize)
-			if currentSize < TgUploadLimit {
+			if currentSize < constants.TgUploadLimit {
 				bestAudioFormat = audioFormat.FormatID
 				bestVideoFormat = videoFormat.FormatID
 				extOut = videoFormat.Ext
