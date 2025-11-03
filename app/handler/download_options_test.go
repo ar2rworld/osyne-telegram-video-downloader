@@ -6,30 +6,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/wader/goutubedl"
-
-	"github.com/ar2rworld/golang-telegram-video-downloader/app/downloader"
 )
-
-func TestConvertSecondsToMinSec(t *testing.T) {
-	testcases := []struct {
-		name string
-		have int
-		want string
-	}{
-		{"0", 0, "0:0"},
-		{"59", 59, "0:59"},
-		{"60", 60, "1:0"},
-		{"61", 61, "1:1"},
-	}
-	for _, tc := range testcases {
-		t.Run(tc.name, func(t *testing.T) {
-			got := downloader.ConvertSecondsToMinSec(tc.have)
-			if got != tc.want {
-				t.Errorf("want %s, but got %s", tc.want, got)
-			}
-		})
-	}
-}
 
 func TestChangeDownloadSectionsStart(t *testing.T) {
 	testcases := []struct {
