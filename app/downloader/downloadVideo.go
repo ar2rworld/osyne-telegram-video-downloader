@@ -256,3 +256,8 @@ func ReturnNewRequestError(err error) error {
 
 	return err
 }
+
+// If filesize(Mb) is over the Telegram Bot API limit
+func NeedCut(filesize float64) bool {
+	return filesize >= constants.TgUploadLimit
+}
