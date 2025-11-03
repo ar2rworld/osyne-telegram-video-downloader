@@ -9,8 +9,6 @@ import (
 	"github.com/wader/goutubedl"
 )
 
-var ErrNoSuitableFormat = errors.New("no suitable format found")
-
 const (
 	MinHeight    = 300
 	MinWidth     = 600
