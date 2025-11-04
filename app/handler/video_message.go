@@ -16,6 +16,7 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/downloader"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/platform"
 )
 
 const (
@@ -29,9 +30,10 @@ type Handler struct {
 	InstagramCookiesPath string
 	GoogleCookiesPath    string
 	AdminID              int64
+	PlatformRegistry     *platform.Registry
 }
 
-func NewHandler(bot *tgbotapi.BotAPI, botService *botservice.BotService, c, i, g string, adminID int64) *Handler {
+func NewHandler(bot *tgbotapi.BotAPI, botService *botservice.BotService, r *platform.Registry, c, i, g string, adminID int64) *Handler {
 	return &Handler{
 		bot:                  bot,
 		botService:           botService,
@@ -39,6 +41,7 @@ func NewHandler(bot *tgbotapi.BotAPI, botService *botservice.BotService, c, i, g
 		InstagramCookiesPath: i,
 		GoogleCookiesPath:    g,
 		AdminID:              adminID,
+		PlatformRegistry: r,
 	}
 }
 
@@ -106,7 +109,13 @@ func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url stri
 		err      error
 	)
 
-	h.setupCookies(url, &opts, prms, isYoutubeVideo)
+	p := h.PlatformRegistry.FindPlatform(url)
+	if p == nil {
+		log.Println("skipping")
+	}
+	prms.Platform = p
+
+	p.ConfigureDownload(url, &opts)
 
 	fileName, err = downloader.DownloadVideo(ctx, url, opts, do, prms)
 	if err != nil {
@@ -155,6 +164,7 @@ func (h *Handler) setupCookies(url string, opts *goutubedl.Options, prms *downlo
 
 func (h *Handler) handleAudioVideoMessage(do *goutubedl.DownloadOptions, u *tgbotapi.Update, fileName string) error {
 	var err error
+	// TODO: upload as file document
 
 	if do.DownloadAudioOnly {
 		log.Println("*** Started sending audio")
