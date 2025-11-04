@@ -2,7 +2,6 @@ package platform
 
 import (
 	"fmt"
-	"log"
 	"math"
 	"strings"
 
@@ -106,7 +105,6 @@ func (y *YouTube) MaxDuration(r *goutubedl.Result) (string, error) {
 	// 	return nil
 	// }
 	// TODO: test if short video is ok
-	log.Println("*** debug ratio:", ratio)
 
 	// Calculate maximum allowed seconds
 	maxSeconds := duration * ratio
