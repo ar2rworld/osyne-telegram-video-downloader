@@ -9,12 +9,12 @@ import (
 
 	c "github.com/ar2rworld/golang-telegram-video-downloader/app/constants"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
-	"github.com/ar2rworld/golang-telegram-video-downloader/app/utils"
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/utilities"
 )
 
 func setDownloadSections(opts *goutubedl.Options, start, finish int) *goutubedl.Options {
-	s := utils.ConvertSecondsToMinSec(start)
-	f := utils.ConvertSecondsToMinSec(finish)
+	s := utilities.ConvertSecondsToMinSec(start)
+	f := utilities.ConvertSecondsToMinSec(finish)
 	opts.DownloadSections = fmt.Sprintf("*%s-%s", s, f)
 
 	return opts

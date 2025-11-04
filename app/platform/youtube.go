@@ -10,7 +10,7 @@ import (
 	c "github.com/ar2rworld/golang-telegram-video-downloader/app/constants"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
-	"github.com/ar2rworld/golang-telegram-video-downloader/app/utils"
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/utilities"
 )
 
 const FileSizeFix = 0.5
@@ -68,7 +68,7 @@ func (y *YouTube) SelectFormat(formats []goutubedl.Format) (string, error) {
 			audioFormat := &audioFormats[audioFormatIndex]
 			videoFormat := &videoFormats[videoFormatIndex]
 
-			currentSize := utils.BytesToMb(videoFormat.Filesize) + utils.BytesToMb(audioFormat.Filesize)
+			currentSize := utilities.BytesToMb(videoFormat.Filesize) + utilities.BytesToMb(audioFormat.Filesize)
 			if currentSize < c.TgUploadLimit {
 				bestAudioFormat = audioFormat.FormatID
 				bestVideoFormat = videoFormat.FormatID
@@ -95,9 +95,9 @@ func (y *YouTube) MaxDuration(r *goutubedl.Result) (string, error) {
 
 	switch {
 	case r.Info.Filesize != 0.0:
-		filesize = utils.BytesToMb(r.Info.Filesize)
+		filesize = utilities.BytesToMb(r.Info.Filesize)
 	case r.Info.FilesizeApprox != 0.0:
-		filesize = utils.BytesToMb(r.Info.FilesizeApprox)
+		filesize = utilities.BytesToMb(r.Info.FilesizeApprox)
 	default:
 		return "", fmt.Errorf("%w: filesize=%.2f MB, duration=%.2f s", myerrors.ErrInvalidInput, filesize, duration)
 	}
@@ -118,7 +118,7 @@ func (y *YouTube) MaxDuration(r *goutubedl.Result) (string, error) {
 
 	seconds := int(math.Floor(maxSeconds))
 
-	return "*0:0-" + utils.ConvertSecondsToMinSec(seconds), nil
+	return "*0:0-" + utilities.ConvertSecondsToMinSec(seconds), nil
 }
 
 func sortoutMinHeightWidth(formats []goutubedl.Format, minHeight, minWidth float64) []goutubedl.Format {

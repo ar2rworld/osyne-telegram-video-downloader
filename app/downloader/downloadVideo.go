@@ -19,7 +19,7 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/logger"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/platform"
-	"github.com/ar2rworld/golang-telegram-video-downloader/app/utils"
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/utilities"
 )
 
 type Downloader struct {
@@ -167,8 +167,8 @@ func FileSizeMB(filepath string) (float64, error) {
 		return 0, err
 	}
 
-	sizeBytes := fileInfo.Size()                  // size in bytes
-	sizeMB := utils.BytesToMb(float64(sizeBytes)) // convert to MB
+	sizeBytes := fileInfo.Size()                      // size in bytes
+	sizeMB := utilities.BytesToMb(float64(sizeBytes)) // convert to MB
 
 	return sizeMB, nil
 }
