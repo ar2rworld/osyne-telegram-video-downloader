@@ -37,7 +37,7 @@ func RemuxToMP4(ctx context.Context, path string) (string, error) {
 		"ffmpeg",
 		"-y",       // overwrite without asking
 		"-i", path, // input file
-		"-c:v", "copy", // copy video stream
+		"-c:v", "libx264", // copy video stream
 		"-c:a", "copy", // copy audio stream
 		"-movflags", "+faststart", // move mp4 metadata to beginning
 		"-avoid_negative_ts", "make_zero", // adjust timestamps
