@@ -41,9 +41,11 @@ func main() {
 	instagram := platform.NewInstagram(instagramCookiesPath)
 	youtube := platform.NewYoutube(googleCookiesPath)
 	shorts := platform.NewYoutubeShorts(googleCookiesPath)
+	facebookreels := platform.NewFacebookReels()
 	registry.Register(instagram)
 	registry.Register(youtube)
 	registry.Register(shorts)
+	registry.Register(facebookreels)
 
 	botAPI.Debug = false
 
