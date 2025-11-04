@@ -3,10 +3,11 @@ package handler
 import (
 	"testing"
 
-	"github.com/ar2rworld/golang-telegram-video-downloader/app/logger"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/wader/goutubedl"
+
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/logger"
 )
 
 func TestChangeDownloadSectionsStart(t *testing.T) {
