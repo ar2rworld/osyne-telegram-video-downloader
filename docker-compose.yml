@@ -5,6 +5,7 @@ services:
     image: ar2rworld/osyne-telegram-video-downloader:main
     restart: unless-stopped
     environment:
+      - YT_DLP_PATH={YT_DLP_PATH}
       - BOT_TOKEN=${BOT_TOKEN}
       - ADMIN_ID=${ADMIN_ID}
       - COOKIES_PATH=${COOKIES_PATH}
