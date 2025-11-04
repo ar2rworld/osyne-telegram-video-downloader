@@ -93,11 +93,12 @@ func (y *YouTube) MaxDuration(r *goutubedl.Result) (string, error) {
 
 	duration := r.Info.Duration
 
-	if r.Info.Filesize != 0.0 {
+	switch {
+	case r.Info.Filesize != 0.0:
 		filesize = utils.BytesToMb(r.Info.Filesize)
-	} else if r.Info.FilesizeApprox != 0.0 {
+	case r.Info.FilesizeApprox != 0.0:
 		filesize = utils.BytesToMb(r.Info.FilesizeApprox)
-	} else {
+	default:
 		return "", fmt.Errorf("%w: filesize=%.2f MB, duration=%.2f s", myerrors.ErrInvalidInput, filesize, duration)
 	}
 
@@ -152,9 +153,9 @@ func sortoutFormat(formats []goutubedl.Format, codec string) []goutubedl.Format 
 
 func sortoutCompleteFormat(formats []goutubedl.Format) []goutubedl.Format {
 	out := make([]goutubedl.Format, 0, len(formats))
-	for formatIndex, vFormat := range formats {
+	for formatIndex := range formats {
 		format := &formats[formatIndex]
-		_, hasVideoCodec := strings.CutPrefix(vFormat.VCodec, c.VideoCodec)
+		_, hasVideoCodec := strings.CutPrefix(format.VCodec, c.VideoCodec)
 
 		_, hasAudioCodec := strings.CutPrefix(format.ACodec, c.AudioCodec)
 		if hasVideoCodec && hasAudioCodec {
