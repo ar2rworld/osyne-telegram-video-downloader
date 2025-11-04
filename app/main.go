@@ -14,6 +14,7 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/botservice"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/handler"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/platform"
 )
 
 func main() {
@@ -36,6 +37,14 @@ func main() {
 	instagramCookiesPath := os.Getenv("INSTAGRAM_COOKIES_PATH")
 	googleCookiesPath := os.Getenv("GOOGLE_COOKIES_PATH")
 
+	registry := platform.NewRegistry()
+	instagram := platform.NewInstagram(instagramCookiesPath)
+	youtube := platform.NewYoutube(googleCookiesPath)
+	shorts := platform.NewYoutubeShorts(googleCookiesPath)
+	registry.Register(instagram)
+	registry.Register(youtube)
+	registry.Register(shorts)
+
 	botAPI.Debug = false
 
 	updateConfig := tgbotapi.NewUpdate(0)
@@ -48,7 +57,7 @@ func main() {
 	myerrors.CheckTextMessage(&helloMessage, err, &sentMessage)
 
 	botService := botservice.NewBotService(botAPI, logChannelID)
-	h := handler.NewHandler(botAPI, botService, cookiesPath, instagramCookiesPath, googleCookiesPath, adminID)
+	h := handler.NewHandler(botAPI, botService, registry, cookiesPath, instagramCookiesPath, googleCookiesPath, adminID)
 
 	// Create a context to handle graceful shutdown
 	ctx, cancel := context.WithCancel(context.Background())
