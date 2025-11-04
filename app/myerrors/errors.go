@@ -5,6 +5,8 @@ import "errors"
 var (
 	ErrInvalidInput       = errors.New("invalid input")
 	ErrCalculatedDuration = errors.New("invalid calculated duration")
+	ErrNoSuitableFormat   = errors.New("no suitable format found")
+	ErrNoSizeInfo         = errors.New("no size info found")
 )
 
 // Business logic messages
