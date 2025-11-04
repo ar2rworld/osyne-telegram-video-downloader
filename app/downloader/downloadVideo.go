@@ -8,6 +8,8 @@ import (
 	"log"
 	"math"
 	"os"
+	"os/exec"
+	"path"
 	"regexp"
 	"strings"
 	"unicode/utf8"
@@ -90,9 +92,16 @@ func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *
 		return "", ReturnNewRequestError(err)
 	}
 
-	// Weird stuff to make yt-dlp download only audio
-	if !do.DownloadAudioOnly && do.Filter == "" {
-		do.Filter = "best"
+	// TODO: fix downloading audio with goutubedl
+	if do.DownloadAudioOnly {
+		filename := result.Info.Title + "." + result.Info.Ext
+		filename = cutString(filename, c.MaxFileNameLength)
+		filename = ConvertToUTF8(filename)
+		filename = RemoveNonAlphanumericRegex(filename)
+		filename = strings.ReplaceAll(filename, " ", "")
+		filename = path.Join(os.TempDir(), filename)
+		prms.AddTempFile(filename)
+		return DownloadAudio(ctx, url, opts.Cookies, filename)
 	}
 
 	log.Printf("*** DownloadWithOptions: section: %s, filesize: %f, filesize approx: %f\n", opts.DownloadSections, result.Info.Filesize, result.Info.FilesizeApprox)
@@ -192,3 +201,45 @@ func ReturnNewRequestError(err error) error {
 
 	return err
 }
+
+func DownloadAudio(ctx context.Context, url, cookies, filename string) (string, error) {
+	args := []string{
+		"-o", filename,
+		"--extract-audio",
+		"--print", "after_move:filepath",
+	}
+
+	if cookies != "" {
+		args = append(args, "--cookies", cookies)
+	}
+
+	args = append(args, url)
+
+	cmd := exec.CommandContext(ctx, YtdlpPath, args...)
+
+	output, err := cmd.CombinedOutput()
+	outStr := string(output)
+
+	if err != nil {
+		return "", fmt.Errorf("yt-dlp error: %v\n%s", err, outStr)
+	}
+
+	// Extract the last non-empty line (usually the file path)
+	lines := strings.Split(outStr, "\n")
+	var finalPath string
+	for i := len(lines) - 1; i >= 0; i-- {
+		line := strings.TrimSpace(lines[i])
+		if line != "" {
+			finalPath = line
+			break
+		}
+	}
+
+	if finalPath == "" {
+		finalPath = filename
+	}
+
+	log.Printf("*** Final path: %s", finalPath)
+	return finalPath, nil
+}
+
