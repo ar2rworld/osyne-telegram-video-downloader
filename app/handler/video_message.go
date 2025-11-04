@@ -31,9 +31,10 @@ type Handler struct {
 	GoogleCookiesPath    string
 	AdminID              int64
 	PlatformRegistry     *platform.Registry
+	Downloader           *downloader.Downloader
 }
 
-func NewHandler(bot *tgbotapi.BotAPI, botService *botservice.BotService, r *platform.Registry, c, i, g string, adminID int64) *Handler {
+func NewHandler(bot *tgbotapi.BotAPI, botService *botservice.BotService, r *platform.Registry, d *downloader.Downloader, c, i, g string, adminID int64) *Handler {
 	return &Handler{
 		bot:                  bot,
 		botService:           botService,
@@ -41,7 +42,8 @@ func NewHandler(bot *tgbotapi.BotAPI, botService *botservice.BotService, r *plat
 		InstagramCookiesPath: i,
 		GoogleCookiesPath:    g,
 		AdminID:              adminID,
-		PlatformRegistry: r,
+		PlatformRegistry:     r,
+		Downloader:           d,
 	}
 }
 
@@ -115,7 +117,7 @@ func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url stri
 
 	p.ConfigureDownload(url, &opts)
 
-	fileName, err = downloader.DownloadVideo(ctx, url, opts, do, prms)
+	fileName, err = h.Downloader.DownloadVideo(ctx, url, opts, do, prms)
 	if err != nil {
 		return fmt.Errorf("error downloading video: %w", err)
 	}
