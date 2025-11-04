@@ -167,10 +167,13 @@ func (h *Handler) handleAudioVideoMessage(do *goutubedl.DownloadOptions, u *tgbo
 	if do.DownloadAudioOnly {
 		log.Println("*** Started sending audio")
 
-		audioMessage := tgbotapi.NewAudio(u.Message.Chat.ID, tgbotapi.FilePath(fileName))
-		audioMessage.ReplyParameters.MessageID = u.Message.MessageID
+		doc := tgbotapi.NewDocument(u.Message.Chat.ID, tgbotapi.FilePath(fileName))
+		doc.ReplyParameters.MessageID = u.Message.MessageID
 
-		_, err = h.bot.Send(audioMessage)
+		_, err = h.bot.Send(doc)
+		if err != nil {
+			return fmt.Errorf("failed to send document: %w", err)
+		}
 	} else {
 		log.Println("*** Started sending video")
 
