@@ -22,7 +22,16 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/utils"
 )
 
-var YtdlpPath = "yt-dlp_macos" //nolint:gochecknoglobals
+type Downloader struct {
+	YtdlpPath string
+}
+
+func NewDownloader(y string) *Downloader {
+	goutubedl.Path = y
+	return &Downloader{
+		YtdlpPath: y,
+	}
+}
 
 const FileSizeFix = 0.5
 
@@ -49,9 +58,7 @@ func (p *Parameters) AddTempFile(s string) {
 // If not, download best quality of the video downloadSection calculated with MaxDuration fitting in TgUploadLimit * FileSizeFix
 // After download If youtube video, remux video to MP4
 // If video ext is not mp4, Convert file
-func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *goutubedl.DownloadOptions, prms *Parameters) (string, error) { //nolint: gocyclo,cyclop,funlen
-	goutubedl.Path = YtdlpPath
-
+func (d *Downloader) DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *goutubedl.DownloadOptions, prms *Parameters) (string, error) { //nolint: gocyclo,cyclop,funlen
 	isDefaultSection := opts.DownloadSections == c.DefaultSections
 	// if DefaultSections is set, select video section under TgUploadLimit
 	if isDefaultSection {
@@ -101,7 +108,7 @@ func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *
 		filename = strings.ReplaceAll(filename, " ", "")
 		filename = path.Join(os.TempDir(), filename)
 		prms.AddTempFile(filename)
-		return DownloadAudio(ctx, url, opts.Cookies, filename)
+		return d.DownloadAudio(ctx, url, opts.Cookies, filename)
 	}
 
 	log.Printf("*** DownloadWithOptions: section: %s, filesize: %f, filesize approx: %f\n", opts.DownloadSections, result.Info.Filesize, result.Info.FilesizeApprox)
@@ -202,7 +209,7 @@ func ReturnNewRequestError(err error) error {
 	return err
 }
 
-func DownloadAudio(ctx context.Context, url, cookies, filename string) (string, error) {
+func (d *Downloader) DownloadAudio(ctx context.Context, url, cookies, filename string) (string, error) {
 	args := []string{
 		"-o", filename,
 		"--extract-audio",
@@ -215,7 +222,7 @@ func DownloadAudio(ctx context.Context, url, cookies, filename string) (string, 
 
 	args = append(args, url)
 
-	cmd := exec.CommandContext(ctx, YtdlpPath, args...)
+	cmd := exec.CommandContext(ctx, d.YtdlpPath, args...)
 
 	output, err := cmd.CombinedOutput()
 	outStr := string(output)
