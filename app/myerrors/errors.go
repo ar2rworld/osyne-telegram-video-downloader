@@ -3,6 +3,8 @@ package myerrors
 import "errors"
 
 var (
+	ErrPlatform           = errors.New("platform error")
+	ErrDownload           = errors.New("download error")
 	ErrInvalidInput       = errors.New("invalid input")
 	ErrCalculatedDuration = errors.New("invalid calculated duration")
 	ErrNoSuitableFormat   = errors.New("no suitable format found")

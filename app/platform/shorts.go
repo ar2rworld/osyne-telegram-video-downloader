@@ -43,7 +43,7 @@ func (y *Shorts) SelectFormat(formats []goutubedl.Format) (format string, err er
 }
 
 func (y *Shorts) MaxDuration(r *goutubedl.Result) (string, error) {
-	return "", errors.New("error max duration shouldn't be called")
+	return "", fmt.Errorf("%w shouldn't be called", myerrors.ErrPlatform)
 }
 
 func (y *Shorts) NeedCut(r *goutubedl.Result) (bool, error) {

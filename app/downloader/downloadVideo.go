@@ -238,7 +238,7 @@ func (d *Downloader) DownloadAudio(ctx context.Context, url, cookies, filename s
 	outStr := string(output)
 
 	if err != nil {
-		return "", fmt.Errorf("yt-dlp error: %w\n%s", err, outStr)
+		return "", fmt.Errorf("%w: %w\n%s", myerrors.ErrDownload, err, outStr)
 	}
 
 	// Extract the last non-empty line (usually the file path)
