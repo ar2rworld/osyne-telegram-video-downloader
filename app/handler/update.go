@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"errors"
-	"log"
 	"strings"
 	"sync"
 
@@ -11,7 +10,6 @@ import (
 	"github.com/wader/goutubedl"
 
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
-	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
 )
 
 func (h *Handler) HandleUpdate(ctx context.Context, wg *sync.WaitGroup, update *tgbotapi.Update) { //nolint: gocyclo, cyclop
@@ -53,19 +51,21 @@ func (h *Handler) HandleUpdate(ctx context.Context, wg *sync.WaitGroup, update *
 
 			err := h.ThumbDown(update)
 			if err != nil {
-				log.Println("Error while reacting:", err)
+				h.Logger.Error().Err(err).Msg("while reacting")
 			}
 		}
 
 	case messageText == "/test":
 		err := h.handleAudioVideoMessage(&goutubedl.DownloadOptions{}, update, "output.mp4")
-		log.Println(err.Error())
 		h.HandleError(update, err)
 
 	case messageText == "osyndaisyn ba?":
 		message := tgbotapi.NewMessage(update.Message.Chat.ID, "osyndaymyn")
-		sentMessage, err := h.bot.Send(message)
-		myerrors.CheckTextMessage(&message, err, &sentMessage)
+		_, err := h.bot.Send(message)
+		if err != nil {
+			h.Logger.Error().Err(err).Msg("while sending message")
+		}
+		
 
 	case update.Message.Chat.ID == update.Message.From.ID:
 		// No URL found in private message

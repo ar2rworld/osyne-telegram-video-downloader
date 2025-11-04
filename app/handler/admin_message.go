@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"path"
@@ -54,7 +53,7 @@ func (h *Handler) HandleAdminMessage(ctx context.Context, u *tgbotapi.Update) er
 		return err
 	}
 
-	log.Printf("Cookies file replaced at: %s", h.CookiesPath)
+	h.Logger.Info().Str("path", h.CookiesPath).Msg("cookies file replaced")
 
 	// Send confirmation message
 	message := tgbotapi.NewMessage(u.Message.Chat.ID, "Cookies file updated successfully.")

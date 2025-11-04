@@ -140,12 +140,12 @@ func TestAlterDownloadOptions(t *testing.T) { //nolint: funlen
 			expectedDownloadOptions: &goutubedl.DownloadOptions{DownloadAudioOnly: true},
 		},
 	}
-
+	handler := NewHandler(nil, nil, nil, nil, nil, "c", "i", "g", int64(0))
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+		t.Run(tt.name, func(t *testing.T) {			
 			u := &tgbotapi.Update{Message: &tgbotapi.Message{Text: tt.inputMessage}}
 			opts := &goutubedl.Options{}
-			do := AlterDownloadOptions(u, tt.inputURL, opts)
+			do := handler.AlterDownloadOptions(u, tt.inputURL, opts)
 			assert.Equal(t, tt.expectedOutput, opts.DownloadSections)
 			assert.Equal(t, tt.expectedDownloadOptions.DownloadAudioOnly, do.DownloadAudioOnly)
 		})

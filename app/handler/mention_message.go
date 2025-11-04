@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"errors"
-	"log"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -19,7 +18,7 @@ func (h *Handler) HandleMentionMessage(ctx context.Context, u *tgbotapi.Update) 
 		return nil
 	}
 
-	log.Println("*** Mentioned Username in message")
+	h.Logger.Info().Msg("mentioned Username in message")
 
 	url := match.Match(u.Message.ReplyToMessage.Text)
 

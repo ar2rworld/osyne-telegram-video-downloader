@@ -2,7 +2,6 @@ package handler
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -24,7 +23,7 @@ func setDownloadSections(opts *goutubedl.Options, start, finish int) *goutubedl.
 // AlterDownloadOptions modifies the goutubedl.Options
 // if arguments provided else shortens video to 30 sec
 // return DownloadOptions to use goutubedl.DownloadResult.DownloadWithOptions method
-func AlterDownloadOptions(u *tgbotapi.Update, url string, opts *goutubedl.Options) *goutubedl.DownloadOptions {
+func (h *Handler) AlterDownloadOptions(u *tgbotapi.Update, url string, opts *goutubedl.Options) *goutubedl.DownloadOptions {
 	// modity this one to match -s and -x
 	sections := match.DownloadSectionsArgument(u.Message.Text)
 	audioOnly := match.DownloadAudioArgument(u.Message.Text)
@@ -34,32 +33,35 @@ func AlterDownloadOptions(u *tgbotapi.Update, url string, opts *goutubedl.Option
 	if sections != "" {
 		userOptions, err := parse(sections)
 		if err != nil {
-			log.Printf("*** Error parsing video options: %s", err.Error())
+			h.Logger.Error().Err(err).Msg("while parsing video options")
 
 			*userOptions.Sections = c.DefaultSections
 		}
 
 		opts.DownloadSections = *userOptions.Sections
-		log.Printf("*** Downloading section of the video: %s", opts.DownloadSections)
+		h.Logger.Info().Str("downloadsections", opts.DownloadSections).Msg("downloading section of the video")
 	} else if currentTime != "" {
 		t, err := strconv.Atoi(currentTime)
 		if err != nil {
-			log.Printf("*** Error converting to int while changing DownloadSections for youtube: %s", err.Error())
+			h.Logger.Error().Err(err).Msg("converting to int while changing DownloadSections for youtube")
 		}
 
 		setDownloadSections(opts, t, t+c.HalfMinute)
-		log.Printf("*** Downloading section(%s) of the video from currentTime: %s", opts.DownloadSections, currentTime)
+		h.Logger.Info().
+			Str("downloadsections", opts.DownloadSections).
+			Str("currenttime", currentTime).
+			Msg("downloading section of the video from currentTime")
 	}
 
 	if opts.DownloadSections == "" && audioOnly == "" {
 		opts.DownloadSections = c.DefaultSections
-		log.Printf("*** Downloading default sections of the video: %s", c.DefaultSections)
+		h.Logger.Info().Str("downloadsections", opts.DownloadSections).Msg("downloading default sections of the video")
 	}
 
 	do := &goutubedl.DownloadOptions{}
 
 	if audioOnly != "" {
-		log.Printf("*** Extracting audio from the video")
+		h.Logger.Info().Msg("extracting audio from the video")
 
 		do.DownloadAudioOnly = true
 	}

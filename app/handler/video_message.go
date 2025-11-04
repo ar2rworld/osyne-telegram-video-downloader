@@ -14,6 +14,7 @@ import (
 
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/botservice"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/downloader"
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/logger"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/platform"
@@ -24,6 +25,7 @@ const (
 )
 
 type Handler struct {
+	Logger               *logger.Logger
 	bot                  *tgbotapi.BotAPI
 	botService           *botservice.BotService
 	CookiesPath          string // Added this field
@@ -34,8 +36,9 @@ type Handler struct {
 	Downloader           *downloader.Downloader
 }
 
-func NewHandler(bot *tgbotapi.BotAPI, botService *botservice.BotService, r *platform.Registry, d *downloader.Downloader, c, i, g string, adminID int64) *Handler {
+func NewHandler(l *logger.Logger, bot *tgbotapi.BotAPI, botService *botservice.BotService, r *platform.Registry, d *downloader.Downloader, c, i, g string, adminID int64) *Handler {
 	return &Handler{
+		Logger:               l,
 		bot:                  bot,
 		botService:           botService,
 		CookiesPath:          c,
@@ -66,7 +69,7 @@ func (h *Handler) HandleError(u *tgbotapi.Update, err error) {
 
 			_, sendErr := h.bot.Send(msg)
 			if sendErr != nil {
-				log.Println(sendErr)
+				h.Logger.Error().Err(sendErr)
 			}
 		}
 
@@ -76,7 +79,7 @@ func (h *Handler) HandleError(u *tgbotapi.Update, err error) {
 
 			_, sendErr := h.bot.Send(msg)
 			if sendErr != nil {
-				log.Println(sendErr)
+				h.Logger.Error().Err(sendErr)
 			}
 		}
 
@@ -84,26 +87,26 @@ func (h *Handler) HandleError(u *tgbotapi.Update, err error) {
 
 		_, sendErr := h.bot.Send(msg)
 		if sendErr != nil {
-			log.Println(sendErr)
+			h.Logger.Error().Err(sendErr)
 		}
 	}
 
-	log.Println(err)
+	h.Logger.Error().Err(err)
 
 	h.botService.Log(u, err)
 }
 
 func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url string) error {
 	prms := downloader.NewParameters()
-	defer removeFiles(prms.TempFiles)
+	defer h.removeFiles(prms.TempFiles)
 
-	log.Printf("*** Got request to download video: %s", url)
+	h.Logger.Info().Str("url", url).Msg("Got request to download video")
 	opts := goutubedl.Options{HTTPClient: &http.Client{}, DebugLog: log.Default()}
 	isYoutubeVideo := match.Youtube(url) != ""
 
 	do := &goutubedl.DownloadOptions{}
 	if isYoutubeVideo {
-		do = AlterDownloadOptions(u, url, &opts)
+		do = h.AlterDownloadOptions(u, url, &opts)
 	}
 
 	var (
@@ -112,7 +115,7 @@ func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url stri
 	)
 
 	p := h.PlatformRegistry.FindPlatform(url)
-	log.Println("*** platfrom: ", p.Name())
+	h.Logger.Info().Str("platfrom", p.Name()).Msg("registry found")
 	prms.Platform = p
 
 	p.ConfigureDownload(url, &opts)
@@ -124,15 +127,15 @@ func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url stri
 
 	prms.AddTempFile(fileName)
 
-	log.Println("*** Downloaded video without errors")
+	h.Logger.Info().Msg("Downloaded video without errors")
 
 	err = h.handleAudioVideoMessage(do, u, fileName)
 	if err != nil {
 		return fmt.Errorf("error sending video/audio: %w", err)
 	}
 
-	log.Println("*** Finished sending video/audio")
-	removeFiles(prms.TempFiles)
+	h.Logger.Info().Msg("Finished sending video/audio")
+	h.removeFiles(prms.TempFiles)
 
 	return nil
 }
@@ -142,7 +145,7 @@ func (h *Handler) handleAudioVideoMessage(do *goutubedl.DownloadOptions, u *tgbo
 	// TODO: upload as file document
 
 	if do.DownloadAudioOnly {
-		log.Println("*** Started sending audio")
+		h.Logger.Info().Msg("Started sending audio")
 
 		doc := tgbotapi.NewDocument(u.Message.Chat.ID, tgbotapi.FilePath(fileName))
 		doc.ReplyParameters.MessageID = u.Message.MessageID
@@ -152,7 +155,7 @@ func (h *Handler) handleAudioVideoMessage(do *goutubedl.DownloadOptions, u *tgbo
 			return fmt.Errorf("failed to send document: %w", err)
 		}
 	} else {
-		log.Println("*** Started sending video")
+		h.Logger.Info().Msg("Started sending video")
 
 		videoMessage := tgbotapi.NewVideo(u.Message.Chat.ID, tgbotapi.FilePath(fileName))
 		videoMessage.ReplyParameters.MessageID = u.Message.MessageID
@@ -167,10 +170,10 @@ func (h *Handler) handleAudioVideoMessage(do *goutubedl.DownloadOptions, u *tgbo
 	return err
 }
 
-func removeFiles(files *[]string) {
+func (h *Handler) removeFiles(files *[]string) {
 	for _, fn := range *files {
 		err := os.Remove(fn)
-		log.Println("*** Removed file: ", fn, "error:", err)
+		h.Logger.Info().Str("file", fn).Err(err).Msg("removed")
 	}
 }
 
