@@ -1,18 +1,19 @@
 package botservice
 
 import (
-	"log"
-
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/logger"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 type BotService struct {
+	logger       *logger.Logger
 	api          *tgbotapi.BotAPI
 	logChannelID int64
 }
 
-func NewBotService(api *tgbotapi.BotAPI, logChannelID int64) *BotService {
+func NewBotService(l *logger.Logger, api *tgbotapi.BotAPI, logChannelID int64) *BotService {
 	return &BotService{
+		logger:       l,
 		api:          api,
 		logChannelID: logChannelID,
 	}
@@ -20,11 +21,11 @@ func NewBotService(api *tgbotapi.BotAPI, logChannelID int64) *BotService {
 
 func (b *BotService) Log(u *tgbotapi.Update, err error) {
 	if u != nil && u.Message == nil {
-		log.Println("BotService Log used without message in update")
+		b.logger.Info().Msg("BotService Log used without message in update")
 	}
 
 	if err == nil {
-		log.Println("BotService Log used without error")
+		b.logger.Info().Msg("BotService Log used without error")
 	}
 
 	text := "Error in " + u.Message.Chat.Title + " (" + u.Message.Chat.UserName + "): " + err.Error()
@@ -33,13 +34,13 @@ func (b *BotService) Log(u *tgbotapi.Update, err error) {
 
 	_, err = b.api.Send(msg)
 	if err != nil {
-		log.Println("BotService Log error: " + err.Error())
+		b.logger.Error().Str("text", text).Msg("BotService Log error: " + err.Error())
 	}
 
-	msg = tgbotapi.NewMessage(b.logChannelID, "Error msg text: "+u.Message.Text)
+	msg = tgbotapi.NewMessage(b.logChannelID, "Error msg text: " + u.Message.Text)
 
 	_, err = b.api.Send(msg)
 	if err != nil {
-		log.Println("BotService Log error: " + err.Error())
+		b.logger.Error().Str("text", u.Message.Text).Msg("BotService Log error: " + err.Error())
 	}
 }
