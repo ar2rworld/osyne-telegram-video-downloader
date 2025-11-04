@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"math"
 	"os"
 	"os/exec"
@@ -17,18 +16,21 @@ import (
 	"github.com/wader/goutubedl"
 
 	c "github.com/ar2rworld/golang-telegram-video-downloader/app/constants"
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/logger"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/platform"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/utils"
 )
 
 type Downloader struct {
+	Logger    *logger.Logger
 	YtdlpPath string
 }
 
-func NewDownloader(y string) *Downloader {
+func NewDownloader(l *logger.Logger, y string) *Downloader {
 	goutubedl.Path = y
 	return &Downloader{
+		Logger: l,
 		YtdlpPath: y,
 	}
 }
@@ -88,7 +90,7 @@ func (d *Downloader) DownloadVideo(ctx context.Context, url string, opts goutube
 	if needsCutting {
 		sections, err := prms.Platform.MaxDuration(&result)
 		if err != nil {
-			log.Println("*** error max duration: ", err)
+			d.Logger.Error().Err(err).Msg("error max duration: ")
 			sections = c.DefaultSections
 		}
 		opts.DownloadSections = sections
@@ -111,7 +113,11 @@ func (d *Downloader) DownloadVideo(ctx context.Context, url string, opts goutube
 		return d.DownloadAudio(ctx, url, opts.Cookies, filename)
 	}
 
-	log.Printf("*** DownloadWithOptions: section: %s, filesize: %f, filesize approx: %f\n", opts.DownloadSections, result.Info.Filesize, result.Info.FilesizeApprox)
+	d.Logger.Info().Str("platform", prms.Platform.Name()).
+		Str("section", opts.DownloadSections).
+		Float64("filesize", result.Info.Filesize).
+		Float64("filesize_approx", result.Info.FilesizeApprox).
+		Msg("DownloadWithOptions")
 
 	downloadResult, err := result.DownloadWithOptions(ctx, *do)
 	if err != nil {
@@ -144,7 +150,7 @@ func (d *Downloader) DownloadVideo(ctx context.Context, url string, opts goutube
 	}
 
 	s, _ := FileSizeMB(filename)
-	log.Printf("*** Filesize of downloaded video: %f\n", s)
+	d.Logger.Info().Float64("filesize", s).Msg("Filesize of downloaded video")
 
 	return filename, nil
 }
@@ -246,7 +252,7 @@ func (d *Downloader) DownloadAudio(ctx context.Context, url, cookies, filename s
 		finalPath = filename
 	}
 
-	log.Printf("*** Final path: %s", finalPath)
+	d.Logger.Info().Str("finalPath", finalPath).Msg("download audio")
 	return finalPath, nil
 }
 
