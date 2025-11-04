@@ -74,7 +74,7 @@ func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *
 	do.Filter = filter
 
 	needsCutting, err := prms.Platform.NeedCut(&result)
-	if err != nil && errors.Is(err, myerrors.ErrNoSizeInfo) {
+	if err != nil && errors.Is(err, myerrors.ErrNoSizeInfo) && isDefaultSection {
 		opts.DownloadSections = c.DefaultSections
 	}
 
