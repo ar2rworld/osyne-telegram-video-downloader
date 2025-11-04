@@ -69,7 +69,7 @@ func (h *Handler) HandleError(u *tgbotapi.Update, err error) {
 
 			_, sendErr := h.bot.Send(msg)
 			if sendErr != nil {
-				h.Logger.Error().Err(sendErr)
+				h.Logger.Error().Err(sendErr).Msg("error sending message")
 			}
 		}
 
@@ -79,7 +79,7 @@ func (h *Handler) HandleError(u *tgbotapi.Update, err error) {
 
 			_, sendErr := h.bot.Send(msg)
 			if sendErr != nil {
-				h.Logger.Error().Err(sendErr)
+				h.Logger.Error().Err(sendErr).Msg("error sending message")
 			}
 		}
 
@@ -87,11 +87,11 @@ func (h *Handler) HandleError(u *tgbotapi.Update, err error) {
 
 		_, sendErr := h.bot.Send(msg)
 		if sendErr != nil {
-			h.Logger.Error().Err(sendErr)
+			h.Logger.Error().Err(sendErr).Msg("error sending message")
 		}
 	}
 
-	h.Logger.Error().Err(err)
+	h.Logger.Error().Err(err).Msg("handle error update")
 
 	h.botService.Log(u, err)
 }
