@@ -1,11 +1,24 @@
 package platform
 
+import c "github.com/ar2rworld/golang-telegram-video-downloader/app/constants"
+
 type Registry struct {
 	platforms []Platform
 }
 
-func NewRegistry() *Registry {
-	return &Registry{}
+func NewRegistry(options *c.Options) *Registry {
+	registry := &Registry{}
+	instagram := NewInstagram(options.InstagramCookiesPath)
+	youtube := NewYoutube(options.YouTubeCookiesPath)
+	shorts := NewYoutubeShorts(options.YouTubeCookiesPath)
+	facebookreels := NewFacebookReels()
+
+	registry.Register(instagram)
+	registry.Register(youtube)
+	registry.Register(shorts)
+	registry.Register(facebookreels)
+
+	return registry
 }
 
 func (r *Registry) Register(p Platform) {
