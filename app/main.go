@@ -2,14 +2,13 @@ package main
 
 import (
 	"context"
-	"log"
 	"os"
 	"os/signal"
-	"strconv"
 	"sync"
 	"syscall"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/jessevdk/go-flags"
 
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/botservice"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/downloader"
@@ -18,31 +17,36 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/platform"
 )
 
+type Options struct {
+	Prod                 bool   `description:"Prod env"                env:"PROD"                   long:"prod"                   short:"p"`
+	YtdlpPath            string `description:"YT-DLP path"             env:"YT_DLP_PATH"            long:"ytdlp_path"             required:"true" short:"d"`
+	BotToken             string `description:"Telegram bot token"      env:"BOT_TOKEN"              long:"bot_token"              required:"true" short:"t"`
+	AdminID              int64  `description:"Telegram admin id"       env:"ADMIN_ID"               long:"admin_id"               required:"true" short:"a"`
+	LogChannelID         int64  `description:"Telegram log channel id" env:"LOG_CHANNEL_ID"         long:"log_channel_id"         required:"true" short:"l"`
+	CookiesPath          string `description:"Cookies path"            env:"COOKIES_PATH"           long:"cookies_path"           required:"true" short:"c"`
+	InstagramCookiesPath string `description:"Instagram cookies path"  env:"INSTAGRAM_COOKIES_PATH" long:"instagram_cookies_path" required:"true" short:"i"`
+	YouTubeCookiesPath   string `description:"YouTube cookies path"    env:"GOOGLE_COOKIES_PATH"    long:"youtube_cookies_path"   required:"true" short:"y"`
+}
+
 func main() {
-	botAPI, err := tgbotapi.NewBotAPI(os.Getenv("BOT_TOKEN"))
+	l := logger.New(os.Getenv("PROD") == "1")
+
+	options := &Options{}
+
+	_, err := flags.Parse(options)
 	if err != nil {
-		log.Fatalln("BOT_TOKEN: ", err)
+		l.Logger.Fatal().Err(err).Msg("parsing flags")
 	}
 
-	adminID, err := strconv.ParseInt(os.Getenv("ADMIN_ID"), 10, 64)
+	botAPI, err := tgbotapi.NewBotAPI(options.BotToken)
 	if err != nil {
-		log.Fatalln("parsing ADMIN_ID: ", err)
+		l.Logger.Fatal().Err(err).Msg("creating bot api")
 	}
-
-	logChannelID, err := strconv.ParseInt(os.Getenv("LOG_CHANNEL_ID"), 10, 64)
-	if err != nil {
-		log.Fatalln("parsing LOG_CHANNEL_ID: ", err)
-	}
-
-	ytdlpPath := os.Getenv("YT_DLP_PATH")
-	cookiesPath := os.Getenv("COOKIES_PATH")
-	instagramCookiesPath := os.Getenv("INSTAGRAM_COOKIES_PATH")
-	googleCookiesPath := os.Getenv("GOOGLE_COOKIES_PATH")
 
 	registry := platform.NewRegistry()
-	instagram := platform.NewInstagram(instagramCookiesPath)
-	youtube := platform.NewYoutube(googleCookiesPath)
-	shorts := platform.NewYoutubeShorts(googleCookiesPath)
+	instagram := platform.NewInstagram(options.InstagramCookiesPath)
+	youtube := platform.NewYoutube(options.YouTubeCookiesPath)
+	shorts := platform.NewYoutubeShorts(options.YouTubeCookiesPath)
 	facebookreels := platform.NewFacebookReels()
 
 	registry.Register(instagram)
@@ -51,24 +55,24 @@ func main() {
 	registry.Register(facebookreels)
 
 	botAPI.Debug = false
-	l := logger.New(os.Getenv("PROD") == "1")
 
 	updateConfig := tgbotapi.NewUpdate(0)
 	updateConfig.Timeout = 30
 	updates := botAPI.GetUpdatesChan(updateConfig)
 
 	// hello message to admin
-	helloMessage := tgbotapi.NewMessage(adminID, "Hello, boss")
+	helloMessage := tgbotapi.NewMessage(options.AdminID, "Hello, boss")
 
 	_, err = botAPI.Send(helloMessage)
 	if err != nil {
 		l.Fatal().Err(err).Msg("sending hello message")
 	}
 
-	botService := botservice.NewBotService(l, botAPI, logChannelID)
+	botService := botservice.NewBotService(l, botAPI, options.LogChannelID)
 
-	d := downloader.NewDownloader(l, ytdlpPath)
-	h := handler.NewHandler(l, botAPI, botService, registry, d, cookiesPath, instagramCookiesPath, googleCookiesPath, adminID)
+	d := downloader.NewDownloader(l, options.YtdlpPath)
+	h := handler.NewHandler(l, botAPI, botService, registry, d,
+		options.CookiesPath, options.InstagramCookiesPath, options.YouTubeCookiesPath, options.AdminID)
 
 	// Create a context to handle graceful shutdown
 	ctx, cancel := context.WithCancel(context.Background())
