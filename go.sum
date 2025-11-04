@@ -14,6 +14,8 @@ github.com/wader/goutubedl v0.0.0-20240817170730-90467bcf8a33 h1:6O41jSqGCZ9OqjN
 github.com/wader/goutubedl v0.0.0-20240817170730-90467bcf8a33/go.mod h1:5KXd5tImdbmz4JoVhePtbIokCwAfEhUVVx3WLHmjYuw=
 github.com/wader/goutubedl v0.0.0-20240910081116-fed2a6ab45a3 h1:4MhEgER7rSBGYMU1YcSYcU+gQU1Z/HbddFdQAme50i8=
 github.com/wader/goutubedl v0.0.0-20240910081116-fed2a6ab45a3/go.mod h1:5KXd5tImdbmz4JoVhePtbIokCwAfEhUVVx3WLHmjYuw=
+github.com/wader/goutubedl v0.0.0-20251023185426-cc505b46cb30 h1:kY/mY0TsgA8u/8T1AmDCaY/eLlIBwMHmrVnLfLdEbeE=
+github.com/wader/goutubedl v0.0.0-20251023185426-cc505b46cb30/go.mod h1:5KXd5tImdbmz4JoVhePtbIokCwAfEhUVVx3WLHmjYuw=
 github.com/wader/osleaktest v0.0.0-20191111175233-f643b0fed071 h1:QkrG4Zr5OVFuC9aaMPmFI0ibfhBZlAgtzDYWfu7tqQk=
 github.com/wader/osleaktest v0.0.0-20191111175233-f643b0fed071/go.mod h1:XD6emOFPHVzb0+qQpiNOdPL2XZ0SRUM0N5JHuq6OmXo=
 golang.org/x/sys v0.21.0 h1:rF+pYz3DAGSQAxAu1CbC7catZg4ebC4UIeIhKxBZvws=

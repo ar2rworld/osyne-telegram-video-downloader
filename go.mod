@@ -5,7 +5,7 @@ go 1.22
 require (
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/stretchr/testify v1.9.0
-	github.com/wader/goutubedl v0.0.0-20240910081116-fed2a6ab45a3
+	github.com/wader/goutubedl v0.0.0-20251023185426-cc505b46cb30
 )
 
 require golang.org/x/sys v0.21.0 // indirect
