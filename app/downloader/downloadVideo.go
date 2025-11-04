@@ -17,6 +17,7 @@ import (
 	c "github.com/ar2rworld/golang-telegram-video-downloader/app/constants"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/platform"
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/utils"
 )
 
 var YtdlpPath = "yt-dlp_macos" //nolint:gochecknoglobals
@@ -140,8 +141,7 @@ func FileSizeMB(filepath string) (float64, error) {
 	}
 
 	sizeBytes := fileInfo.Size()                                 // size in bytes
-	sizeMB := float64(sizeBytes) / (c.BytesInKByte * c.BytesInKByte) // convert to MB
-	// TODO: BytesToMb
+	sizeMB := utils.BytesToMb(float64(sizeBytes)) // convert to MB
 
 	return sizeMB, nil
 }
