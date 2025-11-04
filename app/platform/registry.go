@@ -18,5 +18,5 @@ func (r *Registry) FindPlatform(url string) Platform {
 			return p
 		}
 	}
-	return nil
+	return &DefaultPlatform{}
 }

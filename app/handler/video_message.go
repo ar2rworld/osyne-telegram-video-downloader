@@ -110,9 +110,7 @@ func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url stri
 	)
 
 	p := h.PlatformRegistry.FindPlatform(url)
-	if p == nil {
-		log.Println("skipping")
-	}
+	log.Println("*** platfrom: ", p.Name())
 	prms.Platform = p
 
 	p.ConfigureDownload(url, &opts)
