@@ -29,7 +29,7 @@ func (y *YouTube) RemuxRequired() bool {
 }
 
 // ConfigureDownload implements Platform.
-func (y *YouTube) ConfigureDownload(url string, opts *goutubedl.Options) {
+func (y *YouTube) ConfigureDownload(_ string, opts *goutubedl.Options) {
 	opts.Cookies = y.cookiesPath
 }
 

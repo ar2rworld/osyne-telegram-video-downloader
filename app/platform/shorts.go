@@ -24,7 +24,7 @@ func (y *Shorts) RemuxRequired() bool {
 }
 
 // ConfigureDownload implements Platform.
-func (y *Shorts) ConfigureDownload(url string, opts *goutubedl.Options) {
+func (y *Shorts) ConfigureDownload(_ string, opts *goutubedl.Options) {
 	opts.Cookies = y.cookiesPath
 }
 
@@ -38,14 +38,14 @@ func (y *Shorts) Name() string {
 	return "Shorts"
 }
 
-func (y *Shorts) SelectFormat(formats []goutubedl.Format) (format string, err error) {
+func (y *Shorts) SelectFormat(_ []goutubedl.Format) (format string, err error) {
 	return c.BestFormat, nil
 }
 
-func (y *Shorts) MaxDuration(r *goutubedl.Result) (string, error) {
+func (y *Shorts) MaxDuration(_ *goutubedl.Result) (string, error) {
 	return "", fmt.Errorf("%w shouldn't be called", myerrors.ErrPlatform)
 }
 
-func (y *Shorts) NeedCut(r *goutubedl.Result) (bool, error) {
+func (y *Shorts) NeedCut(_ *goutubedl.Result) (bool, error) {
 	return false, nil
 }

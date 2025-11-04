@@ -34,7 +34,7 @@ func (i *DefaultPlatform) MaxDuration(*goutubedl.Result) (string, error) {
 }
 
 // SelectFormat implements Platform.
-func (i *DefaultPlatform) SelectFormat(formats []goutubedl.Format) (string, error) {
+func (i *DefaultPlatform) SelectFormat(_ []goutubedl.Format) (string, error) {
 	return c.BestFormat, nil
 }
 
@@ -42,8 +42,8 @@ func (i *DefaultPlatform) Name() string {
 	return "DefaultPlatform"
 }
 
-func (i *DefaultPlatform) Match(url string) bool {
+func (i *DefaultPlatform) Match(_ string) bool {
 	return true
 }
 
-func (i *DefaultPlatform) ConfigureDownload(url string, opts *goutubedl.Options) {}
+func (i *DefaultPlatform) ConfigureDownload(_ string, _ *goutubedl.Options) {}

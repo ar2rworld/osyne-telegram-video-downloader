@@ -31,7 +31,7 @@ func (i *Instagram) MaxDuration(*goutubedl.Result) (string, error) {
 }
 
 // SelectFormat implements Platform.
-func (i *Instagram) SelectFormat(formats []goutubedl.Format) (string, error) {
+func (i *Instagram) SelectFormat(_ []goutubedl.Format) (string, error) {
 	return c.BestFormat, nil
 }
 
@@ -43,6 +43,6 @@ func (i *Instagram) Match(url string) bool {
 	return match.Instagram(url) != ""
 }
 
-func (i *Instagram) ConfigureDownload(url string, opts *goutubedl.Options) {
+func (i *Instagram) ConfigureDownload(_ string, opts *goutubedl.Options) {
 	opts.Cookies = i.cookiesPath
 }

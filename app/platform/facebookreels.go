@@ -29,7 +29,7 @@ func (i *FacebookReels) MaxDuration(*goutubedl.Result) (string, error) {
 }
 
 // SelectFormat implements Platform.
-func (i *FacebookReels) SelectFormat(formats []goutubedl.Format) (string, error) {
+func (i *FacebookReels) SelectFormat(_ []goutubedl.Format) (string, error) {
 	return c.BestFormat, nil
 }
 
@@ -41,4 +41,4 @@ func (i *FacebookReels) Match(url string) bool {
 	return match.FacebookReels(url) != ""
 }
 
-func (i *FacebookReels) ConfigureDownload(url string, opts *goutubedl.Options) {}
+func (i *FacebookReels) ConfigureDownload(_ string, _ *goutubedl.Options) {}
