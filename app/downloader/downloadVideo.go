@@ -232,7 +232,7 @@ func (d *Downloader) DownloadAudio(ctx context.Context, url, cookies, filename s
 
 	args = append(args, url)
 
-	cmd := exec.CommandContext(ctx, d.YtdlpPath, args...)
+	cmd := exec.CommandContext(ctx, d.YtdlpPath, args...) //nolint:gosec
 
 	output, err := cmd.CombinedOutput()
 	outStr := string(output)
