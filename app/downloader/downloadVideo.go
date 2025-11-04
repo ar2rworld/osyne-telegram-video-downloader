@@ -8,31 +8,23 @@ import (
 	"log"
 	"math"
 	"os"
-	"os/exec"
 	"regexp"
-	"strconv"
 	"strings"
 	"unicode/utf8"
 
 	"github.com/wader/goutubedl"
 
+	c "github.com/ar2rworld/golang-telegram-video-downloader/app/constants"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/platform"
 )
 
 var YtdlpPath = "yt-dlp_macos" //nolint:gochecknoglobals
 
-const (
-	MaxFileNameLength = 90
-	DefaultSections   = "*0:0-0:30"
-)
-
-const (
-	HalfMinute      = 30
-	SecondsInMinute = 60
-)
 const FileSizeFix = 0.5
 
 type Parameters struct {
+	Platform platform.Platform
 	IsYoutubeVideo  bool
 	IsInstagram     bool
 	IsYoutubeShorts bool
@@ -57,7 +49,7 @@ func (p *Parameters) AddTempFile(s string) {
 func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *goutubedl.DownloadOptions, prms *Parameters) (string, error) { //nolint: gocyclo,cyclop,funlen
 	goutubedl.Path = YtdlpPath
 
-	isDefaultSection := opts.DownloadSections == DefaultSections
+	isDefaultSection := opts.DownloadSections == c.DefaultSections
 	// if DefaultSections is set, select video section under TgUploadLimit
 	if isDefaultSection {
 		opts.DownloadSections = ""
@@ -72,41 +64,29 @@ func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *
 		do = &goutubedl.DownloadOptions{}
 	}
 
-	isYoutubeVideo := prms.IsYoutubeVideo
-	ext := ""
-	cutRequired := false
+	filter, err := prms.Platform.SelectFormat(result.Formats())
+	if err != nil && !errors.Is(err, myerrors.ErrNoSuitableFormat) {
+		return "", err
+	}
+	do.Filter = filter
 
-	if isYoutubeVideo {
-		filter, e, err := SelectFormat(result.Formats())
-		if err != nil && !errors.Is(err, ErrNoSuitableFormat) {
-			return "", err
-		}
-
-		if err != nil {
-			do.Filter = "best"
-			cutRequired = true
-		}
-
-		// if can't find suitable format , cut the video accordingly to TgUploadLimit limit
-		ext = e
-		do.Filter = filter
-		log.Println("*** filter:", filter)
+	needsCutting, err := prms.Platform.NeedCut(&result)
+	if err != nil && errors.Is(err, myerrors.ErrNoSizeInfo) {
+		opts.DownloadSections = c.DefaultSections
 	}
 
-	if cutRequired && isDefaultSection {
-		seconds, err := MaxDuration(bytesToMb(result.Info.FilesizeApprox), result.Info.Duration)
+	if needsCutting {
+		sections, err := prms.Platform.MaxDuration(&result)
 		if err != nil {
-			log.Printf("failed to figure out maxduration of video(filesizeapprox: %.2f, filesize: %.2f): %s", result.Info.FilesizeApprox, result.Info.Filesize, err.Error())
-
-			seconds = HalfMinute
+			log.Println("*** error max duration: ", err)
+			sections = c.DefaultSections
 		}
+		opts.DownloadSections = sections
+	}
 
-		opts.DownloadSections = "*0:0-" + ConvertSecondsToMinSec(seconds)
-
-		result, err = goutubedl.New(ctx, url, opts)
-		if err != nil {
-			return "", err
-		}
+	result, err = goutubedl.New(ctx, url, opts)
+	if err != nil {
+		return "", ReturnNewRequestError(err)
 	}
 
 	// Weird stuff to make yt-dlp download only audio
@@ -123,7 +103,7 @@ func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *
 	defer downloadResult.Close()
 
 	title := RemoveNonAlphanumericRegex(ConvertToUTF8(result.Info.Title))
-	output := cutString(title, MaxFileNameLength) + result.Info.Ext
+	output := cutString(title, c.MaxFileNameLength) + result.Info.Ext
 
 	f, err := os.CreateTemp("", output)
 	if err != nil {
@@ -137,28 +117,13 @@ func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *
 	}
 
 	filename := f.Name()
-	if isYoutubeVideo {
+	if prms.Platform.RemuxRequired() {
 		filename, err = RemuxToMP4(ctx, filename)
 		if err != nil {
 			return "", fmt.Errorf("could not remux video to mp4: %w", err)
 		}
 
 		prms.AddTempFile(filename)
-
-		s, _ := FileSizeMB(filename)
-		log.Printf("*** Filesize of downloaded video before converting: %f\n", s)
-
-		if ext != "mp4" || result.Info.Ext != "mp4" {
-			log.Printf("*** Convert video ext is not mp4: ext: %s, info.ext: %s\n", ext, result.Info.Ext)
-			// filename, err = Convert(ctx, filename)
-			// if err != nil {
-			// 	return "", err
-			// }
-
-			prms.AddTempFile(filename)
-
-			log.Println("*** Converted video without errors")
-		}
 	}
 
 	s, _ := FileSizeMB(filename)
@@ -175,7 +140,8 @@ func FileSizeMB(filepath string) (float64, error) {
 	}
 
 	sizeBytes := fileInfo.Size()                                 // size in bytes
-	sizeMB := float64(sizeBytes) / (BytesInKByte * BytesInKByte) // convert to MB
+	sizeMB := float64(sizeBytes) / (c.BytesInKByte * c.BytesInKByte) // convert to MB
+	// TODO: BytesToMb
 
 	return sizeMB, nil
 }
@@ -210,36 +176,6 @@ func RemoveNonAlphanumericRegex(s string) string {
 	return strings.TrimSpace(reg.ReplaceAllString(s, ""))
 }
 
-// MaxDuration calculates how many seconds of the video will fit under TgUploadLimit.
-// args: filesize (float64 in MB), duration (float64 in seconds)
-// returns: int (seconds), error if calculation invalid
-func MaxDuration(filesize, duration float64) (int, error) {
-	if filesize <= 0 || duration <= 0 {
-		return 0, fmt.Errorf("%w: filesize=%.2f MB, duration=%.2f s", myerrors.ErrInvalidInput, filesize, duration)
-	}
-
-	// Calculate ratio
-	ratio := TgUploadLimit * FileSizeFix / filesize
-	if ratio >= 1.0 {
-		// Whole video fits
-		return int(math.Floor(duration)), nil
-	}
-
-	// Calculate maximum allowed seconds
-	maxSeconds := duration * ratio
-	if maxSeconds < 1 {
-		return 0, fmt.Errorf("%w too short: %.2f s", myerrors.ErrCalculatedDuration, maxSeconds)
-	}
-
-	return int(math.Floor(maxSeconds)), nil
-}
-
-func ConvertSecondsToMinSec(seconds int) string {
-	minutes := seconds / SecondsInMinute
-	seconds %= SecondsInMinute
-
-	return strconv.Itoa(minutes) + ":" + strconv.Itoa(seconds)
-}
 
 func ReturnNewRequestError(err error) error {
 	if strings.Contains(err.Error(), myerrors.UnsupportedURL) {
@@ -255,9 +191,4 @@ func ReturnNewRequestError(err error) error {
 	}
 
 	return err
-}
-
-// If filesize(Mb) is over the Telegram Bot API limit
-func NeedCut(filesize float64) bool {
-	return filesize >= constants.TgUploadLimit
 }
