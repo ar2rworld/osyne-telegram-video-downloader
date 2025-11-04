@@ -1,12 +1,13 @@
 package platform
 
 import (
-	"errors"
+	"fmt"
 
 	"github.com/wader/goutubedl"
 
 	c "github.com/ar2rworld/golang-telegram-video-downloader/app/constants"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
 )
 
 type Shorts struct {
@@ -19,9 +20,8 @@ func (y *Shorts) RemuxRequired() bool {
 }
 
 // ConfigureDownload implements Platform.
-func (y *Shorts) ConfigureDownload(url string, opts *goutubedl.Options) error {
+func (y *Shorts) ConfigureDownload(url string, opts *goutubedl.Options) {
 	opts.Cookies = y.cookiesPath
-	return nil
 }
 
 // Match implements Platform.

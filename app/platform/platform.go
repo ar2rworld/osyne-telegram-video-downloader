@@ -9,7 +9,7 @@ import (
 type Platform interface {
 	Name() string
 	Match(url string) bool
-	ConfigureDownload(url string, opts *goutubedl.Options) error
+	ConfigureDownload(url string, opts *goutubedl.Options)
 	SelectFormat(formats []goutubedl.Format) (string, error)
 	NeedCut(*goutubedl.Result) (bool, error)
 	MaxDuration(*goutubedl.Result) (string, error)
@@ -46,6 +46,4 @@ func (i *DefaultPlatform) Match(url string) bool {
 	return true
 }
 
-func (i *DefaultPlatform) ConfigureDownload(url string, opts *goutubedl.Options) error {
-	return nil
-}
+func (i *DefaultPlatform) ConfigureDownload(url string, opts *goutubedl.Options) {}

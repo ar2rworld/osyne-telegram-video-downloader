@@ -43,7 +43,6 @@ func (i *Instagram) Match(url string) bool {
 	return match.Instagram(url) != ""
 }
 
-func (i *Instagram) ConfigureDownload(url string, opts *goutubedl.Options) error {
+func (i *Instagram) ConfigureDownload(url string, opts *goutubedl.Options) {
 	opts.Cookies = i.cookiesPath
-	return nil
 }

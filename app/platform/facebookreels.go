@@ -41,6 +41,4 @@ func (i *FacebookReels) Match(url string) bool {
 	return match.FacebookReels(url) != ""
 }
 
-func (i *FacebookReels) ConfigureDownload(url string, opts *goutubedl.Options) error {
-	return nil
-}
+func (i *FacebookReels) ConfigureDownload(url string, opts *goutubedl.Options) {}
