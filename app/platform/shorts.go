@@ -38,7 +38,7 @@ func (y *Shorts) Name() string {
 	return "Shorts"
 }
 
-func (y *Shorts) SelectFormat(_ []goutubedl.Format) (format string, err error) {
+func (y *Shorts) SelectFormat(_ []goutubedl.Format) (string, error) {
 	return c.BestFormat, nil
 }
 
