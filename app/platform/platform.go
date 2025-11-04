@@ -11,8 +11,8 @@ type Platform interface {
 	Match(url string) bool
 	ConfigureDownload(url string, opts *goutubedl.Options)
 	SelectFormat(formats []goutubedl.Format) (string, error)
-	NeedCut(*goutubedl.Result) (bool, error)
-	MaxDuration(*goutubedl.Result) (string, error)
+	NeedCut(result *goutubedl.Result) (bool, error)
+	MaxDuration(result *goutubedl.Result) (string, error)
 	RemuxRequired() bool
 }
 

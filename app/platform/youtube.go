@@ -43,7 +43,7 @@ func (y *YouTube) Name() string {
 	return "youtube"
 }
 
-func (y *YouTube) SelectFormat(formats []goutubedl.Format) (format string, err error) {
+func (y *YouTube) SelectFormat(formats []goutubedl.Format) (string, error) {
 	videoFormats := sortoutMinHeightWidth(formats, c.MinHeight, c.MinWidth)
 	completeFormats := sortoutCompleteFormat(videoFormats)
 
