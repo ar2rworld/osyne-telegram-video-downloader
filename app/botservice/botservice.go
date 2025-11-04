@@ -1,8 +1,9 @@
 package botservice
 
 import (
-	"github.com/ar2rworld/golang-telegram-video-downloader/app/logger"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/logger"
 )
 
 type BotService struct {
@@ -37,7 +38,7 @@ func (b *BotService) Log(u *tgbotapi.Update, err error) {
 		b.logger.Error().Str("text", text).Msg("BotService Log error: " + err.Error())
 	}
 
-	msg = tgbotapi.NewMessage(b.logChannelID, "Error msg text: " + u.Message.Text)
+	msg = tgbotapi.NewMessage(b.logChannelID, "Error msg text: "+u.Message.Text)
 
 	_, err = b.api.Send(msg)
 	if err != nil {

@@ -11,8 +11,8 @@ const (
 const BestFormat = "best"
 
 const (
-	AudioCodec    = "mp4a"
-	VideoCodec    = "avc1"
+	AudioCodec = "mp4a"
+	VideoCodec = "avc1"
 )
 
 const (

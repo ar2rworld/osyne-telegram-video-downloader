@@ -5,11 +5,12 @@ import (
 	"math"
 	"strings"
 
+	"github.com/wader/goutubedl"
+
 	c "github.com/ar2rworld/golang-telegram-video-downloader/app/constants"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/utils"
-	"github.com/wader/goutubedl"
 )
 
 const FileSizeFix = 0.5
@@ -46,10 +47,12 @@ func NewYoutube(cookiesPath string) *YouTube {
 func (y *YouTube) SelectFormat(formats []goutubedl.Format) (format string, err error) {
 	videoFormats := sortoutMinHeightWidth(formats, c.MinHeight, c.MinWidth)
 	completeFormats := sortoutCompleteFormat(videoFormats)
+
 	bestFormat := selectBestFormat(completeFormats)
 	if bestFormat != nil {
 		return bestFormat.FormatID, nil
 	}
+
 	audioFormats := sortoutFormat(formats, c.AudioCodec)
 	videoFormats = sortoutFormat(videoFormats, c.VideoCodec)
 
@@ -88,6 +91,7 @@ func (y *YouTube) SelectFormat(formats []goutubedl.Format) (format string, err e
 // returns: int (seconds), error if calculation invalid
 func (y *YouTube) MaxDuration(r *goutubedl.Result) (string, error) {
 	var filesize float64
+
 	duration := r.Info.Duration
 
 	if r.Info.Filesize != 0.0 {
@@ -152,11 +156,13 @@ func sortoutCompleteFormat(formats []goutubedl.Format) []goutubedl.Format {
 	for formatIndex, vFormat := range formats {
 		format := &formats[formatIndex]
 		_, hasVideoCodec := strings.CutPrefix(vFormat.VCodec, c.VideoCodec)
+
 		_, hasAudioCodec := strings.CutPrefix(format.ACodec, c.AudioCodec)
 		if hasVideoCodec && hasAudioCodec {
 			out = append(out, *format)
 		}
 	}
+
 	return out
 }
 
@@ -178,5 +184,6 @@ func (y *YouTube) NeedCut(r *goutubedl.Result) (bool, error) {
 	if r.Info.Filesize == 0 || r.Info.FilesizeApprox == 0 {
 		return false, myerrors.ErrNoSizeInfo
 	}
+
 	return r.Info.Filesize >= c.TgUploadLimit || r.Info.FilesizeApprox >= c.TgUploadLimit, nil
 }

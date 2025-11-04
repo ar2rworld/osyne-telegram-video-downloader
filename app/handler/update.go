@@ -61,11 +61,11 @@ func (h *Handler) HandleUpdate(ctx context.Context, wg *sync.WaitGroup, update *
 
 	case messageText == "osyndaisyn ba?":
 		message := tgbotapi.NewMessage(update.Message.Chat.ID, "osyndaymyn")
+
 		_, err := h.bot.Send(message)
 		if err != nil {
 			h.Logger.Error().Err(err).Msg("while sending message")
 		}
-		
 
 	case update.Message.Chat.ID == update.Message.From.ID:
 		// No URL found in private message

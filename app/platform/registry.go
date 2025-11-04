@@ -9,7 +9,7 @@ func NewRegistry() *Registry {
 }
 
 func (r *Registry) Register(p Platform) {
-    r.platforms = append(r.platforms, p)
+	r.platforms = append(r.platforms, p)
 }
 
 func (r *Registry) FindPlatform(url string) Platform {
@@ -18,5 +18,6 @@ func (r *Registry) FindPlatform(url string) Platform {
 			return p
 		}
 	}
+
 	return &DefaultPlatform{}
 }

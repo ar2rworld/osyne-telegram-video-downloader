@@ -29,8 +29,9 @@ type Downloader struct {
 
 func NewDownloader(l *logger.Logger, y string) *Downloader {
 	goutubedl.Path = y
+
 	return &Downloader{
-		Logger: l,
+		Logger:    l,
 		YtdlpPath: y,
 	}
 }
@@ -38,7 +39,7 @@ func NewDownloader(l *logger.Logger, y string) *Downloader {
 const FileSizeFix = 0.5
 
 type Parameters struct {
-	Platform platform.Platform
+	Platform        platform.Platform
 	IsYoutubeVideo  bool
 	IsInstagram     bool
 	IsYoutubeShorts bool
@@ -80,6 +81,7 @@ func (d *Downloader) DownloadVideo(ctx context.Context, url string, opts goutube
 	if err != nil && !errors.Is(err, myerrors.ErrNoSuitableFormat) {
 		return "", err
 	}
+
 	do.Filter = filter
 
 	needsCutting, err := prms.Platform.NeedCut(&result)
@@ -91,8 +93,10 @@ func (d *Downloader) DownloadVideo(ctx context.Context, url string, opts goutube
 		sections, err := prms.Platform.MaxDuration(&result)
 		if err != nil {
 			d.Logger.Error().Err(err).Msg("error max duration: ")
+
 			sections = c.DefaultSections
 		}
+
 		opts.DownloadSections = sections
 	}
 
@@ -110,6 +114,7 @@ func (d *Downloader) DownloadVideo(ctx context.Context, url string, opts goutube
 		filename = strings.ReplaceAll(filename, " ", "")
 		filename = path.Join(os.TempDir(), filename)
 		prms.AddTempFile(filename)
+
 		return d.DownloadAudio(ctx, url, opts.Cookies, filename)
 	}
 
@@ -162,7 +167,7 @@ func FileSizeMB(filepath string) (float64, error) {
 		return 0, err
 	}
 
-	sizeBytes := fileInfo.Size()                                 // size in bytes
+	sizeBytes := fileInfo.Size()                  // size in bytes
 	sizeMB := utils.BytesToMb(float64(sizeBytes)) // convert to MB
 
 	return sizeMB, nil
@@ -197,7 +202,6 @@ func RemoveNonAlphanumericRegex(s string) string {
 	reg := regexp.MustCompile(`[^a-zA-Z0-9\s]+`)
 	return strings.TrimSpace(reg.ReplaceAllString(s, ""))
 }
-
 
 func ReturnNewRequestError(err error) error {
 	if strings.Contains(err.Error(), myerrors.UnsupportedURL) {
@@ -234,12 +238,14 @@ func (d *Downloader) DownloadAudio(ctx context.Context, url, cookies, filename s
 	outStr := string(output)
 
 	if err != nil {
-		return "", fmt.Errorf("yt-dlp error: %v\n%s", err, outStr)
+		return "", fmt.Errorf("yt-dlp error: %w\n%s", err, outStr)
 	}
 
 	// Extract the last non-empty line (usually the file path)
 	lines := strings.Split(outStr, "\n")
+
 	var finalPath string
+
 	for i := len(lines) - 1; i >= 0; i-- {
 		line := strings.TrimSpace(lines[i])
 		if line != "" {
@@ -253,6 +259,6 @@ func (d *Downloader) DownloadAudio(ctx context.Context, url, cookies, filename s
 	}
 
 	d.Logger.Info().Str("finalPath", finalPath).Msg("download audio")
+
 	return finalPath, nil
 }
-

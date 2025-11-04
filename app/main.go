@@ -44,6 +44,7 @@ func main() {
 	youtube := platform.NewYoutube(googleCookiesPath)
 	shorts := platform.NewYoutubeShorts(googleCookiesPath)
 	facebookreels := platform.NewFacebookReels()
+
 	registry.Register(instagram)
 	registry.Register(youtube)
 	registry.Register(shorts)
@@ -58,6 +59,7 @@ func main() {
 
 	// hello message to admin
 	helloMessage := tgbotapi.NewMessage(adminID, "Hello, boss")
+
 	_, err = botAPI.Send(helloMessage)
 	if err != nil {
 		l.Fatal().Err(err).Msg("sending hello message")

@@ -101,6 +101,7 @@ func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url stri
 	defer h.removeFiles(prms.TempFiles)
 
 	h.Logger.Info().Str("url", url).Msg("Got request to download video")
+
 	opts := goutubedl.Options{HTTPClient: &http.Client{}, DebugLog: log.Default()}
 	isYoutubeVideo := match.Youtube(url) != ""
 
@@ -115,7 +116,7 @@ func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url stri
 	)
 
 	p := h.PlatformRegistry.FindPlatform(url)
-	h.Logger.Info().Str("platfrom", p.Name()).Msg("registry found")
+	h.Logger.Info().Str("platform", p.Name()).Msg("registry found")
 	prms.Platform = p
 
 	p.ConfigureDownload(url, &opts)

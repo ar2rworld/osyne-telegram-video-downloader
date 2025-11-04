@@ -141,8 +141,9 @@ func TestAlterDownloadOptions(t *testing.T) { //nolint: funlen
 		},
 	}
 	handler := NewHandler(nil, nil, nil, nil, nil, "c", "i", "g", int64(0))
+
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {			
+		t.Run(tt.name, func(t *testing.T) {
 			u := &tgbotapi.Update{Message: &tgbotapi.Message{Text: tt.inputMessage}}
 			opts := &goutubedl.Options{}
 			do := handler.AlterDownloadOptions(u, tt.inputURL, opts)

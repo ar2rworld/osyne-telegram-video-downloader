@@ -1,11 +1,12 @@
 package platform
 
 import (
-	"fmt"
+	"errors"
+
+	"github.com/wader/goutubedl"
 
 	c "github.com/ar2rworld/golang-telegram-video-downloader/app/constants"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
-	"github.com/wader/goutubedl"
 )
 
 type Shorts struct {
@@ -42,7 +43,7 @@ func (y *Shorts) SelectFormat(formats []goutubedl.Format) (format string, err er
 }
 
 func (y *Shorts) MaxDuration(r *goutubedl.Result) (string, error) {
-	return "", fmt.Errorf("error max duration shouldn't be called")
+	return "", errors.New("error max duration shouldn't be called")
 }
 
 func (y *Shorts) NeedCut(r *goutubedl.Result) (bool, error) {
