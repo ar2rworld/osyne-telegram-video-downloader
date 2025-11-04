@@ -14,7 +14,7 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/botservice"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/downloader"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/handler"
-	"github.com/ar2rworld/golang-telegram-video-downloader/app/myerrors"
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/logger"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/platform"
 )
 
@@ -50,6 +50,7 @@ func main() {
 	registry.Register(facebookreels)
 
 	botAPI.Debug = false
+	l := logger.New(os.Getenv("PROD") == "1")
 
 	updateConfig := tgbotapi.NewUpdate(0)
 	updateConfig.Timeout = 30
@@ -57,13 +58,15 @@ func main() {
 
 	// hello message to admin
 	helloMessage := tgbotapi.NewMessage(adminID, "Hello, boss")
-	sentMessage, err := botAPI.Send(helloMessage)
-	myerrors.CheckTextMessage(&helloMessage, err, &sentMessage)
+	_, err = botAPI.Send(helloMessage)
+	if err != nil {
+		l.Fatal().Err(err).Msg("sending hello message")
+	}
 
-	botService := botservice.NewBotService(botAPI, logChannelID)
+	botService := botservice.NewBotService(l, botAPI, logChannelID)
 
-	d := downloader.NewDownloader(ytdlpPath)
-	h := handler.NewHandler(botAPI, botService, registry, d, cookiesPath, instagramCookiesPath, googleCookiesPath, adminID)
+	d := downloader.NewDownloader(l, ytdlpPath)
+	h := handler.NewHandler(l, botAPI, botService, registry, d, cookiesPath, instagramCookiesPath, googleCookiesPath, adminID)
 
 	// Create a context to handle graceful shutdown
 	ctx, cancel := context.WithCancel(context.Background())
@@ -74,7 +77,7 @@ func main() {
 	signalCh := make(chan os.Signal, 1)
 	signal.Notify(signalCh, syscall.SIGINT, syscall.SIGTERM)
 
-	log.Println("Starting handling updates")
+	l.Info().Msg("Starting handling updates")
 
 	go func() {
 		for update := range updates {
@@ -85,13 +88,13 @@ func main() {
 	}()
 
 	signalReceived := <-signalCh
-	log.Println("signalReceived: ", signalReceived)
+	l.Info().Any("signal", signalReceived).Msg("signal received")
 
-	log.Println("HandleUpdate loop has stopped")
+	l.Info().Msg("HandleUpdate loop has stopped")
 
 	cancel()
 
 	wg.Wait()
 
-	log.Println("Shutdown complete.")
+	l.Info().Msg("Shutdown complete.")
 }
