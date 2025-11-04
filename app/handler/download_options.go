@@ -8,7 +8,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/wader/goutubedl"
 
-	"github.com/ar2rworld/golang-telegram-video-downloader/app/downloader"
+	c "github.com/ar2rworld/golang-telegram-video-downloader/app/constants"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/match"
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/utils"
 )
@@ -36,7 +36,7 @@ func AlterDownloadOptions(u *tgbotapi.Update, url string, opts *goutubedl.Option
 		if err != nil {
 			log.Printf("*** Error parsing video options: %s", err.Error())
 
-			*userOptions.Sections = downloader.DefaultSections
+			*userOptions.Sections = c.DefaultSections
 		}
 
 		opts.DownloadSections = *userOptions.Sections
@@ -47,13 +47,13 @@ func AlterDownloadOptions(u *tgbotapi.Update, url string, opts *goutubedl.Option
 			log.Printf("*** Error converting to int while changing DownloadSections for youtube: %s", err.Error())
 		}
 
-		setDownloadSections(opts, t, t+downloader.HalfMinute)
+		setDownloadSections(opts, t, t+c.HalfMinute)
 		log.Printf("*** Downloading section(%s) of the video from currentTime: %s", opts.DownloadSections, currentTime)
 	}
 
 	if opts.DownloadSections == "" && audioOnly == "" {
-		opts.DownloadSections = downloader.DefaultSections
-		log.Printf("*** Downloading default sections of the video: %s", downloader.DefaultSections)
+		opts.DownloadSections = c.DefaultSections
+		log.Printf("*** Downloading default sections of the video: %s", c.DefaultSections)
 	}
 
 	do := &goutubedl.DownloadOptions{}
