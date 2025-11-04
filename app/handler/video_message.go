@@ -137,31 +137,6 @@ func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url stri
 	return nil
 }
 
-// If handler has instagram cookies download with cookies
-// If handler has google cookies download youtube video or short with cookies
-// else just try downloading
-func (h *Handler) setupCookies(url string, opts *goutubedl.Options, prms *downloader.Parameters, isYoutubeVideo bool) {
-	switch {
-	case match.Instagram(url) != "" && h.InstagramCookiesPath != "":
-		log.Println("*** Downloading Instagram with Cookies")
-
-		prms.IsInstagram = true
-		opts.Cookies = h.InstagramCookiesPath
-	case isYoutubeVideo && h.GoogleCookiesPath != "":
-		log.Println("*** Downloading Youtube Video with Cookies")
-
-		prms.IsYoutubeVideo = true
-		opts.Cookies = h.GoogleCookiesPath
-	case match.YoutubeShorts(url) != "" && h.GoogleCookiesPath != "":
-		log.Println("*** Downloading Youtube Shorts with Cookies")
-
-		prms.IsYoutubeShorts = true
-		opts.Cookies = h.GoogleCookiesPath
-	default:
-		log.Println("*** DownloadVideo")
-	}
-}
-
 func (h *Handler) handleAudioVideoMessage(do *goutubedl.DownloadOptions, u *tgbotapi.Update, fileName string) error {
 	var err error
 	// TODO: upload as file document
