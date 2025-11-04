@@ -9,6 +9,10 @@ import (
 
 type FacebookReels struct{}
 
+func NewFacebookReels() *FacebookReels {
+	return &FacebookReels{}
+}
+
 // RemuxRequired implements Platform.
 func (i *FacebookReels) RemuxRequired() bool {
 	return true
@@ -17,10 +21,6 @@ func (i *FacebookReels) RemuxRequired() bool {
 // NeedCut implements Platform.
 func (i *FacebookReels) NeedCut(*goutubedl.Result) (bool, error) {
 	return false, nil
-}
-
-func NewFacebookReels() *FacebookReels {
-	return &FacebookReels{}
 }
 
 // MaxDuration implements Platform.

@@ -11,6 +11,10 @@ type Instagram struct {
 	cookiesPath string
 }
 
+func NewInstagram(cookiesPath string) *Instagram {
+	return &Instagram{cookiesPath: cookiesPath}
+}
+
 // RemuxRequired implements Platform.
 func (i *Instagram) RemuxRequired() bool {
 	return false
@@ -19,10 +23,6 @@ func (i *Instagram) RemuxRequired() bool {
 // NeedCut implements Platform.
 func (i *Instagram) NeedCut(*goutubedl.Result) (bool, error) {
 	return false, nil
-}
-
-func NewInstagram(cookiesPath string) *Instagram {
-	return &Instagram{cookiesPath: cookiesPath}
 }
 
 // MaxDuration implements Platform.

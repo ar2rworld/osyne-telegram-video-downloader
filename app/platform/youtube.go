@@ -19,6 +19,10 @@ type YouTube struct {
 	cookiesPath string
 }
 
+func NewYoutube(cookiesPath string) *YouTube {
+	return &YouTube{cookiesPath: cookiesPath}
+}
+
 // RemuxRequired implements Platform.
 func (y *YouTube) RemuxRequired() bool {
 	return true
@@ -37,10 +41,6 @@ func (y *YouTube) Match(url string) bool {
 // Name implements Platform.
 func (y *YouTube) Name() string {
 	return "youtube"
-}
-
-func NewYoutube(cookiesPath string) *YouTube {
-	return &YouTube{cookiesPath: cookiesPath}
 }
 
 func (y *YouTube) SelectFormat(formats []goutubedl.Format) (format string, err error) {
