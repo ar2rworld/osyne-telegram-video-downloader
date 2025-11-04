@@ -33,7 +33,6 @@ func parse(s string) (*UserOptions, error) {
 
 // parse youtube url for current time argument
 func parseCurrentTime(videoURL string) string {
-	// Claude 3.5 Sonnet
 	parsedURL, err := url.Parse(videoURL)
 	if err != nil {
 		return ""

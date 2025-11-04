@@ -3,6 +3,7 @@ package handler
 import (
 	"testing"
 
+	"github.com/ar2rworld/golang-telegram-video-downloader/app/logger"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/wader/goutubedl"
@@ -46,7 +47,6 @@ func TestChangeDownloadSectionsStart(t *testing.T) {
 }
 
 func TestAlterDownloadOptions(t *testing.T) { //nolint: funlen
-	// Claude 3.5 Sonnet.
 	emptyDownloadOptions := &goutubedl.DownloadOptions{}
 	tests := []struct {
 		name                    string
@@ -140,7 +140,8 @@ func TestAlterDownloadOptions(t *testing.T) { //nolint: funlen
 			expectedDownloadOptions: &goutubedl.DownloadOptions{DownloadAudioOnly: true},
 		},
 	}
-	handler := NewHandler(nil, nil, nil, nil, nil, "c", "i", "g", int64(0))
+	l := logger.New(false)
+	handler := NewHandler(l, nil, nil, nil, nil, "c", "i", "g", int64(0))
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
