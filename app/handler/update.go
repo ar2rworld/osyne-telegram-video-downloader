@@ -55,10 +55,6 @@ func (h *Handler) HandleUpdate(ctx context.Context, wg *sync.WaitGroup, update *
 			}
 		}
 
-	case messageText == "/test":
-		err := h.handleAudioVideoMessage(&goutubedl.DownloadOptions{}, update, "output.mp4")
-		h.HandleError(update, err)
-
 	case messageText == "osyndaisyn ba?":
 		message := tgbotapi.NewMessage(update.Message.Chat.ID, "osyndaymyn")
 
