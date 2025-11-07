@@ -27,4 +27,8 @@ RUN crontab -l | { cat; echo "0 0 * * * yt-dlp -U"; } | crontab -
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o ./osynetelegramvideodownloader ./app
 
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["./osynetelegramvideodownloader"]
