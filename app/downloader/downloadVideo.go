@@ -36,6 +36,7 @@ func NewDownloader(l *logger.Logger, y string) *Downloader {
 	}
 }
 
+// Video size fix parameter that halves the video size uploading
 const FileSizeFix = 0.5
 
 type Parameters struct {
