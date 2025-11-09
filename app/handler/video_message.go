@@ -46,7 +46,7 @@ func NewHandler(l *logger.Logger, bot *tgbotapi.BotAPI, botService *botservice.B
 	}
 }
 
-func (h *Handler) HandleError(u *tgbotapi.Update, err error) {
+func (h *Handler) HandleError(u *tgbotapi.Update, err error) { //nolint:gocyclo,cyclop
 	if err == nil {
 		return
 	}
@@ -56,38 +56,41 @@ func (h *Handler) HandleError(u *tgbotapi.Update, err error) {
 		return
 	}
 
-	// if error accured in private message, let user know that there is an error
-	if u.Message != nil && u.Message.Chat.ID == u.Message.From.ID {
-		var classified myerrors.ClassifiedError
-		if errors.As(err, &classified) {
-			msg := tgbotapi.NewMessage(u.Message.Chat.ID, classified.UserMessage())
-
-			_, sendErr := h.bot.Send(msg)
-			if sendErr != nil {
-				h.Logger.Error().Err(sendErr).Msg("error sending message")
-			}
-
-			switch classified.Severity() {
-			case myerrors.SeverityMaintainer:
-				h.botService.AlertAdmin(classified.MaintainerMessage())
-				h.Logger.Error().Msg(classified.MaintainerMessage())
-			case myerrors.SeverityCritical:
-				h.botService.AlertAdmin("CRITICAL: " + classified.MaintainerMessage())
-				h.Logger.Error().Msg(classified.MaintainerMessage())
-			case myerrors.SeverityUser:
-				h.botService.Log(classified.Error())
-			}
-		} else {
-			_, sendErr := h.bot.Send(tgbotapi.NewMessage(u.Message.Chat.ID, myerrors.InternalErrorText))
-			if sendErr != nil {
-				h.Logger.Error().Err(err).Msg("error sending message")
-			}
-		}
-	}
-
 	h.Logger.Error().Err(err).Msg("handle error update")
 
 	h.botService.LogErrorUpdate(u, err)
+
+	// if error accured in private message, let user know that there is an error
+	if u.Message != nil && u.Message.Chat.ID != u.Message.From.ID {
+		h.Logger.Warn().Msg("hanlding error not in direct message")
+		return
+	}
+
+	var classified myerrors.ClassifiedError
+	if errors.As(err, &classified) {
+		msg := tgbotapi.NewMessage(u.Message.Chat.ID, classified.UserMessage())
+
+		_, sendErr := h.bot.Send(msg)
+		if sendErr != nil {
+			h.Logger.Error().Err(sendErr).Msg("error sending message")
+		}
+
+		switch classified.Severity() {
+		case myerrors.SeverityMaintainer:
+			h.botService.AlertAdmin(classified.MaintainerMessage())
+			h.Logger.Error().Msg(classified.MaintainerMessage())
+		case myerrors.SeverityCritical:
+			h.botService.AlertAdmin("CRITICAL: " + classified.MaintainerMessage())
+			h.Logger.Error().Msg(classified.MaintainerMessage())
+		case myerrors.SeverityUser:
+			h.botService.Log(classified.Error())
+		}
+	} else {
+		_, sendErr := h.bot.Send(tgbotapi.NewMessage(u.Message.Chat.ID, myerrors.InternalErrorText))
+		if sendErr != nil {
+			h.Logger.Error().Err(err).Msg("error sending message")
+		}
+	}
 }
 
 func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url string) error {
