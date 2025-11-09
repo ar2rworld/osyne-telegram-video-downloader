@@ -77,3 +77,14 @@ func (e *ErrUnsupportedURL) UserMessage() string {
 func (e *ErrUnsupportedURL) MaintainerMessage() string {
 	return ""
 }
+
+type ErrRequestEntityTooLarge struct {}
+func (e *ErrRequestEntityTooLarge) Severity() ErrorSeverity {
+	return SeverityUser
+}
+func (e *ErrRequestEntityTooLarge) UserMessage() string {
+	return "File is too large to download"
+}
+func (e *ErrRequestEntityTooLarge) MaintainerMessage() string {
+	return ""
+}
