@@ -27,85 +27,100 @@ const (
 	UnableToExtractWebpageVideoData    = "Unable to extract webpage video data"
 )
 
-type ErrCookieExpired struct {
+type CookieExpiredError struct {
 	Platform string
 }
 
-func (e *ErrCookieExpired) Error() string {
+func (e *CookieExpiredError) Error() string {
 	return RequestedContentIsNotAvailableText
 }
-func (e *ErrCookieExpired) Severity() ErrorSeverity {
+
+func (e *CookieExpiredError) Severity() ErrorSeverity {
 	return SeverityMaintainer
 }
-func (e *ErrCookieExpired) UserMessage() string {
+
+func (e *CookieExpiredError) UserMessage() string {
 	return fmt.Sprintf("Temporary problem downloading from %s. Please try again later.", e.Platform)
 }
-func (e *ErrCookieExpired) MaintainerMessage() string {
+
+func (e *CookieExpiredError) MaintainerMessage() string {
 	return fmt.Sprintf("ALERT: %s cookies истекли. Требуется обновление cookies.",
 		e.Platform)
 }
 
-type ErrVideoUnavailable struct {
+type VideoUnavailableError struct {
 	Platform string
 }
 
-func (e *ErrVideoUnavailable) Error() string {
+func (e *VideoUnavailableError) Error() string {
 	return VideoUnavailableText
 }
-func (e *ErrVideoUnavailable) Severity() ErrorSeverity {
+
+func (e *VideoUnavailableError) Severity() ErrorSeverity {
 	return SeverityUser
 }
-func (e *ErrVideoUnavailable) UserMessage() string {
-	return fmt.Sprintf("Video unavailable on %s", e.Platform)
+
+func (e *VideoUnavailableError) UserMessage() string {
+	return "Video unavailable on " + e.Platform
 }
-func (e *ErrVideoUnavailable) MaintainerMessage() string {
+
+func (e *VideoUnavailableError) MaintainerMessage() string {
 	return ""
 }
 
-type ErrUnsupportedURL struct {
+type UnsupportedURLError struct {
 	URL      string
 	Platform string
 }
 
-func (e *ErrUnsupportedURL) Error() string {
+func (e *UnsupportedURLError) Error() string {
 	return UnsupportedURLText
 }
-func (e *ErrUnsupportedURL) Severity() ErrorSeverity {
+
+func (e *UnsupportedURLError) Severity() ErrorSeverity {
 	return SeverityUser
 }
-func (e *ErrUnsupportedURL) UserMessage() string {
+
+func (e *UnsupportedURLError) UserMessage() string {
 	return fmt.Sprintf("Unsupported URL on %s: %s", e.Platform, e.URL)
 }
-func (e *ErrUnsupportedURL) MaintainerMessage() string {
+
+func (e *UnsupportedURLError) MaintainerMessage() string {
 	return ""
 }
 
-type ErrRequestEntityTooLarge struct{}
+type RequestEntityTooLargeError struct{}
 
-func (e *ErrRequestEntityTooLarge) Error() string {
+func (e *RequestEntityTooLargeError) Error() string {
 	return RequestEntityTooLargeText
 }
-func (e *ErrRequestEntityTooLarge) Severity() ErrorSeverity {
+
+func (e *RequestEntityTooLargeError) Severity() ErrorSeverity {
 	return SeverityUser
 }
-func (e *ErrRequestEntityTooLarge) UserMessage() string {
+
+func (e *RequestEntityTooLargeError) UserMessage() string {
 	return "File is too large to download"
 }
-func (e *ErrRequestEntityTooLarge) MaintainerMessage() string {
+
+func (e *RequestEntityTooLargeError) MaintainerMessage() string {
 	return ""
 }
 
-type ErrUnableToExtractWebpageVideoData struct{}
+type UnableToExtractWebpageVideoDataError struct{}
 
-func (e *ErrUnableToExtractWebpageVideoData) Error() string {
+func (e *UnableToExtractWebpageVideoDataError) Error() string {
 	return UnableToExtractWebpageVideoData
 }
-func (e *ErrUnableToExtractWebpageVideoData) Severity() ErrorSeverity {
+
+func (e *UnableToExtractWebpageVideoDataError) Severity() ErrorSeverity {
 	return SeverityUser
 }
-func (e *ErrUnableToExtractWebpageVideoData) UserMessage() string {
+
+func (e *UnableToExtractWebpageVideoDataError) UserMessage() string {
 	return UnableToExtractWebpageVideoData
 }
-func (e *ErrUnableToExtractWebpageVideoData) MaintainerMessage() string {
+
+func (e *UnableToExtractWebpageVideoDataError) MaintainerMessage() string {
 	return ""
 }
