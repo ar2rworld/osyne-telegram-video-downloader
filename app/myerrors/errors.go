@@ -25,6 +25,7 @@ const (
 	RequestedContentIsNotAvailable     = "--cookies"
 	RequestedContentIsNotAvailableText = "requested content is not available"
 	UnableToExtractWebpageVideoData    = "Unable to extract webpage video data"
+	InternalErrorText                  = "Internal error, please try again later"
 )
 
 type CookieExpiredError struct {
