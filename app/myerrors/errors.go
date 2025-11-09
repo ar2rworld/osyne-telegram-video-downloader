@@ -1,6 +1,9 @@
 package myerrors
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 var (
 	ErrPlatform           = errors.New("platform error")
@@ -30,3 +33,20 @@ var (
 	ErrVideoUnavailable               = errors.New(VideoUnavailableText)
 	ErrRequestedContentIsNotAvailable = errors.New(RequestedContentIsNotAvailableText)
 )
+
+type ErrCookieExpired struct {
+	Platform string
+}
+
+func (e *ErrCookieExpired) Severity() ErrorSeverity {
+	return SeverityMaintainer
+}
+
+func (e *ErrCookieExpired) UserMessage() string {
+	return fmt.Sprintf("Temporary problem downloading from %s. Please try again later.", e.Platform)
+}
+
+func (e *ErrCookieExpired) MaintainerMessage() string {
+	return fmt.Sprintf("ALERT: %s cookies истекли. Требуется обновление cookies.",
+		e.Platform)
+}

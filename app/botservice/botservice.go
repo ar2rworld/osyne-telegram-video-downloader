@@ -32,7 +32,7 @@ func (b *BotService) Log(text string) {
 
 func (b *BotService) SendLogChannel(text string, notify bool) {
 	msg := tgbotapi.NewMessage(b.logChannelID, text)
-	msg.DisableNotification = ! notify
+	msg.DisableNotification = !notify
 
 	_, err := b.api.Send(msg)
 	if err != nil {
