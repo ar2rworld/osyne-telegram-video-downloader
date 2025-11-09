@@ -63,3 +63,17 @@ func (e *ErrVideoUnavailable) UserMessage() string {
 func (e *ErrVideoUnavailable) MaintainerMessage() string {
 	return ""
 }
+
+type ErrUnsupportedURL struct {
+	URL string
+	Platform string
+}
+func (e *ErrUnsupportedURL) Severity() ErrorSeverity {
+	return SeverityUser
+}
+func (e *ErrUnsupportedURL) UserMessage() string {
+	return fmt.Sprintf("Unsupported URL on %s: %s", e.Platform, e.URL)
+}
+func (e *ErrUnsupportedURL) MaintainerMessage() string {
+	return ""
+}
