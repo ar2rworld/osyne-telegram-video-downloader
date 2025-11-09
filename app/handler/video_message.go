@@ -93,7 +93,7 @@ func (h *Handler) HandleError(u *tgbotapi.Update, err error) {
 
 	h.Logger.Error().Err(err).Msg("handle error update")
 
-	h.botService.Log(u, err)
+	h.botService.LogErrorUpdate(u, err)
 }
 
 func (h *Handler) VideoMessage(ctx context.Context, u *tgbotapi.Update, url string) error {
