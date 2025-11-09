@@ -20,10 +20,6 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/platform"
 )
 
-const (
-	UnableToExtractWebpageVideoData = "Unable to extract webpage video data"
-)
-
 type Handler struct {
 	Logger               *logger.Logger
 	bot                  *tgbotapi.BotAPI
@@ -55,39 +51,37 @@ func (h *Handler) HandleError(u *tgbotapi.Update, err error) {
 		return
 	}
 
-	estr := err.Error()
-
 	// catches json: cannot unmarshal bool into Go value of type tgbotapi.Message
-	if strings.Contains(estr, "cannot unmarshal bool") {
+	if strings.Contains(err.Error(), "cannot unmarshal bool") {
 		return
 	}
 
 	// if error accured in private message, let user know that there is an error
-	if u.Message != nil && u.Message.Chat.ID == u.Message.From.ID { //nolint: nestif
-		if strings.Contains(estr, UnableToExtractWebpageVideoData) {
-			msg := tgbotapi.NewMessage(u.Message.Chat.ID, UnableToExtractWebpageVideoData)
+	if u.Message != nil && u.Message.Chat.ID == u.Message.From.ID {
+		var classified myerrors.ClassifiedError
+		if errors.As(err, &classified) {
+			msg := tgbotapi.NewMessage(u.Message.Chat.ID, classified.UserMessage())
 
 			_, sendErr := h.bot.Send(msg)
 			if sendErr != nil {
 				h.Logger.Error().Err(sendErr).Msg("error sending message")
 			}
-		}
 
-		msgText := h.selectErrorMessage(err)
-		if msgText != "" {
-			msg := tgbotapi.NewMessage(u.Message.Chat.ID, msgText)
-
-			_, sendErr := h.bot.Send(msg)
-			if sendErr != nil {
-				h.Logger.Error().Err(sendErr).Msg("error sending message")
+			switch classified.Severity() {
+			case myerrors.SeverityMaintainer:
+				h.botService.AlertAdmin(classified.MaintainerMessage())
+				h.Logger.Error().Msg(classified.MaintainerMessage())
+			case myerrors.SeverityCritical:
+				h.botService.AlertAdmin("CRITICAL: " + classified.MaintainerMessage())
+				h.Logger.Error().Msg(classified.MaintainerMessage())
+			case myerrors.SeverityUser:
+				h.botService.Log(classified.Error())
 			}
-		}
-
-		msg := tgbotapi.NewMessage(u.Message.Chat.ID, "Something went wrong, I will let the Creator know")
-
-		_, sendErr := h.bot.Send(msg)
-		if sendErr != nil {
-			h.Logger.Error().Err(sendErr).Msg("error sending message")
+		} else {
+			_, sendErr := h.bot.Send(tgbotapi.NewMessage(u.Message.Chat.ID, myerrors.InternalErrorText))
+			if sendErr != nil {
+				h.Logger.Error().Err(err).Msg("error sending message")
+			}
 		}
 	}
 
@@ -165,7 +159,7 @@ func (h *Handler) handleAudioVideoMessage(do *goutubedl.DownloadOptions, u *tgbo
 	}
 
 	if err != nil && strings.Contains(err.Error(), myerrors.RequestEntityTooLarge) {
-		return myerrors.ErrRequestEntityTooLarge
+		return &myerrors.RequestEntityTooLargeError{}
 	}
 
 	return err
@@ -176,24 +170,4 @@ func (h *Handler) removeFiles(files *[]string) {
 		err := os.Remove(fn)
 		h.Logger.Info().Str("file", fn).Err(err).Msg("removed")
 	}
-}
-
-func (h *Handler) selectErrorMessage(err error) string {
-	if errors.Is(err, myerrors.ErrRequestEntityTooLarge) {
-		return "File is too large to download"
-	}
-
-	if errors.Is(err, myerrors.ErrUnsupportedURL) {
-		return myerrors.UnsupportedURL
-	}
-
-	if errors.Is(err, myerrors.ErrVideoUnavailable) {
-		return myerrors.VideoUnavailable
-	}
-
-	if errors.Is(err, myerrors.ErrRequestedContentIsNotAvailable) {
-		return "Cookies expired, the dev will need to refresh them"
-	}
-
-	return ""
 }
