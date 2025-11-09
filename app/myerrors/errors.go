@@ -26,26 +26,18 @@ const (
 	RequestedContentIsNotAvailableText = "requested content is not available"
 )
 
-// Business logic errors
-var (
-	ErrRequestEntityTooLarge          = errors.New(RequestEntityTooLargeText)
-	ErrUnsupportedURL                 = errors.New(UnsupportedURLText)
-	ErrVideoUnavailable               = errors.New(VideoUnavailableText)
-	ErrRequestedContentIsNotAvailable = errors.New(RequestedContentIsNotAvailableText)
-)
-
 type ErrCookieExpired struct {
 	Platform string
 }
-
+func (e *ErrCookieExpired) Error() string {
+	return RequestedContentIsNotAvailableText
+}
 func (e *ErrCookieExpired) Severity() ErrorSeverity {
 	return SeverityMaintainer
 }
-
 func (e *ErrCookieExpired) UserMessage() string {
 	return fmt.Sprintf("Temporary problem downloading from %s. Please try again later.", e.Platform)
 }
-
 func (e *ErrCookieExpired) MaintainerMessage() string {
 	return fmt.Sprintf("ALERT: %s cookies истекли. Требуется обновление cookies.",
 		e.Platform)
@@ -53,6 +45,9 @@ func (e *ErrCookieExpired) MaintainerMessage() string {
 
 type ErrVideoUnavailable struct {
 	Platform string
+}
+func (e *ErrVideoUnavailable) Error() string {
+	return VideoUnavailableText
 }
 func (e *ErrVideoUnavailable) Severity() ErrorSeverity {
 	return SeverityUser
@@ -68,6 +63,9 @@ type ErrUnsupportedURL struct {
 	URL string
 	Platform string
 }
+func (e *ErrUnsupportedURL) Error() string {
+	return UnsupportedURLText
+}
 func (e *ErrUnsupportedURL) Severity() ErrorSeverity {
 	return SeverityUser
 }
@@ -79,6 +77,9 @@ func (e *ErrUnsupportedURL) MaintainerMessage() string {
 }
 
 type ErrRequestEntityTooLarge struct {}
+func (e *ErrRequestEntityTooLarge) Error() string {
+	return RequestEntityTooLargeText
+}
 func (e *ErrRequestEntityTooLarge) Severity() ErrorSeverity {
 	return SeverityUser
 }
