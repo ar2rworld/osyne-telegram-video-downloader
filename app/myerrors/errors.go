@@ -50,3 +50,16 @@ func (e *ErrCookieExpired) MaintainerMessage() string {
 	return fmt.Sprintf("ALERT: %s cookies истекли. Требуется обновление cookies.",
 		e.Platform)
 }
+
+type ErrVideoUnavailable struct {
+	Platform string
+}
+func (e *ErrVideoUnavailable) Severity() ErrorSeverity {
+	return SeverityUser
+}
+func (e *ErrVideoUnavailable) UserMessage() string {
+	return fmt.Sprintf("Video unavailable on %s", e.Platform)
+}
+func (e *ErrVideoUnavailable) MaintainerMessage() string {
+	return ""
+}
