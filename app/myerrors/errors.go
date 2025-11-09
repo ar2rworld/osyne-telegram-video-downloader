@@ -24,11 +24,13 @@ const (
 	VideoUnavailableText               = "video unavailable"
 	RequestedContentIsNotAvailable     = "--cookies"
 	RequestedContentIsNotAvailableText = "requested content is not available"
+	UnableToExtractWebpageVideoData    = "Unable to extract webpage video data"
 )
 
 type ErrCookieExpired struct {
 	Platform string
 }
+
 func (e *ErrCookieExpired) Error() string {
 	return RequestedContentIsNotAvailableText
 }
@@ -46,6 +48,7 @@ func (e *ErrCookieExpired) MaintainerMessage() string {
 type ErrVideoUnavailable struct {
 	Platform string
 }
+
 func (e *ErrVideoUnavailable) Error() string {
 	return VideoUnavailableText
 }
@@ -60,9 +63,10 @@ func (e *ErrVideoUnavailable) MaintainerMessage() string {
 }
 
 type ErrUnsupportedURL struct {
-	URL string
+	URL      string
 	Platform string
 }
+
 func (e *ErrUnsupportedURL) Error() string {
 	return UnsupportedURLText
 }
@@ -76,7 +80,8 @@ func (e *ErrUnsupportedURL) MaintainerMessage() string {
 	return ""
 }
 
-type ErrRequestEntityTooLarge struct {}
+type ErrRequestEntityTooLarge struct{}
+
 func (e *ErrRequestEntityTooLarge) Error() string {
 	return RequestEntityTooLargeText
 }
@@ -87,5 +92,20 @@ func (e *ErrRequestEntityTooLarge) UserMessage() string {
 	return "File is too large to download"
 }
 func (e *ErrRequestEntityTooLarge) MaintainerMessage() string {
+	return ""
+}
+
+type ErrUnableToExtractWebpageVideoData struct{}
+
+func (e *ErrUnableToExtractWebpageVideoData) Error() string {
+	return UnableToExtractWebpageVideoData
+}
+func (e *ErrUnableToExtractWebpageVideoData) Severity() ErrorSeverity {
+	return SeverityUser
+}
+func (e *ErrUnableToExtractWebpageVideoData) UserMessage() string {
+	return UnableToExtractWebpageVideoData
+}
+func (e *ErrUnableToExtractWebpageVideoData) MaintainerMessage() string {
 	return ""
 }
