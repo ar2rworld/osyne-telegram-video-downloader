@@ -22,6 +22,10 @@ func NewBotService(l *logger.Logger, api *tgbotapi.BotAPI, logChannelID int64) *
 	}
 }
 
+func (b *BotService) AlertAdmin(text string) {
+	b.SendLogChannel(text, true)
+}
+
 func (b *BotService) Log(text string) {
 	b.SendLogChannel(text, false)
 }
