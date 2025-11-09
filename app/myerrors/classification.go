@@ -4,7 +4,6 @@ type ErrorSeverity int
 
 const (
 	SeverityUser       ErrorSeverity = iota // Пользователь может исправить (плохой URL)
-	SeverityTransient                       // Возможен retry (сеть)
 	SeverityMaintainer                      // Требуется действие админа (cookies)
 	SeverityCritical                        // Сбой системы
 )
