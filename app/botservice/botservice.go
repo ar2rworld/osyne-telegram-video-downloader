@@ -20,7 +20,16 @@ func NewBotService(l *logger.Logger, api *tgbotapi.BotAPI, logChannelID int64) *
 	}
 }
 
-func (b *BotService) Log(u *tgbotapi.Update, err error) {
+func (b *BotService) Log(text string) {
+	msg := tgbotapi.NewMessage(b.logChannelID, text)
+
+	_, err := b.api.Send(msg)
+	if err != nil {
+		b.logger.Error().Str("text", text).Msg("BotService Log error: " + err.Error())
+	}
+}
+
+func (b *BotService) LogErrorUpdate(u *tgbotapi.Update, err error) {
 	if u != nil && u.Message == nil {
 		b.logger.Warn().Msg("BotService Log used without message in update")
 		return
