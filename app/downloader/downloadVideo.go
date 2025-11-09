@@ -204,21 +204,22 @@ func RemoveNonAlphanumericRegex(s string) string {
 	return strings.TrimSpace(reg.ReplaceAllString(s, ""))
 }
 
-func ReturnNewRequestError(url, platform string, err error) error {
+func ReturnNewRequestError(url, p string, err error) error {
 	estr := err.Error()
 	if strings.Contains(estr, myerrors.UnsupportedURL) {
-		return &myerrors.ErrUnsupportedURL{URL: url, Platform: platform}
+		return &myerrors.UnsupportedURLError{URL: url, Platform: p}
 	}
 
 	if strings.Contains(estr, myerrors.VideoUnavailable) {
-		return &myerrors.ErrVideoUnavailable{Platform: platform}
+		return &myerrors.VideoUnavailableError{Platform: p}
 	}
 
 	if strings.Contains(estr, myerrors.RequestedContentIsNotAvailable) {
-		return &myerrors.ErrCookieExpired{Platform: platform}
+		return &myerrors.CookieExpiredError{Platform: p}
 	}
+
 	if strings.Contains(estr, myerrors.UnableToExtractWebpageVideoData) {
-		return &myerrors.ErrUnableToExtractWebpageVideoData{}
+		return &myerrors.UnableToExtractWebpageVideoDataError{}
 	}
 
 	return err
