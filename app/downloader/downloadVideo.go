@@ -71,7 +71,7 @@ func (d *Downloader) DownloadVideo(ctx context.Context, url string, opts goutube
 
 	result, err := goutubedl.New(ctx, url, opts)
 	if err != nil {
-		return "", ReturnNewRequestError(err)
+		return "", ReturnNewRequestError(url, prms.Platform.Name(), err)
 	}
 
 	if do == nil {
@@ -103,7 +103,7 @@ func (d *Downloader) DownloadVideo(ctx context.Context, url string, opts goutube
 
 	result, err = goutubedl.New(ctx, url, opts)
 	if err != nil {
-		return "", ReturnNewRequestError(err)
+		return "", ReturnNewRequestError(url, prms.Platform.Name(), err)
 	}
 
 	// TODO: fix downloading audio with goutubedl
@@ -204,17 +204,21 @@ func RemoveNonAlphanumericRegex(s string) string {
 	return strings.TrimSpace(reg.ReplaceAllString(s, ""))
 }
 
-func ReturnNewRequestError(err error) error {
-	if strings.Contains(err.Error(), myerrors.UnsupportedURL) {
-		return myerrors.ErrUnsupportedURL
+func ReturnNewRequestError(url, platform string, err error) error {
+	estr := err.Error()
+	if strings.Contains(estr, myerrors.UnsupportedURL) {
+		return &myerrors.ErrUnsupportedURL{URL: url, Platform: platform}
 	}
 
-	if strings.Contains(err.Error(), myerrors.VideoUnavailable) {
-		return myerrors.ErrVideoUnavailable
+	if strings.Contains(estr, myerrors.VideoUnavailable) {
+		return &myerrors.ErrVideoUnavailable{Platform: platform}
 	}
 
-	if strings.Contains(err.Error(), myerrors.RequestedContentIsNotAvailable) {
-		return myerrors.ErrRequestedContentIsNotAvailable
+	if strings.Contains(estr, myerrors.RequestedContentIsNotAvailable) {
+		return &myerrors.ErrCookieExpired{Platform: platform}
+	}
+	if strings.Contains(estr, myerrors.UnableToExtractWebpageVideoData) {
+		return &myerrors.ErrUnableToExtractWebpageVideoData{}
 	}
 
 	return err
