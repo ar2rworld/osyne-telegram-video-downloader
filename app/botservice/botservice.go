@@ -22,11 +22,13 @@ func NewBotService(l *logger.Logger, api *tgbotapi.BotAPI, logChannelID int64) *
 
 func (b *BotService) Log(u *tgbotapi.Update, err error) {
 	if u != nil && u.Message == nil {
-		b.logger.Info().Msg("BotService Log used without message in update")
+		b.logger.Warn().Msg("BotService Log used without message in update")
+		return
 	}
 
 	if err == nil {
-		b.logger.Info().Msg("BotService Log used without error")
+		b.logger.Warn().Msg("BotService Log used without error")
+		return
 	}
 
 	text := "Error in " + u.Message.Chat.Title + " (" + u.Message.Chat.UserName + "): " + err.Error()
