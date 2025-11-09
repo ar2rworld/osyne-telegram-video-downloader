@@ -23,7 +23,12 @@ func NewBotService(l *logger.Logger, api *tgbotapi.BotAPI, logChannelID int64) *
 }
 
 func (b *BotService) Log(text string) {
+	b.SendLogChannel(text, false)
+}
+
+func (b *BotService) SendLogChannel(text string, notify bool) {
 	msg := tgbotapi.NewMessage(b.logChannelID, text)
+	msg.DisableNotification = ! notify
 
 	_, err := b.api.Send(msg)
 	if err != nil {
