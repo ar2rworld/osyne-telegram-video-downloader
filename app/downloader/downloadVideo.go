@@ -149,7 +149,7 @@ func (d *Downloader) DownloadVideo(ctx context.Context, url string, opts goutube
 	if prms.Platform.RemuxRequired() {
 		d.Logger.Debug().Str("filename", filename).Msg("started remuxing")
 
-		filename, err = RemuxToMP4(ctx, filename)
+		filename, err = RemuxToMP4(ctx, filename, prms.Platform.RemuxVideoCodec())
 		if err != nil {
 			return "", fmt.Errorf("could not remux video to mp4: %w", err)
 		}

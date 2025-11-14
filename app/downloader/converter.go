@@ -29,7 +29,7 @@ func Convert(ctx context.Context, path string) (string, error) {
 	return outputFile, nil
 }
 
-func RemuxToMP4(ctx context.Context, path string) (string, error) {
+func RemuxToMP4(ctx context.Context, path, vcodec string) (string, error) {
 	// Change extension to .mp4
 	outputFile := filepath.Base(path) + ".mp4"
 
@@ -37,7 +37,7 @@ func RemuxToMP4(ctx context.Context, path string) (string, error) {
 		"ffmpeg",
 		"-y",       // overwrite without asking
 		"-i", path, // input file
-		"-c:v", "libx264", // copy video stream
+		"-c:v", vcodec, // copy video stream
 		"-c:a", "copy", // copy audio stream
 		"-movflags", "+faststart", // move mp4 metadata to beginning
 		"-avoid_negative_ts", "make_zero", // adjust timestamps
