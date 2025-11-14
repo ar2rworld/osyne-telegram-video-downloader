@@ -14,6 +14,7 @@ type Platform interface {
 	NeedCut(result *goutubedl.Result) (bool, error)
 	MaxDuration(result *goutubedl.Result) (string, error)
 	RemuxRequired() bool
+	RemuxVideoCodec() string
 }
 
 type DefaultPlatform struct{}
@@ -47,3 +48,7 @@ func (i *DefaultPlatform) Match(_ string) bool {
 }
 
 func (i *DefaultPlatform) ConfigureDownload(_ string, _ *goutubedl.Options) {}
+
+func (i *DefaultPlatform) RemuxVideoCodec() string {
+	return "copy"
+}

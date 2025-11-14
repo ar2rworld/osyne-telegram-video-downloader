@@ -23,6 +23,10 @@ func (y *Shorts) RemuxRequired() bool {
 	return true
 }
 
+func (i *Shorts) RemuxVideoCodec() string {
+	return "copy"
+}
+
 // ConfigureDownload implements Platform.
 func (y *Shorts) ConfigureDownload(_ string, opts *goutubedl.Options) {
 	opts.Cookies = y.cookiesPath

@@ -20,6 +20,10 @@ func (i *Instagram) RemuxRequired() bool {
 	return false
 }
 
+func (i *Instagram) RemuxVideoCodec() string {
+	return "copy"
+}
+
 // NeedCut implements Platform.
 func (i *Instagram) NeedCut(*goutubedl.Result) (bool, error) {
 	return false, nil

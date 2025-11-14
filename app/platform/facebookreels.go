@@ -18,6 +18,10 @@ func (i *FacebookReels) RemuxRequired() bool {
 	return true
 }
 
+func (i *FacebookReels) RemuxVideoCodec() string {
+	return "copy"
+}
+
 // NeedCut implements Platform.
 func (i *FacebookReels) NeedCut(*goutubedl.Result) (bool, error) {
 	return false, nil
