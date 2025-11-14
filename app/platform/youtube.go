@@ -28,7 +28,7 @@ func (y *YouTube) RemuxRequired() bool {
 	return true
 }
 
-func (i *YouTube) RemuxVideoCodec() string {
+func (y *YouTube) RemuxVideoCodec() string {
 	return "copy"
 }
 

@@ -23,7 +23,7 @@ func (y *Shorts) RemuxRequired() bool {
 	return true
 }
 
-func (i *Shorts) RemuxVideoCodec() string {
+func (y *Shorts) RemuxVideoCodec() string {
 	return "copy"
 }
 
