@@ -21,7 +21,7 @@ func (i *Instagram) RemuxRequired() bool {
 }
 
 func (i *Instagram) RemuxVideoCodec() string {
-	return "copy"
+	return ""
 }
 
 // NeedCut implements Platform.

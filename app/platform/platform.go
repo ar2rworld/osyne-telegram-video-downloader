@@ -50,5 +50,5 @@ func (i *DefaultPlatform) Match(_ string) bool {
 func (i *DefaultPlatform) ConfigureDownload(_ string, _ *goutubedl.Options) {}
 
 func (i *DefaultPlatform) RemuxVideoCodec() string {
-	return "copy"
+	return ""
 }

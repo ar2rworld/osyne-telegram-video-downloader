@@ -19,7 +19,7 @@ func (i *FacebookReels) RemuxRequired() bool {
 }
 
 func (i *FacebookReels) RemuxVideoCodec() string {
-	return "copy"
+	return "libx264"
 }
 
 // NeedCut implements Platform.
