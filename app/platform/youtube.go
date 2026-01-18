@@ -25,7 +25,7 @@ func NewYoutube(cookiesPath string) *YouTube {
 
 // RemuxRequired implements Platform.
 func (y *YouTube) RemuxRequired() bool {
-	return true
+	return false
 }
 
 func (y *YouTube) RemuxVideoCodec() string {
