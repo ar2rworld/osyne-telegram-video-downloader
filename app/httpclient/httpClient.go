@@ -50,7 +50,7 @@ func NewHTTPClientFromString(cookiesString string) (*http.Client, error) {
 		return client, errInstagramCookiesString
 	}
 
-	for _, cookie := range strings.Split(cookiesString, "|,|") {
+	for cookie := range strings.SplitSeq(cookiesString, "|,|") {
 		cookies = ParseCookieString(cookie, cookies)
 	}
 
