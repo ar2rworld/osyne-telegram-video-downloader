@@ -4,7 +4,6 @@ import (
 	"context"
 	"os"
 	"os/exec"
-	"path/filepath"
 )
 
 func Convert(ctx context.Context, path string) (string, error) {
@@ -30,8 +29,7 @@ func Convert(ctx context.Context, path string) (string, error) {
 }
 
 func RemuxToMP4(ctx context.Context, path, vcodec string) (string, error) {
-	// Change extension to .mp4
-	outputFile := filepath.Base(path) + ".mp4"
+	outputFile := path + ".mp4"
 
 	cmd := exec.CommandContext(ctx,
 		"ffmpeg",

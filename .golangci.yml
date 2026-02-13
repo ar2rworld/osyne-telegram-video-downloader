@@ -1,6 +1,6 @@
 version: "2"
 run:
-  go: "1.22"
+  go: "1.24"
   issues-exit-code: 1
   tests: true
   allow-parallel-runners: false
@@ -22,6 +22,7 @@ linters:
     - varnamelen
     - wrapcheck
     - wsl
+    - godoclint
   settings:
     gocritic:
       disabled-checks:
@@ -40,6 +41,10 @@ linters:
       min-complexity: 10
   exclusions:
     generated: lax
+    rules:
+      - linters:
+          - revive
+        text: "var-naming: avoid meaningless package names"
     presets:
       - comments
       - common-false-positives
