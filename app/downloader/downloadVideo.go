@@ -83,7 +83,11 @@ func (d *Downloader) DownloadVideo(ctx context.Context, url string, opts goutube
 		return "", err
 	}
 
-	do.Filter = filter
+	if errors.Is(err, myerrors.ErrNoSuitableFormat) {
+		do.Filter = c.BestFormat
+	} else {
+		do.Filter = filter
+	}
 
 	needsCutting, err := prms.Platform.NeedCut(&result)
 	if err != nil && errors.Is(err, myerrors.ErrNoSizeInfo) && isDefaultSection {
