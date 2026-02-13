@@ -83,14 +83,14 @@ func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *
 		}
 
 		if err != nil {
-			do.Filter = "best"
+			do.Filter = FilterBest
 			cutRequired = true
+		} else {
+			ext = e
+			do.Filter = filter
 		}
 
-		// if can't find suitable format , cut the video accordingly to TgUploadLimit limit
-		ext = e
-		do.Filter = filter
-		log.Println("*** filter:", filter)
+		log.Println("*** filter:", do.Filter)
 	}
 
 	if cutRequired && isDefaultSection {
@@ -111,7 +111,7 @@ func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *
 
 	// Weird stuff to make yt-dlp download only audio
 	if !do.DownloadAudioOnly && do.Filter == "" {
-		do.Filter = "best"
+		do.Filter = FilterBest
 	}
 
 	log.Printf("*** DownloadWithOptions: section: %s, filesize: %f, filesize approx: %f\n", opts.DownloadSections, result.Info.Filesize, result.Info.FilesizeApprox)
@@ -148,7 +148,7 @@ func DownloadVideo(ctx context.Context, url string, opts goutubedl.Options, do *
 		s, _ := FileSizeMB(filename)
 		log.Printf("*** Filesize of downloaded video before converting: %f\n", s)
 
-		if ext != "mp4" || result.Info.Ext != "mp4" {
+		if ext != ExtMP4 || result.Info.Ext != ExtMP4 {
 			log.Printf("*** Convert video ext is not mp4: ext: %s, info.ext: %s\n", ext, result.Info.Ext)
 			// filename, err = Convert(ctx, filename)
 			// if err != nil {
@@ -182,7 +182,7 @@ func FileSizeMB(filepath string) (float64, error) {
 
 func DownloadWithCookies(ctx context.Context, url, cookiesPath string) (string, error) {
 	fileName := "videoDownloadedWithCookies"
-	cmd := exec.CommandContext(ctx, "yt-dlp", "-f", "mp4", "-o", fileName, "--cookies", cookiesPath, url)
+	cmd := exec.CommandContext(ctx, "yt-dlp", "-f", ExtMP4, "-o", fileName, "--cookies", cookiesPath, url)
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
 

@@ -20,6 +20,8 @@ const (
 	TgUploadLimit = 50
 	AudioCodec    = "mp4a"
 	VideoCodec    = "avc1"
+	FilterBest    = "best"
+	ExtMP4        = "mp4"
 )
 
 // SelectFormat: select video format out of minimal height and width of the video
