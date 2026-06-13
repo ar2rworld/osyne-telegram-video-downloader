@@ -28,9 +28,23 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install yt-dlp
-RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp && \
-    chmod a+rx /usr/local/bin/yt-dlp && \
-    yt-dlp --version
+#RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp && \
+#    chmod a+rx /usr/local/bin/yt-dlp && \
+#    yt-dlp --version
+
+# Install Deno (recommended JS runtime)
+RUN apt-get update && apt-get install -y curl unzip \
+    && curl -fsSL https://deno.land/install.sh | sh \
+    && apt-get remove -y curl unzip \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add Deno to PATH
+ENV DENO_INSTALL="/root/.deno"
+ENV PATH="${DENO_INSTALL}/bin:${PATH}"
+
+RUN pip install -U yt-dlp
+RUN pip install -U yt-dlp-ejs
 
 # Install crontab and add yt-dlp updating cronjob
 RUN crontab -l | { cat; echo "0 0 * * * yt-dlp -U"; } | crontab -
