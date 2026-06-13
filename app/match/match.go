@@ -44,7 +44,7 @@ func DownloadAudioArgument(s string) string {
 	return ""
 }
 
-// Match only youtube video, but don't match shorts
+// Youtube: Match only youtube video, but don't match shorts
 func Youtube(s string) string {
 	pattern := `(https?:\/\/)?(www\.)?(youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})`
 	re := regexp.MustCompile(pattern)
@@ -57,7 +57,7 @@ func Youtube(s string) string {
 	return ""
 }
 
-// Match only youtube shorts
+// YoutubeShorts: Match only youtube shorts
 func YoutubeShorts(s string) string {
 	pattern := `(?i)(https?:\/\/)?(www\.)?(youtube|youtu)(\.com|\.be)?\/shorts\/[^\s]+`
 	re := regexp.MustCompile(pattern)
@@ -66,7 +66,7 @@ func YoutubeShorts(s string) string {
 	return matches
 }
 
-// Match only instagram content
+// Instagram: Match only instagram content
 func Instagram(s string) string {
 	pattern := `(https?:\/\/)?(www)?\.?(instagram\.com)[^\s]+`
 	re := regexp.MustCompile(pattern)
@@ -79,7 +79,7 @@ func Instagram(s string) string {
 	return ""
 }
 
-// Match only Facebook reels
+// FacebookReels: Match only Facebook reels
 func FacebookReels(s string) string {
 	pattern := `(https?:\/\/)?(www\.)?(facebook\.com\/(?:reel|share\/r\/)[^\s]+)`
 	re := regexp.MustCompile(pattern)

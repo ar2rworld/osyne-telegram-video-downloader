@@ -183,7 +183,7 @@ func selectBestFormat(formats []goutubedl.Format) *goutubedl.Format {
 	return bestFormat
 }
 
-// If filesize(Mb) is over the Telegram Bot API limit
+// NeedCut: If filesize(Mb) is over the Telegram Bot API limit
 func (y *YouTube) NeedCut(r *goutubedl.Result) (bool, error) {
 	if r.Info.Filesize == 0 || r.Info.FilesizeApprox == 0 {
 		return false, myerrors.ErrNoSizeInfo

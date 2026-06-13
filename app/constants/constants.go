@@ -1,6 +1,6 @@
 package constants
 
-// Telegram Bot API video upload limit of 50 Mb
+// TgUploadLimit: Telegram Bot API video upload limit of 50 Mb
 const TgUploadLimit = 50
 
 // MinHeight, MinWidth - minimal video sizes for format selection
@@ -11,7 +11,7 @@ const (
 	BytesInKByte = 1024
 )
 
-// yt-dlp "best" filter
+// BestFormat: yt-dlp "best" filter
 const BestFormat = "best"
 
 // Video codecs for format selection

@@ -36,7 +36,7 @@ func NewDownloader(l *logger.Logger, y string) *Downloader {
 	}
 }
 
-// Video size fix parameter that halves the video size uploading
+// FileSizeFix: Video size fix parameter that halves the video size uploading
 const FileSizeFix = 0.5
 
 type Parameters struct {
@@ -57,7 +57,7 @@ func (p *Parameters) AddTempFile(s string) {
 	*p.TempFiles = append(*p.TempFiles, s)
 }
 
-// Downloads video with options and writes to file
+// DownloadVideo: Downloads video with options and writes to file
 // If the video is a youtube video, then try to find a format (audio + video codecs) that fit in TgUploadLimit
 // If not, download best quality of the video downloadSection calculated with MaxDuration fitting in TgUploadLimit * FileSizeFix
 // After download If youtube video, remux video to MP4
