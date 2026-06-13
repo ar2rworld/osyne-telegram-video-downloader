@@ -32,8 +32,7 @@ func (h *Handler) HandleUpdate(ctx context.Context, wg *sync.WaitGroup, update *
 		return
 	}
 
-	// Inside the main loop where you handle updates
-	if update.Message.From.ID == h.AdminID && update.Message.Document != nil {
+	if h.isAdminPrivateDocument(update.Message) {
 		err := h.HandleAdminMessage(ctx, update)
 		h.HandleError(update, err)
 
@@ -67,4 +66,12 @@ func (h *Handler) HandleUpdate(ctx context.Context, wg *sync.WaitGroup, update *
 		err := h.Whaat(update)
 		h.HandleError(update, err)
 	}
+}
+
+func (h *Handler) isAdminPrivateDocument(message *tgbotapi.Message) bool {
+	return message != nil &&
+		message.From != nil &&
+		message.Document != nil &&
+		message.From.ID == h.AdminID &&
+		message.Chat.ID == message.From.ID
 }
