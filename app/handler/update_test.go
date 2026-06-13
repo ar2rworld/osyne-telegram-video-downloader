@@ -9,7 +9,7 @@ import (
 	"github.com/ar2rworld/golang-telegram-video-downloader/app/logger"
 )
 
-func TestIsAdminPrivateDocument(t *testing.T) {
+func TestIsAdminPrivateDocument(t *testing.T) { //nolint:funlen
 	const adminID int64 = 42
 
 	tests := []struct {
